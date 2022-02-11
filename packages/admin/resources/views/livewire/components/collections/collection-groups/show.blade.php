@@ -138,14 +138,11 @@
         </x-hub::modal.dialog>
       @endif
       <div class="mt-4 space-y-2">
-
         @include('adminhub::partials.collections.tree', [
           'nodes' => $tree,
+          'sortGroup' => 'root',
+          'owner' => $group,
         ])
-
-        <pre>
-          <code>{{ json_encode($tree, JSON_PRETTY_PRINT) }}</code>
-        </pre>
       </div>
     </div>
   </div>

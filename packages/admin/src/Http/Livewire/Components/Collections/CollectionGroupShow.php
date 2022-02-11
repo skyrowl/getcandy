@@ -327,7 +327,9 @@ class CollectionGroupShow extends Component
             ->map(function ($collection) {
                 return [
                     'id' => $collection->id,
+                    'parent_id' => $collection->parent_id,
                     'name' => $collection->translateAttribute('name'),
+                    'thumbnail' => optional($collection->thumbnail)->getUrl('small'),
                     'children' => [],
                     'children_count' => $collection->children_count,
                 ];
@@ -346,21 +348,17 @@ class CollectionGroupShow extends Component
             $children = Collection::where('parent_id', '=', $node['id'])->withCount('children')->defaultOrder()->get()->map(function ($collection) {
                 return [
                     'id' => $collection->id,
+                    'parent_id' => $collection->parent_id,
                     'name' => $collection->translateAttribute('name'),
+                    'thumbnail' => optional($collection->thumbnail)->getUrl('small'),
                     'children' => [],
                     'children_count' => $collection->children_count,
                 ];
             })->toArray();
         }
 
-
-
-
-        // $node->children = $node->children()->defaultOrder()->get();
-
         \Illuminate\Support\Arr::set($this->tree, $reference . '.children', $children);
 
-        // dd($node);
     }
 
     /**
@@ -379,11 +377,15 @@ class CollectionGroupShow extends Component
             $parent = Collection::find($parentId);
         }
 
-        RebuildCollectionTree::dispatch(
-            $nodes,
-            $this->getCollectionTree()->toArray(),
-            $parent
-        );
+        Collection::rebuildSubtree($parent, collect($nodes)->map(fn ($value) => [
+            'id' => $value['id'],
+        ])->toArray());
+
+        // RebuildCollectionTree::dispatch(
+        //     $nodes,
+        //     $this->getCollectionTree()->toArray(),
+        //     $parent
+        // );
 
         $this->notify(
             __('adminhub::notifications.collections.reordered')
