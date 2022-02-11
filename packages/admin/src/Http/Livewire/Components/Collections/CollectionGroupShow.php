@@ -344,7 +344,7 @@ class CollectionGroupShow extends Component
 
         $children = [];
 
-        if (!count($node['children'])) {
+        if (! count($node['children'])) {
             $children = Collection::where('parent_id', '=', $node['id'])->withCount('children')->defaultOrder()->get()->map(function ($collection) {
                 return [
                     'id' => $collection->id,
@@ -357,8 +357,7 @@ class CollectionGroupShow extends Component
             })->toArray();
         }
 
-        \Illuminate\Support\Arr::set($this->tree, $reference . '.children', $children);
-
+        \Illuminate\Support\Arr::set($this->tree, $reference.'.children', $children);
     }
 
     /**
