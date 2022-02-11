@@ -82,6 +82,13 @@ class CollectionGroupShow extends Component
      */
     public $searchTerm = null;
 
+    public $tree = [];
+
+    public function mount()
+    {
+        $this->tree = $this->getCollectionTree();
+    }
+
     /**
      * Return the validation rules.
      *
@@ -311,7 +318,49 @@ class CollectionGroupShow extends Component
      */
     public function getCollectionTree()
     {
-        return $this->group->load('collections')->collections()->defaultOrder()->get()->toTree();
+        return $this->group->load('collections')
+            ->collections()
+            ->whereIsRoot()
+            ->withCount('children')
+            ->defaultOrder()
+            ->get()
+            ->map(function ($collection) {
+                return [
+                    'id' => $collection->id,
+                    'name' => $collection->translateAttribute('name'),
+                    'children' => [],
+                    'children_count' => $collection->children_count,
+                ];
+            })->toArray();
+    }
+
+    public function loadChildren($reference)
+    {
+
+        // dd($reference);
+        $node = \Illuminate\Support\Arr::get($this->tree, $reference);
+
+        $children = [];
+
+        if (!count($node['children'])) {
+            $children = Collection::where('parent_id', '=', $node['id'])->withCount('children')->defaultOrder()->get()->map(function ($collection) {
+                return [
+                    'id' => $collection->id,
+                    'name' => $collection->translateAttribute('name'),
+                    'children' => [],
+                    'children_count' => $collection->children_count,
+                ];
+            })->toArray();
+        }
+
+
+
+
+        // $node->children = $node->children()->defaultOrder()->get();
+
+        \Illuminate\Support\Arr::set($this->tree, $reference . '.children', $children);
+
+        // dd($node);
     }
 
     /**

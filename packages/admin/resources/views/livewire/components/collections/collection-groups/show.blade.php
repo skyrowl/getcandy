@@ -138,7 +138,14 @@
         </x-hub::modal.dialog>
       @endif
       <div class="mt-4 space-y-2">
-        <x-hub::nested-tree :tree="$this->getCollectionTree()" :owner="$group" sort-group="root" />
+
+        @include('adminhub::partials.collections.tree', [
+          'nodes' => $tree,
+        ])
+
+        <pre>
+          <code>{{ json_encode($tree, JSON_PRETTY_PRINT) }}</code>
+        </pre>
       </div>
     </div>
   </div>
