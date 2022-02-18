@@ -39,6 +39,8 @@ class ProductCreate extends AbstractProduct
         );
 
         $this->syncAvailability();
+        $this->syncAssociations();
+        $this->syncCollections();
     }
 
     /**

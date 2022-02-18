@@ -29,6 +29,7 @@ use GetCandy\Listeners\CartSessionAuthListener;
 use GetCandy\Managers\CartSessionManager;
 use GetCandy\Managers\PricingManager;
 use GetCandy\Managers\TaxManager;
+use GetCandy\Models\Address;
 use GetCandy\Models\CartLine;
 use GetCandy\Models\Channel;
 use GetCandy\Models\Collection;
@@ -36,6 +37,7 @@ use GetCandy\Models\Currency;
 use GetCandy\Models\Language;
 use GetCandy\Models\OrderLine;
 use GetCandy\Models\Url;
+use GetCandy\Observers\AddressObserver;
 use GetCandy\Observers\CartLineObserver;
 use GetCandy\Observers\ChannelObserver;
 use GetCandy\Observers\CollectionObserver;
@@ -79,55 +81,8 @@ class GetCandyServiceProvider extends ServiceProvider
         });
 
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'getcandy');
-    }
 
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot(): void
-    {
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-
-        Relation::morphMap([
-            'product_type' => GetCandy\Models\ProductType::class,
-            //'order' => GetCandy\Models\Order::class,
-        ]);
-
-        $this->registerObservers();
         $this->registerAddonManifest();
-        $this->registerBlueprintMacros();
-
-        if (! $this->app->environment('testing')) {
-            $this->registerStateListeners();
-        }
-
-        if ($this->app->runningInConsole()) {
-            collect($this->configFiles)->each(function ($config) {
-                $this->publishes([
-                    "{$this->root}/config/$config.php" => config_path("getcandy/$config.php"),
-                ], 'getcandy');
-            });
-
-            $this->commands([
-                InstallGetCandy::class,
-                AddonsDiscover::class,
-                MeilisearchSetup::class,
-                AddressData::class,
-            ]);
-        }
-
-        Arr::macro('permutate', [\GetCandy\Utils\Arr::class, 'permutate']);
-
-        // Handle generator
-        Str::macro('handle', function ($string) {
-            return Str::slug($string, '_');
-        });
-
-        Converter::setMeasurements(
-            config('getcandy.shipping.measurements', [])
-        );
 
         $this->app->singleton(CartModifiers::class, function () {
             return new CartModifiers();
@@ -172,6 +127,54 @@ class GetCandyServiceProvider extends ServiceProvider
         $this->app->singleton(TaxManagerInterface::class, function ($app) {
             return $app->make(TaxManager::class);
         });
+    }
+
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public function boot(): void
+    {
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+
+        Relation::morphMap([
+            'product_type' => GetCandy\Models\ProductType::class,
+            //'order' => GetCandy\Models\Order::class,
+        ]);
+
+        $this->registerObservers();
+        $this->registerBlueprintMacros();
+
+        if (! $this->app->environment('testing')) {
+            $this->registerStateListeners();
+        }
+
+        if ($this->app->runningInConsole()) {
+            collect($this->configFiles)->each(function ($config) {
+                $this->publishes([
+                    "{$this->root}/config/$config.php" => config_path("getcandy/$config.php"),
+                ], 'getcandy');
+            });
+
+            $this->commands([
+                InstallGetCandy::class,
+                AddonsDiscover::class,
+                MeilisearchSetup::class,
+                AddressData::class,
+            ]);
+        }
+
+        Arr::macro('permutate', [\GetCandy\Utils\Arr::class, 'permutate']);
+
+        // Handle generator
+        Str::macro('handle', function ($string) {
+            return Str::slug($string, '_');
+        });
+
+        Converter::setMeasurements(
+            config('getcandy.shipping.measurements', [])
+        );
 
         Event::listen(
             Login::class,
@@ -222,6 +225,7 @@ class GetCandyServiceProvider extends ServiceProvider
         Collection::observe(CollectionObserver::class);
         CartLine::observe(CartLineObserver::class);
         OrderLine::observe(OrderLineObserver::class);
+        Address::observe(AddressObserver::class);
     }
 
     /**

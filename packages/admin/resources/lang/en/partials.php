@@ -6,6 +6,16 @@ return [
      */
     'activity-log.added_images.description' => 'Added :count images',
     /**
+     * Associations.
+     */
+    'products.associations.heading' => 'Associations',
+    'products.associations.cross-sell' => 'Cross Sell',
+    'products.associations.up-sell' => 'Up Sell',
+    'products.associations.alternate' => 'Alternate',
+    'products.associations.show_inverse' => 'Show inverse',
+    'products.associations.add_inverse' => 'Add inverse association',
+    'products.associations.add_association' => 'Add association',
+    /**
      * Availability.
      */
     'availability.heading'                                               => 'Availability',
@@ -64,6 +74,11 @@ return [
     'image-manager.delete_message'                   => 'This image will be deleted on save,',
     'image-manager.undo_btn'                         => 'undo',
     'image-manager.no_results'                       => 'No images exist for this product, add your first image above.',
+    /**
+     * Product Collections.
+     */
+    'products.collections.heading'                  => 'Collections',
+    'products.collections.view_collection'          => 'View Collection',
     /**
      * Product Status Bar.
      */

@@ -116,7 +116,7 @@ class Product extends BaseModel implements SpatieHasMedia
         return $this->belongsToMany(
             Collection::class,
             config('getcandy.database.table_prefix').'collection_product'
-        )->withPivot(['position']);
+        )->withPivot(['position'])->withTimestamps();
     }
 
     /**
@@ -127,6 +127,16 @@ class Product extends BaseModel implements SpatieHasMedia
     public function associations()
     {
         return $this->hasMany(ProductAssociation::class, 'product_parent_id');
+    }
+
+    /**
+     * Return the associations relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function inverseAssociations()
+    {
+        return $this->hasMany(ProductAssociation::class, 'product_target_id');
     }
 
     /**
@@ -153,6 +163,11 @@ class Product extends BaseModel implements SpatieHasMedia
         Dissociate::dispatch($this, $product, $type);
     }
 
+    /**
+     * Returns the indexable data for the product.
+     *
+     * @return array
+     */
     public function toSearchableArray()
     {
         if (config('scout.driver') == 'mysql') {
@@ -176,6 +191,11 @@ class Product extends BaseModel implements SpatieHasMedia
         return $data;
     }
 
+    /**
+     * Return the customer groups relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function customerGroups(): BelongsToMany
     {
         $prefix = config('getcandy.database.table_prefix');

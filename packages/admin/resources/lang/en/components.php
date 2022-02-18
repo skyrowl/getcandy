@@ -30,6 +30,7 @@ return [
     'product-search.pre_search_message'          => 'Search for products by attribute or SKU.',
     'product-search.select_empty'                => 'When you select products, they will appear here.',
     'product-search.title'                       => 'Search for products',
+    'product-search.associate_self'              => 'You cannot associate the same product',
     'product-search.commit_btn'                  => 'Select Products',
     /**
      * Option Value Create Modal.
@@ -73,4 +74,17 @@ return [
     'attribute-edit.filterable.instructions' => 'Should users be able to filter results based on this attribute?',
     'attribute-edit.validation.instructions' => 'Specify any Laravel validation rules for this input.',
 
+    /**
+     * Collection search.
+     */
+    'collection-search.btn'                         => 'Add Collections',
+    'collection-search.first_tab'                   => 'Search collections',
+    'collection-search.second_tab'                  => 'Selected collections',
+    'collection-search.max_results_exceeded'        => 'Showing the first :max of :total collections. Try being more specific in your search.',
+    'collection-search.exists_in_collection'        => 'Already associated',
+    'collection-search.no_results'                  => 'No results found.',
+    'collection-search.pre_search_message'          => 'Search for collections by attribute.',
+    'collection-search.select_empty'                => 'When you select collections, they will appear here.',
+    'collection-search.title'                       => 'Search for collections',
+    'collection-search.commit_btn'                  => 'Select Collections',
 ];

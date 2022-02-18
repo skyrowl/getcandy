@@ -14,7 +14,9 @@ use GetCandy\Hub\Http\Livewire\Traits\WithAttributes;
 use GetCandy\Hub\Http\Livewire\Traits\WithLanguages;
 use GetCandy\Hub\Jobs\Products\GenerateVariants;
 use GetCandy\Models\AttributeGroup;
+use GetCandy\Models\Collection as ModelsCollection;
 use GetCandy\Models\Product;
+use GetCandy\Models\ProductAssociation;
 use GetCandy\Models\ProductOption;
 use GetCandy\Models\ProductType;
 use GetCandy\Models\ProductVariant;
@@ -103,11 +105,53 @@ abstract class AbstractProduct extends Component
     public $availability = [];
 
     /**
+     * The associated product collections.
+     *
+     * @var array
+     */
+    public Collection $collections;
+
+    /**
+     * An array of collections to detach from the product.
+     *
+     * @var array
+     */
+    public Collection $collectionsToDetach;
+
+    /**
      * The product variant attributes.
      *
      * @var \Illuminate\Support\Collection
      */
     public $variantAttributes;
+
+    /**
+     * Whether to show inverse associations.
+     *
+     * @var bool
+     */
+    public $showInverseAssociations = false;
+
+    /**
+     * The base association type to use.
+     *
+     * @var string
+     */
+    public $associationType = 'cross-sell';
+
+    /**
+     * The current product associations.
+     *
+     * @var Collection
+     */
+    public Collection $associations;
+
+    /**
+     * Associations that need removing.
+     *
+     * @var array
+     */
+    public array $associationsToRemove = [];
 
     protected function getListeners()
     {
@@ -116,6 +160,8 @@ abstract class AbstractProduct extends Component
             'productOptionCreated'          => 'resetOptionView',
             'option-manager.selectedValues' => 'setOptionValues',
             'urlSaved'                      => 'refreshUrls',
+            'product-search.selected'       => 'updateAssociations',
+            'collectionSearch.selected'     => 'selectCollections',
         ], $this->getHasImagesListeners());
     }
 
@@ -145,7 +191,9 @@ abstract class AbstractProduct extends Component
             'product.brand'           => 'nullable|string|max:255',
             'product.product_type_id' => 'required',
             'urls'                    => 'array',
+            'collections'             => 'nullable|array',
             'variant.tax_ref'         => 'nullable|string|max:255',
+            'associations.*.type'     => 'required|string',
             'variant.sku'             => get_validation('products', 'sku', [
                 'alpha_dash',
                 'max:255',
@@ -332,6 +380,38 @@ abstract class AbstractProduct extends Component
 
             $this->product->channels()->sync($channels);
 
+            if (count($this->associationsToRemove)) {
+                ProductAssociation::whereIn('id', $this->associationsToRemove)->delete();
+            }
+
+            $this->associations->each(function ($assoc) {
+                if (! empty($assoc['id'])) {
+                    ProductAssociation::find($assoc['id'])->update([
+                        'type' => $assoc['type'],
+                    ]);
+
+                    return;
+                }
+
+                ProductAssociation::create([
+                    'product_target_id' => $assoc['inverse'] ? $this->product->id : $assoc['target_id'],
+                    'product_parent_id' => $assoc['inverse'] ? $assoc['target_id'] : $this->product->id,
+                    'type' => $assoc['type'],
+                ]);
+            });
+
+            $this->product->collections()->detach(
+                $this->collectionsToDetach->pluck('id')
+            );
+
+            $this->collections->each(function ($collection) {
+                $this->product->collections()
+                    ->syncWithoutDetaching(
+                        $collection['id'],
+                        ['position' => $collection['position']]
+                    );
+            });
+
             $this->product->refresh();
 
             $this->variantsEnabled = $this->getVariantsCount() > 1;
@@ -438,6 +518,151 @@ abstract class AbstractProduct extends Component
                 ];
             }),
         ];
+    }
+
+    protected function syncCollections()
+    {
+        $this->collections = $this->product->collections->map(function ($collection) {
+            return [
+                'id' => $collection->id,
+                'group_id' => $collection->collection_group_id,
+                'name' => $collection->translateAttribute('name'),
+                'thumbnail' => optional($collection->thumbnail)->getUrl(),
+                'position' => $collection->pivot->position,
+                'breadcrumb' => $collection->ancestors->map(function ($ancestor) {
+                    return $ancestor->translateAttribute('name');
+                })->join(' > '),
+            ];
+        });
+
+        $this->collectionsToDetach = collect();
+    }
+
+    /**
+     * Remove the collection by it's index.
+     *
+     * @param  int|string  $index
+     * @return void
+     */
+    public function removeCollection($index)
+    {
+        $this->collectionsToDetach->push(
+            $this->collections[$index]
+        );
+        $this->collections->forget($index);
+    }
+
+    /**
+     * Map and add the selected collections.
+     *
+     * @param  array  $collectionIds
+     * @return void
+     */
+    public function selectCollections($collectionIds)
+    {
+        $selectedCollections = ModelsCollection::findMany($collectionIds)->map(function ($collection) {
+            return [
+                'id' => $collection->id,
+                'group_id' => $collection->collection_group_id,
+                'name' => $collection->translateAttribute('name'),
+                'thumbnail' => optional($collection->thumbnail)->getUrl(),
+                'position' => optional($collection->pivot)->position,
+                'breadcrumb' => $collection->ancestors->map(function ($ancestor) {
+                    return $ancestor->translateAttribute('name');
+                })->join(' > '),
+            ];
+        });
+
+        $this->collections = $this->collections->count() ?
+            $this->collections->merge($selectedCollections) :
+            $selectedCollections;
+    }
+
+    /**
+     * Sync initial product associations.
+     *
+     * @return void
+     */
+    public function syncAssociations()
+    {
+        $this->associations = $this->product->associations
+            ->merge($this->product->inverseAssociations)
+            ->map(function ($assoc) {
+                $inverse = $assoc->target->id == $this->product->id;
+
+                $product = $inverse ? $assoc->parent : $assoc->target;
+
+                return [
+                    'id' => $assoc->id,
+                    'inverse' => $inverse,
+                    'target_id' => $product->id,
+                    'thumbnail' => optional($product->thumbnail)->getUrl('small'),
+                    'name' => $product->translateAttribute('name'),
+                    'type' => $assoc->type,
+                ];
+            });
+    }
+
+    /**
+     * Update the associations.
+     *
+     * @param  array  $selectedIds
+     * @return void
+     */
+    public function updateAssociations($selectedIds)
+    {
+        $selectedProducts = Product::findMany($selectedIds)->map(function ($product) {
+            return [
+                'inverse' => (bool) $this->showInverseAssociations,
+                'target_id' => $product->id,
+                'thumbnail' => optional($product->thumbnail)->getUrl('small'),
+                'name' => $product->translateAttribute('name'),
+                'type' => $this->associationType,
+            ];
+        });
+
+        $this->associations = $this->associations->count() ?
+            $this->associations->merge($selectedProducts) :
+            $selectedProducts;
+
+        $this->emit('updatedExistingProductAssociations', $this->associatedProductIds);
+    }
+
+    /**
+     * Open the association browser with a given type.
+     *
+     * @param  string  $type
+     * @return void
+     */
+    public function openAssociationBrowser($type)
+    {
+        $this->associationType = $type;
+        $this->emit('showBrowser', 'product-associations');
+    }
+
+    /**
+     * Remove an association.
+     *
+     * @param  int  $index
+     * @return void
+     */
+    public function removeAssociation($index)
+    {
+        $this->associationsToRemove[] = $this->associations[$index]['id'];
+
+        $this->associations->forget($index);
+    }
+
+    /**
+     * The associated product ids.
+     *
+     * @return void
+     */
+    public function getAssociatedProductIdsProperty()
+    {
+        return collect(
+            $this->associations->map(fn ($assoc) => ['id' => $assoc['target_id']])
+        );
     }
 
     /**
@@ -584,6 +809,20 @@ abstract class AbstractProduct extends Component
                 'title'      => __('adminhub::menu.product.urls'),
                 'id'         => 'urls',
                 'hidden'     => $this->getVariantsCount() > 1,
+                'has_errors' => $this->errorBag->hasAny([
+                ]),
+            ],
+            [
+                'title'      => __('adminhub::menu.product.associations'),
+                'id'         => 'associations',
+                'hidden'     => false,
+                'has_errors' => $this->errorBag->hasAny([
+                ]),
+            ],
+            [
+                'title'      => __('adminhub::menu.product.collections'),
+                'id'         => 'collections',
+                'hidden'     => false,
                 'has_errors' => $this->errorBag->hasAny([
                 ]),
             ],

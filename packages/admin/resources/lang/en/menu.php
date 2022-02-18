@@ -22,7 +22,9 @@ return [
     'product.shipping'          => 'Shipping',
     'product.associations'      => 'Associations',
     'product.urls'              => 'URLs',
+    'product.associations'      => 'Associations',
     'product.identifiers'       => 'Identifiers',
+    'product.collections'       => 'Collections',
     /**
      * Generic menu items.
      */

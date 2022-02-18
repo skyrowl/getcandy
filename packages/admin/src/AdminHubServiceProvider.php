@@ -13,6 +13,7 @@ use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionGroupShow;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionGroupsIndex;
 use GetCandy\Hub\Http\Livewire\Components\Collections\CollectionShow;
 use GetCandy\Hub\Http\Livewire\Components\Collections\SideMenu;
+use GetCandy\Hub\Http\Livewire\Components\CollectionSearch;
 use GetCandy\Hub\Http\Livewire\Components\CurrentStaffName;
 use GetCandy\Hub\Http\Livewire\Components\Customers\CustomerShow;
 use GetCandy\Hub\Http\Livewire\Components\Customers\CustomersIndex;
@@ -85,6 +86,18 @@ class AdminHubServiceProvider extends ServiceProvider
         collect($this->configFiles)->each(function ($config) {
             $this->mergeConfigFrom("{$this->root}/config/$config.php", "getcandy-hub.$config");
         });
+
+        $this->app->singleton(Manifest::class, function () {
+            return new Manifest();
+        });
+
+        $this->app->singleton(MenuRegistry::class, function () {
+            return new MenuRegistry();
+        });
+
+        $this->app->singleton(\GetCandy\Hub\Editing\ProductSection::class, function ($app) {
+            return new \GetCandy\Hub\Editing\ProductSection();
+        });
     }
 
     /**
@@ -130,18 +143,10 @@ class AdminHubServiceProvider extends ServiceProvider
             RouteMatched::class,
             [SetStaffAuthMiddlewareListener::class, 'handle']
         );
-
-        $this->app->singleton(\GetCandy\Hub\Editing\ProductSection::class, function ($app) {
-            return new \GetCandy\Hub\Editing\ProductSection();
-        });
     }
 
     protected function registerMenuBuilder()
     {
-        $this->app->singleton(MenuRegistry::class, function () {
-            return new MenuRegistry();
-        });
-
         SidebarMenu::make();
         SettingsMenu::make();
     }
@@ -178,6 +183,7 @@ class AdminHubServiceProvider extends ServiceProvider
         Livewire::component('hub-license', HubLicense::class);
         Livewire::component('hub.components.activity-log-feed', ActivityLogFeed::class);
         Livewire::component('hub.components.product-search', ProductSearch::class);
+        Livewire::component('hub.components.collection-search', CollectionSearch::class);
         Livewire::component('hub.components.account', Account::class);
         Livewire::component('hub.components.avatar', Avatar::class);
         Livewire::component('hub.components.current-staff-name', CurrentStaffName::class);
@@ -332,12 +338,9 @@ class AdminHubServiceProvider extends ServiceProvider
      */
     protected function registerPermissionManifest()
     {
-        $manifest = new Manifest();
-        $this->app->instance(Manifest::class, $manifest);
-
-        Gate::after(function ($user, $ability) use ($manifest) {
+        Gate::after(function ($user, $ability) {
             // Are we trying to authorize something within the hub?
-            $permission = $manifest->getPermissions()->first(fn ($permission) => $permission->handle === $ability);
+            $permission = $this->app->get(Manifest::class)->getPermissions()->first(fn ($permission) => $permission->handle === $ability);
             if ($permission) {
                 return $user->admin || $user->authorize($ability);
             }
