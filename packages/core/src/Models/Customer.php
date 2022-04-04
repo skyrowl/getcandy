@@ -4,15 +4,35 @@ namespace GetCandy\Models;
 
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\Traits\HasPersonalDetails;
+use GetCandy\Base\Traits\Searchable;
 use GetCandy\Database\Factories\CustomerFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Laravel\Scout\Searchable;
 
 class Customer extends BaseModel
 {
     use HasFactory;
     use HasPersonalDetails;
     use Searchable;
+
+    /**
+     * Define our base filterable attributes.
+     *
+     * @var array
+     */
+    protected $filterable = [
+        'name',
+        'company_name',
+    ];
+
+    /**
+     * Define our base sortable attributes.
+     *
+     * @var array
+     */
+    protected $sortable = [
+        'name',
+        'company_name',
+    ];
 
     /**
      * Define the guarded attributes.
@@ -39,16 +59,20 @@ class Customer extends BaseModel
     }
 
     /**
-     * Returns the indexable data for the customer.
+     * Get the name of the index associated with the model.
      *
-     * @return array
+     * @return string
      */
-    public function toSearchableArray()
+    public function searchableAs()
     {
-        if (config('scout.driver') == 'mysql') {
-            return $this->only(array_keys($this->getAttributes()));
-        }
+        return config('scout.prefix').'customers';
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function getSearchableAttributes()
+    {
         $metaFields = config('getcandy-hub.customers.searchable_meta', []);
 
         $data = [
@@ -59,8 +83,10 @@ class Customer extends BaseModel
         ];
 
         foreach ($metaFields as $field) {
-            $data[$field] = $this->meta?->{$field};
+            $data[$field] = optional($this->meta)->{$field};
         }
+
+        $addresses = $this->addresses->toArray();
 
         return $data;
     }
@@ -103,5 +129,10 @@ class Customer extends BaseModel
     public function addresses()
     {
         return $this->hasMany(Address::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
     }
 }

@@ -3,6 +3,39 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2.0-beta11 - 2022-04-04
+
+## Added
+
+- Added new config option `disable_variants` to `getcandy-hub/products.php`. This is set to `false` by default so variants remain enabled.
+- Added validation message for URLs when editing a product
+- Added `slug` field when creating a new collection and URLs are required.
+- Added ability to save searches on the orders table.
+- Added a new Slot feature so developers can start extending screens within the Hub.
+
+## Fixed
+
+- `wire:model` now correctly references the current property when editing an attribute.
+- Attribute editing validation rules will now take in to account all languages.
+- The `Number` field type will now show the correct input with validation By [@lucasvmds](https://github.com/lucasvmds)
+
+## Changed
+
+- Customer screens have been completely overhauled.
+- Order screens has been completely overhauled.
+- Complete rewrite to the orders table.
+- The way order statuses are defined in `config/getcandy/orders.php` has changed, see upgrade guide for detais.
+
+[View Changes](https://github.com/getcandy/admin/compare/2.0-beta10.1...2.0-beta11)
+
+## 2.0-beta10.1 - 2022-02-19
+
+### Fixed
+
+- Issue with unauthorised messages in the hub.
+
+[View Changes](https://github.com/getcandy/admin/compare/2.0-beta9...2.0-beta10.1)
+
 ## 2.0-beta10 - 2022-02-18
 
 ### Added
@@ -57,7 +90,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - When saving a product it will now be wrapped in a transaction to prevent data corruption on error.
 - Removed dependency on `livewire-ui/modal` package since it was only used in one place. ([#47](https://github.com/getcandy/getcandy/issues/47)).
 - Removed `Basket` model since it's completely redundant.
-- Alpinejs has been updated to v3.
+- Alpine JS has been updated to v3.
 
 ### Added
 
@@ -74,7 +107,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
-- Use Alpinejs `x-on` instead of `@notify` to fix name collision by [@daikazu](https://github.com/daikazu) ([#41])(https://github.com/getcandy/getcandy/issues/41).
+- Use Alpine JS `x-on` instead of `@notify` to fix name collision by [@daikazu](https://github.com/daikazu) ([#41])(https://github.com/getcandy/getcandy/issues/41).
 
 ### Added
 

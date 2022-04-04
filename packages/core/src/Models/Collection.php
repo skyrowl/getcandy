@@ -9,12 +9,13 @@ use GetCandy\Base\Traits\HasCustomerGroups;
 use GetCandy\Base\Traits\HasMedia;
 use GetCandy\Base\Traits\HasTranslations;
 use GetCandy\Base\Traits\HasUrls;
+use GetCandy\Base\Traits\Searchable;
 use GetCandy\Database\Factories\CollectionFactory;
+use GetCandy\FieldTypes\TranslatedText;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Arr;
 use Kalnoy\Nestedset\NodeTrait;
-use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 class Collection extends BaseModel implements SpatieHasMedia
@@ -29,6 +30,22 @@ class Collection extends BaseModel implements SpatieHasMedia
         Searchable {
             NodeTrait::usesSoftDelete insteadof Searchable;
     }
+
+    /**
+     * Define our base filterable attributes.
+     *
+     * @var array
+     */
+    protected $filterable = [];
+
+    /**
+     * Define our base sortable attributes.
+     *
+     * @var array
+     */
+    protected $sortable = [
+        'name',
+    ];
 
     /**
      * Define which attributes should be cast.
@@ -79,18 +96,32 @@ class Collection extends BaseModel implements SpatieHasMedia
     }
 
     /**
-     * Returns the indexable data for the collection.
+     * Get the name of the index associated with the model.
      *
-     * @return array
+     * @return string
      */
-    public function toSearchableArray()
+    public function searchableAs()
+    {
+        return config('scout.prefix').'collections';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSearchableAttributes()
     {
         $attributes = $this->getAttributes();
 
         $data = Arr::except($attributes, 'attribute_data');
 
         foreach ($this->attribute_data ?? [] as $field => $value) {
-            $data[$field] = $this->translateAttribute($field);
+            if ($value instanceof TranslatedText) {
+                foreach ($value->getValue() as $locale => $text) {
+                    $data[$field.'_'.$locale] = $text?->getValue();
+                }
+            } else {
+                $data[$field] = $this->translateAttribute($field);
+            }
         }
 
         return $data;

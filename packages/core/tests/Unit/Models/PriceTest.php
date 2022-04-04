@@ -4,6 +4,8 @@ namespace GetCandy\Tests\Unit\Models;
 
 use GetCandy\DataTypes\Price as DataTypesPrice;
 use GetCandy\Models\Currency;
+use GetCandy\Models\Customer;
+use GetCandy\Models\CustomerGroup;
 use GetCandy\Models\Price;
 use GetCandy\Models\ProductVariant;
 use GetCandy\Tests\TestCase;
@@ -23,7 +25,6 @@ class PriceTest extends TestCase
 
         $currency = Currency::factory()->create([
             'decimal_places' => 2,
-            'format'         => '£{value}',
         ]);
 
         $data = [
@@ -46,7 +47,6 @@ class PriceTest extends TestCase
 
         $currency = Currency::factory()->create([
             'decimal_places' => 2,
-            'format'         => '£{value}',
         ]);
 
         $price = Price::factory()->create([
@@ -65,13 +65,13 @@ class PriceTest extends TestCase
     {
         $variant = ProductVariant::factory()->create();
 
-        $currency = Currency::factory()->create([
+        $currencyGBP = Currency::factory()->create([
             'decimal_places' => 2,
-            'format'         => '£{value}',
+            'code' => 'GBP',
         ]);
 
         $price = Price::factory()->create([
-            'currency_id'    => $currency->id,
+            'currency_id'    => $currencyGBP->id,
             'priceable_id'   => $variant->id,
             'priceable_type' => ProductVariant::class,
             'price'          => 12.99,
@@ -80,15 +80,15 @@ class PriceTest extends TestCase
 
         $this->assertEquals(1299, $price->price->value);
         $this->assertEquals(12.99, $price->price->decimal);
-        $this->assertEquals('£12.99', $price->price->formatted);
+        $this->assertEquals('£12.99', $price->price->formatted('en-gb'));
 
-        $currency = Currency::factory()->create([
+        $currencyUSD = Currency::factory()->create([
             'decimal_places' => 3,
-            'format'         => '£{value}',
+            'code' => 'USD',
         ]);
 
         $price = Price::factory()->create([
-            'currency_id'    => $currency->id,
+            'currency_id'    => $currencyUSD->id,
             'priceable_id'   => $variant->id,
             'priceable_type' => ProductVariant::class,
             'price'          => 12.995,
@@ -97,15 +97,10 @@ class PriceTest extends TestCase
 
         $this->assertEquals(12995, $price->price->value);
         $this->assertEquals(12.995, $price->price->decimal);
-        $this->assertEquals('£12.995', $price->price->formatted);
-
-        $currency = Currency::factory()->create([
-            'decimal_places' => 2,
-            'format'         => '£{value}',
-        ]);
+        $this->assertEquals('$12.995', $price->price->formatted('en-us'));
 
         $price = Price::factory()->create([
-            'currency_id'    => $currency->id,
+            'currency_id'    => $currencyGBP->id,
             'priceable_id'   => $variant->id,
             'priceable_type' => ProductVariant::class,
             'price'          => 1299,
@@ -114,32 +109,27 @@ class PriceTest extends TestCase
 
         $this->assertEquals(1299, $price->price->value);
         $this->assertEquals(12.99, $price->price->decimal);
-        $this->assertEquals('£12.99', $price->price->formatted);
+        $this->assertEquals('£12.99', $price->price->formatted('en-gb'));
 
-        $currency = Currency::factory()->create([
-            'decimal_places' => 2,
-            'format'         => '{value}DK',
+        $currencyEUR = Currency::factory()->create([
+            'decimal_places' => 3,
+            'code'           => 'EUR',
         ]);
 
         $price = Price::factory()->create([
-            'currency_id'    => $currency->id,
+            'currency_id'    => $currencyEUR->id,
             'priceable_id'   => $variant->id,
             'priceable_type' => ProductVariant::class,
-            'price'          => '1,250.95',
+            'price'          => '1,250.950',
             'tier'           => 1,
         ]);
 
-        $this->assertEquals(125095, $price->price->value);
+        $this->assertEquals(1250950, $price->price->value);
         $this->assertEquals(1250.95, $price->price->decimal);
-        $this->assertEquals('1,250.95DK', $price->price->formatted);
-
-        $currency = Currency::factory()->create([
-            'decimal_places' => 3,
-            'format'         => '£{value}',
-        ]);
+        $this->assertEquals('€1,250.950', $price->price->formatted('en_gb'));
 
         $price = Price::factory()->create([
-            'currency_id'    => $currency->id,
+            'currency_id'    => $currencyEUR->id,
             'priceable_id'   => $variant->id,
             'priceable_type' => ProductVariant::class,
             'price'          => '1,250.955',
@@ -148,7 +138,7 @@ class PriceTest extends TestCase
 
         $this->assertEquals(1250955, $price->price->value);
         $this->assertEquals(1250.955, $price->price->decimal);
-        $this->assertEquals('£1,250.955', $price->price->formatted);
+        $this->assertEquals('€1,250.955', $price->price->formatted('en_gb'));
     }
 
     /** @test */
@@ -158,7 +148,7 @@ class PriceTest extends TestCase
 
         $currency = Currency::factory()->create([
             'decimal_places' => 2,
-            'format'         => '£{value}',
+            'code'           => 'GBP',
         ]);
 
         $price = Price::factory()->create([
@@ -174,6 +164,80 @@ class PriceTest extends TestCase
 
         $this->assertEquals(1399, $price->compare_price->value);
         $this->assertEquals(13.99, $price->compare_price->decimal);
-        $this->assertEquals('£13.99', $price->compare_price->formatted);
+        $this->assertEquals('£13.99', $price->compare_price->formatted('en_gb'));
+    }
+
+    /** @test */
+    public function can_get_a_price()
+    {
+        $variant = ProductVariant::factory()->create();
+
+        $currencyUSD = Currency::factory()->create([
+            'code'           => 'USD',
+            'decimal_places' => 2,
+            'default'        => true,
+        ]);
+
+        $currencyGBP = Currency::factory()->create([
+            'code'           => 'GBP',
+            'decimal_places' => 2,
+            'default'        => false,
+        ]);
+
+        $customerGroup = CustomerGroup::factory()->make();
+        $customerGroup->save();
+
+        Price::factory()->create([
+            'currency_id'    => $currencyUSD->id,
+            'priceable_id'   => $variant->id,
+            'priceable_type' => ProductVariant::class,
+            'price'          => 123,
+            'tier'           => 1,
+        ]);
+
+        Price::factory()->create([
+            'currency_id'    => $currencyGBP->id,
+            'priceable_id'   => $variant->id,
+            'priceable_type' => ProductVariant::class,
+            'price'          => 99,
+            'tier'           => 1,
+        ]);
+
+        Price::factory()->create([
+            'currency_id'    => $currencyUSD->id,
+            'priceable_id'   => $variant->id,
+            'priceable_type' => ProductVariant::class,
+            'price'          => 101,
+            'tier'           => 5,
+        ]);
+
+        Price::factory()->create([
+            'currency_id'    => $currencyUSD->id,
+            'customer_group_id' => $customerGroup->id,
+            'priceable_id'   => $variant->id,
+            'priceable_type' => ProductVariant::class,
+            'price'          => 75,
+            'tier'           => 1,
+        ]);
+
+        // Check we get the default currency price
+        $price = $variant->pricing()->get();
+        $this->assertEquals(1.23, $price->matched->price->decimal);
+
+        // Check we get a tier price
+        $price = $variant->pricing()->qty(6)->guest()->get();
+        $this->assertEquals(1.01, $price->matched->price->decimal);
+
+        // Check we get a price for GBP
+        $price = $variant->pricing()->qty(6)->currency($currencyGBP)->get();
+        $this->assertEquals(0.99, $price->matched->price->decimal);
+
+        // Check we get a price for a customer group
+        $price = $variant->pricing()
+            ->qty(1)
+            ->currency(null)
+            ->customerGroup($customerGroup)
+            ->get();
+        $this->assertEquals(0.75, $price->matched->price->decimal);
     }
 }

@@ -5,14 +5,39 @@ namespace GetCandy\Models;
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\Casts\Price;
 use GetCandy\Base\Casts\TaxBreakdown;
+use GetCandy\Base\Traits\LogsActivity;
+use GetCandy\Base\Traits\Searchable;
 use GetCandy\Database\Factories\OrderFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Laravel\Scout\Searchable;
 
 class Order extends BaseModel
 {
-    use HasFactory;
-    use Searchable;
+    use HasFactory,
+        Searchable,
+        LogsActivity;
+
+    /**
+     * Define our base filterable attributes.
+     *
+     * @var array
+     */
+    protected $filterable = [
+        '__soft_deleted',
+        'status',
+        'created_at',
+        'placed_at',
+    ];
+
+    /**
+     * Define our base sortable attributes.
+     *
+     * @var array
+     */
+    protected $sortable = [
+        'created_at',
+        'placed_at',
+        'total',
+    ];
 
     /**
      * {@inheritDoc}
@@ -25,6 +50,7 @@ class Order extends BaseModel
         'discount_total' => Price::class,
         'tax_total'      => Price::class,
         'total'          => Price::class,
+        'shipping_total' => Price::class,
     ];
 
     /**
@@ -43,6 +69,16 @@ class Order extends BaseModel
     }
 
     /**
+     * Get the name of the index associated with the model.
+     *
+     * @return string
+     */
+    public function searchableAs()
+    {
+        return config('scout.prefix').'orders';
+    }
+
+    /**
      * Getter for status label.
      *
      * @return string
@@ -51,7 +87,17 @@ class Order extends BaseModel
     {
         $statuses = config('getcandy.orders.statuses');
 
-        return $statuses[$this->status] ?? $this->status;
+        return $statuses[$this->status]['label'] ?? $this->status;
+    }
+
+    /**
+     * Return the channel relationship.
+     *
+     * @return void
+     */
+    public function channel()
+    {
+        return $this->belongsTo(Channel::class);
     }
 
     /**
@@ -159,9 +205,19 @@ class Order extends BaseModel
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function charges()
+    public function captures()
     {
-        return $this->transactions()->whereRefund(false);
+        return $this->transactions()->whereType('capture');
+    }
+
+    /**
+     * Return the charges relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function intents()
+    {
+        return $this->transactions()->whereType('intent');
     }
 
     /**
@@ -171,7 +227,7 @@ class Order extends BaseModel
      */
     public function refunds()
     {
-        return $this->transactions()->whereRefund(true);
+        return $this->transactions()->whereType('refund');
     }
 
     /**
@@ -197,32 +253,26 @@ class Order extends BaseModel
     }
 
     /**
-     * Returns the indexable data for the order.
-     *
-     * @return array
+     * {@inheritDoc}
      */
-    public function toSearchableArray()
+    protected function getSearchableAttributes()
     {
-        if (config('scout.driver') == 'mysql') {
-            return $this->only(array_keys($this->getAttributes()));
-        }
-
-        return [
+        $data = [
             'id'        => $this->id,
+            'channel'    => $this->channel->name,
             'reference' => $this->reference,
+            'customer_reference' => $this->customer_reference,
             'status'    => $this->status,
+            'placed_at' => optional($this->placed_at)->timestamp,
+            'created_at' => $this->created_at->timestamp,
+            'sub_total' => $this->sub_total->value,
+            'total'     => $this->total->value,
+            'currency_code'  => $this->currency_code,
             'charges'   => $this->transactions->map(function ($transaction) {
                 return [
                     'reference' => $transaction->reference,
                 ];
             }),
-            'addresses' => $this->addresses->map(function ($address) {
-                return [
-                    'postcode'   => $address->postcode,
-                    'first_name' => $address->first_name,
-                    'last_name'  => $address->last_name,
-                ];
-            })->toArray(),
             'currency' => $this->currency_code,
             'lines'    => $this->productLines->map(function ($line) {
                 return [
@@ -231,5 +281,29 @@ class Order extends BaseModel
                 ];
             })->toArray(),
         ];
+
+        foreach ($this->addresses as $address) {
+            $fields = [
+                'first_name',
+                'last_name',
+                'company_name',
+                'line_one',
+                'line_two',
+                'line_three',
+                'city',
+                'state',
+                'postcode',
+                'contact_email',
+                'contact_phone',
+            ];
+
+            foreach ($fields as $field) {
+                $data["{$address->type}_{$field}"] = $address->getAttribute($field);
+            }
+
+            $data["{$address->type}_country"] = optional($address->country)->name;
+        }
+
+        return $data;
     }
 }

@@ -8,6 +8,9 @@ use GetCandy\Base\DataTransferObjects\TaxBreakdown;
 use GetCandy\Base\Purchasable;
 use GetCandy\DataTypes\Price;
 use GetCandy\Exceptions\CartLineIdMismatchException;
+use GetCandy\Exceptions\Carts\BillingAddressIncompleteException;
+use GetCandy\Exceptions\Carts\BillingAddressMissingException;
+use GetCandy\Exceptions\Carts\OrderExistsException;
 use GetCandy\Exceptions\InvalidCartLineQuantityException;
 use GetCandy\Exceptions\MaximumCartLineQuantityException;
 use GetCandy\Managers\CartManager;
@@ -17,6 +20,7 @@ use GetCandy\Models\CartLine;
 use GetCandy\Models\Channel;
 use GetCandy\Models\Currency;
 use GetCandy\Models\CustomerGroup;
+use GetCandy\Models\Order;
 use GetCandy\Models\Price as PriceModel;
 use GetCandy\Models\ProductVariant;
 use GetCandy\Models\TaxClass;
@@ -535,6 +539,46 @@ class CartManagerTest extends TestCase
     }
 
     /** @test */
+    public function can_clear_a_cart()
+    {
+        $currency = Currency::factory()->create();
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+        ]);
+
+        $purchasableA = ProductVariant::factory()->create();
+        $purchasableB = ProductVariant::factory()->create();
+
+        PriceModel::factory()->create([
+            'price'          => 100,
+            'tier'           => 1,
+            'currency_id'    => $currency->id,
+            'priceable_type' => get_class($purchasableA),
+            'priceable_id'   => $purchasableA->id,
+        ]);
+
+        PriceModel::factory()->create([
+            'price'          => 100,
+            'tier'           => 1,
+            'currency_id'    => $currency->id,
+            'priceable_type' => get_class($purchasableB),
+            'priceable_id'   => $purchasableB->id,
+        ]);
+
+        $cart->lines()->createMany([
+            ['quantity' => 1, 'purchasable_type' => ProductVariant::class, 'purchasable_id' => $purchasableA->id],
+            ['quantity' => 2, 'purchasable_type' => ProductVariant::class, 'purchasable_id' => $purchasableB->id],
+        ]);
+
+        $this->assertCount(2, $cart->refresh()->lines);
+
+        $cart->getManager()->clear();
+
+        $this->assertCount(0, $cart->refresh()->lines);
+    }
+
+    /** @test */
     public function cannot_remove_cart_line_from_another_cart()
     {
         $currency = Currency::factory()->create();
@@ -746,5 +790,111 @@ class CartManagerTest extends TestCase
 
         $this->assertInstanceOf(TaxBreakdown::class, $line->taxBreakdown);
         $this->assertCount(1, $line->taxBreakdown->amounts);
+    }
+
+    /**
+     * @test
+     */
+    public function can_create_order()
+    {
+        $currency = Currency::factory()->create([
+            'default' => true,
+        ]);
+
+        $channel = Channel::factory()->create([
+            'default' => true,
+        ]);
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+        ]);
+
+        $shipping = CartAddress::factory()->create([
+            'cart_id' => $cart->id,
+            'type' => 'shipping',
+        ]);
+
+        $billing = CartAddress::factory()->create([
+            'cart_id' => $cart->id,
+            'type' => 'billing',
+        ]);
+
+        $cart->getManager()->setShippingAddress($shipping);
+        $cart->getManager()->setBillingAddress($billing);
+
+        $order = $cart->getManager()->createOrder();
+
+        $this->assertInstanceOf(Order::class, $order);
+        $this->assertEquals($cart->order_id, $order->id);
+    }
+
+    /**
+     * @test
+     */
+    public function cant_create_order_from_incomplete_cart()
+    {
+        $currency = Currency::factory()->create([
+            'default' => true,
+        ]);
+
+        $channel = Channel::factory()->create([
+            'default' => true,
+        ]);
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+        ]);
+
+        $this->expectException(BillingAddressMissingException::class);
+
+        $cart->getManager()->createOrder();
+
+        Cart::create([
+            'cart_id' => $cart->id,
+            'postcode' => 'foobar',
+            'type' => 'billing',
+        ]);
+
+        $this->expectException(BillingAddressIncompleteException::class);
+
+        $cart->getManager()->createOrder();
+    }
+
+    /**
+     * @test
+     */
+    public function cant_create_order_for_cart_with_existing_order()
+    {
+        $currency = Currency::factory()->create([
+            'default' => true,
+        ]);
+
+        $channel = Channel::factory()->create([
+            'default' => true,
+        ]);
+
+        $order = Order::factory()->create();
+
+        $cart = Cart::factory()->create([
+            'currency_id' => $currency->id,
+            'channel_id' => $channel->id,
+            'order_id' => $order->id,
+        ]);
+
+        CartAddress::factory()->create([
+            'cart_id' => $cart->id,
+            'type' => 'shipping',
+        ]);
+
+        CartAddress::factory()->create([
+            'cart_id' => $cart->id,
+            'type' => 'billing',
+        ]);
+
+        $this->expectException(OrderExistsException::class);
+
+        $cart->getManager()->createOrder();
     }
 }

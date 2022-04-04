@@ -11,14 +11,15 @@ use GetCandy\Base\Traits\HasTags;
 use GetCandy\Base\Traits\HasTranslations;
 use GetCandy\Base\Traits\HasUrls;
 use GetCandy\Base\Traits\LogsActivity;
+use GetCandy\Base\Traits\Searchable;
 use GetCandy\Database\Factories\ProductFactory;
+use GetCandy\FieldTypes\TranslatedText;
 use GetCandy\Jobs\Products\Associations\Associate;
 use GetCandy\Jobs\Products\Associations\Dissociate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
-use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
 
 class Product extends BaseModel implements SpatieHasMedia
@@ -35,13 +36,39 @@ class Product extends BaseModel implements SpatieHasMedia
     use SoftDeletes;
 
     /**
+     * Define our base filterable attributes.
+     *
+     * @var array
+     */
+    protected $filterable = [
+        '__soft_deleted',
+        'skus',
+        'brand',
+        'status',
+    ];
+
+    /**
+     * Define our base sortable attributes.
+     *
+     * @var array
+     */
+    protected $sortable = [
+        'name',
+        'created_at',
+        'updated_at',
+        'brand',
+        'skus',
+        'status',
+    ];
+
+    /**
      * Get the name of the index associated with the model.
      *
      * @return string
      */
     public function searchableAs()
     {
-        return config('scout.prefix').'products_'.app()->getLocale();
+        return config('scout.prefix').'products';
     }
 
     /**
@@ -164,22 +191,22 @@ class Product extends BaseModel implements SpatieHasMedia
     }
 
     /**
-     * Returns the indexable data for the product.
-     *
-     * @return array
+     * {@inheritDoc}
      */
-    public function toSearchableArray()
+    public function getSearchableAttributes()
     {
-        if (config('scout.driver') == 'mysql') {
-            return $this->only(array_keys($this->getAttributes()));
-        }
-
         $attributes = $this->getAttributes();
 
         $data = Arr::except($attributes, 'attribute_data');
 
         foreach ($this->attribute_data ?? [] as $field => $value) {
-            $data[$field] = $this->translateAttribute($field);
+            if ($value instanceof TranslatedText) {
+                foreach ($value->getValue() as $locale => $text) {
+                    $data[$field.'_'.$locale] = $text?->getValue();
+                }
+            } else {
+                $data[$field] = $this->translateAttribute($field);
+            }
         }
 
         if ($this->thumbnail) {

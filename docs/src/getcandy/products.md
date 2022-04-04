@@ -85,7 +85,7 @@ If you decide to delete an attribute, this will cause the association to be drop
 :::
 
 ### Retrieving the product type relationship
-If you have a product, you can fetch it's product like like so:
+If you have a product, you can fetch its product type like like so:
 
 ```php
 $product->productType;
@@ -95,7 +95,7 @@ $product->load(['productType']);
 
 ##  Product Identifiers
 
-You can choose to add product idenfitiers to each product variant. These are fields which, as the name suggests, allow you to identify a product and it's variants for use in your internal systems. You can choose whether these are required and unique in the hub whilst editing.
+You can choose to add product identifiers to each product variant. These are fields which, as the name suggests, allow you to identify a product and it's variants for use in your internal systems. You can choose whether these are required and unique in the hub whilst editing.
 
 ### Available fields
 
@@ -303,9 +303,23 @@ You will need to determine what variants you need to create and assign the corre
 
 For example, lets say we have an option "Colour" and we want to create "Blue" and "Red" variants.
 
-Create the product.
+::: tip
+A product variant will require a product, currency and a tax class.
+If you do not have these entities created, you will need to do so before continuing.
+:::
+
+If needed, Create the product and tax class.
 ```php
 $product = Product::create([...]);
+$taxClass = TaxClass::create([...]);
+$currency = Currency::create([...]);
+```
+
+Otherwise, fetch them.
+```php
+$product = Product::where(...)->first();
+$taxClass = TaxClass::where(...)->first();
+$currency = Currency::where(...)->first();
 ```
 
 Then we need to create our base option and it's values.
@@ -330,7 +344,7 @@ $redOption = $option->values()->create([
 ]);
 ```
 
-From here we create our variants and attach the option id.
+From here we create our variant, associate it with a product and a tax class, then attach the option id.
 
 ```php
 $blueVariant = ProductVariant::create([
@@ -340,10 +354,20 @@ $blueVariant = ProductVariant::create([
 $blueVariant->values()->attach($blueOption);
 
 $redVariant = ProductVariant::create([
+    'product_id' => $product->id,
+    'tax_class_id' => $taxClass->id,
     'sku' => 'red-product',
 ]);
 
 $redVariant->values()->attach($redOption);
+```
+
+Now, we need to create a price for our variant. This is where we use our *currency* created or fetched earlier.
+```php
+$variant->prices()->create([
+    'price' => 199,
+    'currency_id' => $currency->id,
+]);
 ```
 
 ### Exceptions
@@ -402,6 +426,13 @@ You can get the full formatted value for the price, this is based on the currenc
 $price->price->formatted // £1.99
 ```
 
+The formatted price uses the native PHP [NumberFormatter](https://www.php.net/manual/en/class.numberformatter.php). If you wish to specify a locale or formatting style you can, see the examples below.
+
+```php
+$price->price->formatted('fr') // 1,99 £GB
+$price->price->formatted('en-gb', \NumberFormatter::SPELLOUT) // one point nine nine.
+```
+
 ### Base Pricing
 
 Pricing is defined on a variant level, meaning you will have a different price for each variant and also for each currency in the system. In order to add pricing to a variant, you can either create the model directly or use the relationship method.
@@ -423,7 +454,7 @@ Pricing is defined on a variant level, meaning you will have a different price f
 $variant->prices()->create([/* .. */]);
 ```
 
-### Cutomer group pricing
+### Customer group pricing
 
 You can specify which customer group the price applies to by setting the `customer_group_id` column. If left as `null` the price will apply to all customer groups. This is useful if you want to have different pricing for certain customer groups and also different price tiers per customer group.
 
@@ -460,12 +491,12 @@ To get the pricing for a product you can simple use the following helpers:
 A quantity of 1 is implied when not passed.
 
 ```php
-$pricing = \GetCandy\Facades\Pricing::for($variant);
+$pricing = \GetCandy\Facades\Pricing::for($variant)->get();
 ```
 
 #### With Quantities
 ```php
-$pricing = \GetCandy\Facades\Pricing::qty(5)->for($variant);
+$pricing = \GetCandy\Facades\Pricing::qty(5)->for($variant)->get();
 ```
 
 #### With Customer Groups
@@ -473,15 +504,25 @@ $pricing = \GetCandy\Facades\Pricing::qty(5)->for($variant);
 If you don't pass in a customer group, GetCandy will use the default, including any pricing that isn't specific to a customer group.
 
 ```php
-$pricing = \GetCandy\Facades\Pricing::customerGroups($groups)->for($variant);
+$pricing = \GetCandy\Facades\Pricing::customerGroups($groups)->for($variant)->get();
 
 // Or a single customer group
-$pricing = \GetCandy\Facades\Pricing::customerGroup($group)->for($variant);
+$pricing = \GetCandy\Facades\Pricing::customerGroup($group)->for($variant)->get();
 ```
 
 #### Specific to a user
+The PricingManager assumes you want the price for the current authenticated user.
+
+If you want to always return the guest price, you may use...
+
 ```php
-$pricing = \GetCandy\Facades\Pricing::user($user)->for($variant);
+$pricing = \GetCandy\Facades\Pricing::guest()->for($variant)->get();
+```
+
+Or to specify a different user...
+
+```php
+$pricing = \GetCandy\Facades\Pricing::user($user)->for($variant)->get();
 ```
 
 #### With a specific currency
@@ -489,7 +530,14 @@ $pricing = \GetCandy\Facades\Pricing::user($user)->for($variant);
 If you don't pass in a currency, the default is implied.
 
 ```php
-$pricing = \GetCandy\Facades\Pricing::currency($currency)->for($variant);
+$pricing = \GetCandy\Facades\Pricing::currency($currency)->for($variant)->get();
+```
+
+#### For a model
+Assuming you have a model that implements the `hasPrices` trait, such as a `ProductVariant`, you can use the following to retrieve pricing.
+
+```php
+$pricing = $variant->pricing()->qty(5)->get();
 ```
 
 ::: danger Be aware
@@ -544,7 +592,7 @@ $productType = GetCandy\Models\ProductType::create([
 ```
 
 ::: tip Note
-This example assumes we already for Attributes set up for name and description and that they're assigned to the product type.
+This example assumes we already have Attributes set up for name and description and that they're assigned to the product type.
 :::
 
 ### Create the initial product

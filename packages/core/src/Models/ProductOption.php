@@ -5,9 +5,9 @@ namespace GetCandy\Models;
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\Traits\HasMedia;
 use GetCandy\Base\Traits\HasTranslations;
+use GetCandy\Base\Traits\Searchable;
 use GetCandy\Database\Factories\ProductOptionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Laravel\Scout\Searchable;
 
 class ProductOption extends BaseModel
 {
@@ -17,13 +17,29 @@ class ProductOption extends BaseModel
     use Searchable;
 
     /**
+     * Define our base filterable attributes.
+     *
+     * @var array
+     */
+    protected $filterable = [];
+
+    /**
+     * Define our base sortable attributes.
+     *
+     * @var array
+     */
+    protected $sortable = [
+        'name',
+    ];
+
+    /**
      * Get the name of the index associated with the model.
      *
      * @return string
      */
     public function searchableAs()
     {
-        return config('scout.prefix').'product_options_'.app()->getLocale();
+        return config('scout.prefix').'product_options';
     }
 
     /**
@@ -60,22 +76,25 @@ class ProductOption extends BaseModel
     }
 
     /**
-     * Returns the indexable data for the product option.
-     *
-     * @return array
+     * {@inheritDoc}
      */
-    public function toSearchableArray()
+    public function getSearchableAttributes()
     {
-        if (config('scout.driver') == 'mysql') {
-            return $this->only(array_keys($this->getAttributes()));
+        $data['id'] = $this->id;
+
+        // Loop for add option name
+        foreach ($this->name as $locale => $name) {
+            $data['name_'.$locale] = $name;
         }
 
-        return [
-            'id'      => $this->id,
-            'name'    => $this->translate('name'),
-            'options' => $this->values->map(function ($option) {
-                return $option->translate('name');
-            })->toArray(),
-        ];
+        // Loop for add options
+        foreach ($this->values as $option) {
+            foreach ($option->name as $locale => $name) {
+                $key = 'option_'.$option->id.'_'.$locale;
+                $data[$key] = $name;
+            }
+        }
+
+        return $data;
     }
 }
