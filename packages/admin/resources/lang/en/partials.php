@@ -18,16 +18,6 @@ return [
     'products.associations.add_association' => 'Add association',
     'products.associations.up-sell_selecting_products' => 'Add Up-sell products by searching above and selecting products.',
     /**
-     * Associations.
-     */
-    'products.associations.heading' => 'Associations',
-    'products.associations.cross-sell' => 'Cross Sell',
-    'products.associations.up-sell' => 'Up Sell',
-    'products.associations.alternate' => 'Alternate',
-    'products.associations.show_inverse' => 'Show inverse',
-    'products.associations.add_inverse' => 'Add inverse association',
-    'products.associations.add_association' => 'Add association',
-    /**
      * Availability.
      */
     'availability.heading'                                               => 'Availability',
@@ -88,11 +78,6 @@ return [
     'image-manager.no_results'                       => 'No images exist for this product, add your first image above.',
     'image-manager.upload_file'                      => 'Upload a file or drag and drop',
     'image-manager.file_format'                      => 'PNG, JPG, GIF up to 10MB',
-    /**
-     * Product Collections.
-     */
-    'products.collections.heading'                  => 'Collections',
-    'products.collections.view_collection'          => 'View Collection',
     /**
      * Product Collections.
      */
