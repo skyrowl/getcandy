@@ -131,6 +131,19 @@ class ProductVariant extends BaseModel implements SpatieHasMedia, Purchasable
     }
 
     /**
+     * Return if the variant is purchasable.
+     *
+     * @return bool
+     */
+    public function isPurchasable()
+    {
+        return
+            $this->purchasable === 'always'
+                || ($this->purchasable === 'backorder' && $this->backorder > 0)
+                || ($this->purchasable === 'stock' && $this->stock > 0);
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getDescription()

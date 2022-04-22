@@ -238,4 +238,16 @@ class Product extends BaseModel implements SpatieHasMedia
             'ends_at',
         ])->withTimestamps();
     }
+
+    /**
+     * Return available variants.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAvailableVariants()
+    {
+        return $this->variants->filter(function ($variant) {
+            return $variant->isPurchasable();
+        });
+    }
 }
