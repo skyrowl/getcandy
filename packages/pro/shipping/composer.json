@@ -1,0 +1,44 @@
+{
+  "name": "getcandy/pro-shipping",
+  "description": "GetCandy Pro Shipping Addon",
+  "keywords": ["getcandy", "laravel", "ecommerce", "e-commerce", "headless", "store", "shop", "cart"],
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+      {
+        "name": "GetCandy",
+        "homepage": "https://getcandy.io/"
+      }
+  ],
+  "autoload": {
+      "psr-4": {
+          "GetCandy\\Shipping\\": "src",
+          "GetCandy\\Shipping\\Database\\Factories\\": "database/factories",
+          "GetCandy\\Shipping\\Database\\Seeders\\": "database/seeders",
+          "GetCandy\\Shipping\\Database\\State\\": "database/state"
+      }
+  },
+  "autoload-dev": {
+      "psr-4": {
+          "GetCandy\\Tests\\": "tests"
+      }
+  },
+  "extra": {
+      "getcandy": {
+        "name": "Shipping"
+      },
+      "laravel": {
+          "providers": [
+              "GetCandy\\Shipping\\ShippingServiceProvider"
+          ]
+      }
+  },
+  "require": {
+      "php": "^8.0",
+      "getcandy/admin": "*"
+  },
+  "require-dev": {
+      "orchestra/testbench": "^6.0|^7.0",
+      "phpunit/phpunit": "^9.5"
+  }
+}
