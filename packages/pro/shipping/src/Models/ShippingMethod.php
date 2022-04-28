@@ -20,6 +20,10 @@ class ShippingMethod extends BaseModel
      */
     protected $guarded = [];
 
+    protected $casts = [
+        'data' => 'object',
+    ];
+
     /**
      * Return a new factory instance for the model.
      *

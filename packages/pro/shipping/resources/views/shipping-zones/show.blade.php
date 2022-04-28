@@ -12,22 +12,35 @@
         </header>
 
         <div class="space-y-4">
-          <div class="flex items-center justify-between pb-4 border-b">
-            <div class="grow">
-              <strong>Free Shipping</strong>
-              <p class="text-sm text-gray-500">Enable free shipping on your checkout</p>
-            </div>
+          @foreach($this->shippingMethods as $key => $method)
+            <div class="flex items-center justify-between pb-4 border-b" wire:key="{{ $key }}">
+              <div class="grow">
+                <strong>{{ $method['name'] }}</strong>
+                <p class="text-sm text-gray-500">{{ $method['description'] }}</p>
+              </div>
 
-            <div class="ml-4">
-              <x-hub::input.toggle :on="true" />
-            </div>
+              <div class="ml-4">
+                <x-hub::input.toggle :on="$method['enabled']" wire:click="toggleMethod('{{ $key }}')" />
+              </div>
 
-            <div class="ml-4">
-              <x-hub::button wire:click="$set('showFreeShipping', true)">Edit</x-hub::button>
-            </div>
-          </div>
+              @if($method['method'] && $method['method']->enabled)
+                <div class="ml-4">
+                  <x-hub::button wire:click="$set('methodToEdit', '{{ $key }}')">Edit</x-hub::button>
+                </div>
+              @endif
 
-          <div class="flex items-center justify-between pb-4 border-b">
+              <div @if($methodToEdit != $key) class="hidden" @endif>
+                <x-hub::slideover title="Free Shipping" wire:model="methodToEdit">
+                  @livewire($method['component'], [
+                    'shippingMethod' => $method['method'],
+                    'shippingZone' => $shippingZone,
+                  ], key('shipping_method_'.$key))
+                </x-hub::slideover>
+              </div>
+            </div>
+          @endforeach
+
+          {{-- <div class="flex items-center justify-between pb-4 border-b">
             <div class="grow">
               <strong>Flat Rate</strong>
               <p class="text-sm text-gray-500">Charge a fixed shipping cost per order or per item.</p>
@@ -66,13 +79,13 @@
             <div class="ml-4">
               <x-hub::input.toggle :on="false" />
             </div>
-          </div>
+          </div> --}}
         </div>
       </div>
     </div>
   </div>
 
-  @include('shipping::partials.ship-by-total')
+  {{-- @include('shipping::partials.ship-by-total')
   @include('shipping::partials.free-shipping')
-  @include('shipping::partials.flat-rate')
+  @include('shipping::partials.flat-rate') --}}
 </div>

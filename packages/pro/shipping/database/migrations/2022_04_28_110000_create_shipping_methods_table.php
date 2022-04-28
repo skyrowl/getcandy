@@ -15,7 +15,8 @@ class CreateShippingMethodsTable extends Migration
             );
             $table->string('name');
             $table->text('description')->nullable();
-            $table->string('code')->unique();
+            $table->string('code')->unique()->nullable();
+            $table->boolean('enabled')->default(true);
             $table->json('data')->nullable();
             $table->string('driver');
             $table->timestamps();

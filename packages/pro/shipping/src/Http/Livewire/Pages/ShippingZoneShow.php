@@ -10,6 +10,15 @@ class ShippingZoneShow extends AbstractShippingZone
 {
     use Notifies;
 
+    public $methodToEdit = 'free-shipping';
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $listeners = [
+        'shippingMethodUpdated',
+    ];
+
     /**
      * {@inheritDoc}
      */
@@ -41,18 +50,56 @@ class ShippingZoneShow extends AbstractShippingZone
         //     $zone->shippingMethods->first()->driver()
         // );
 
-        dd($this->shippingMethods);
+        // dd($this->shippingMethods);
     }
 
     public function getShippingMethodsProperty()
     {
-        return Shipping::getSupportedDrivers()->map(function ($driver) {
+        $methods = $this->shippingZone->shippingMethods;
+
+        return Shipping::getSupportedDrivers()->map(function ($driver, $key) use ($methods) {
+            $method = $methods->first(fn($method) => $method->driver == $key);
+
             return [
                 'name' => $driver->name(),
                 'description' => $driver->description(),
                 'component' => $driver->component(),
+                'method' => $method,
+                'enabled' => $method->enabled ?? false,
             ];
         });
+    }
+
+    public function toggleMethod($key)
+    {
+        $map = $this->shippingMethods[$key];
+
+        if ($map['method']) {
+            $map['method']->update([
+                'enabled' => !$map['enabled'],
+            ]);
+            $map['method']->refresh();
+            return;
+        }
+
+        $this->shippingZone->shippingMethods()->create([
+            'name' => $map['name'],
+            'description' => $map['description'],
+            'enabled' => true,
+            'driver' => $key,
+        ]);
+
+        $this->refresh();
+    }
+
+    /**
+     * Handle the shipping method being saved.
+     *
+     * @return void
+     */
+    public function shippingMethodUpdated()
+    {
+        $this->methodToEdit = null;
     }
 
     /**
