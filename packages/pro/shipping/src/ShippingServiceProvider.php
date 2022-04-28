@@ -86,12 +86,20 @@ class ShippingServiceProvider extends ServiceProvider
         // ], 'getcandy.opayo.public');
 
         // // Register the stripe payment component.
-        Livewire::component('get-candy.shipping.http.livewire.pages.shipping-index', ShippingIndex::class);
-        Livewire::component('get-candy.shipping.http.livewire.pages.shipping-zone-show', ShippingZoneShow::class);
-        Livewire::component('get-candy.shipping.http.livewire.pages.shipping-zone-create', ShippingZoneCreate::class);
 
-        Livewire::component((new FreeShipping)->getName(), FreeShipping::class);
+        $components = [
+            // Pages
+            ShippingIndex::class,
+            ShippingZoneShow::class,
+            ShippingZoneCreate::class,
 
+            // Shipping Methods
+            FreeShipping::class,
+        ];
+
+        foreach ($components as $component) {
+            Livewire::component((new $component)->getName(), $component);
+        }
 
         $this->app->bind(ShippingMethodManagerInterface::class, function ($app) {
             return $app->make(ShippingManager::class);
