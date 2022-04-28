@@ -82,8 +82,8 @@ abstract class AbstractShippingMethod extends Component
     public function mount()
     {
         $this->data = array_merge(
+            $this->defaultData(),
             (array) $this->shippingMethod->data,
-            $this->data
         );
     }
 
