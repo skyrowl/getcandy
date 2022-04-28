@@ -2,10 +2,13 @@
 
 namespace GetCandy\Shipping\Http\Livewire\Components\ShippingMethods;
 
+use GetCandy\Shipping\Traits\ExcludesProducts;
 use Livewire\Component;
 
 class FreeShipping extends AbstractShippingMethod
 {
+    use ExcludesProducts;
+
     /**
      * {@inheritDoc}
      */

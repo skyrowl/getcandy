@@ -53,4 +53,14 @@ class ShippingMethod extends BaseModel
     {
         return Shipping::driver($this->driver);
     }
+
+    /**
+     * Return the shipping exclusions property.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function shippingExclusions()
+    {
+        return $this->hasMany(ShippingExclusion::class);
+    }
 }
