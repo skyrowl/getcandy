@@ -3,7 +3,9 @@
 namespace GetCandy\Shipping\Models;
 
 use GetCandy\Base\BaseModel;
+use GetCandy\Shipping\Facades\Shipping;
 use GetCandy\Shipping\Factories\ShippingZoneFactory;
+use GetCandy\Shipping\Interfaces\ShippingMethodInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ShippingMethod extends BaseModel
@@ -36,5 +38,15 @@ class ShippingMethod extends BaseModel
     public function shippingZone()
     {
         return $this->belongsTo(ShippingZone::class);
+    }
+
+    /**
+     * Return the shipping method driver.
+     *
+     * @return \GetCandy\Shipping\Interfaces\ShippingMethodInterface
+     */
+    public function driver(): ShippingMethodInterface
+    {
+        return Shipping::driver($this->driver);
     }
 }

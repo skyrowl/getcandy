@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Shipping\Http\Livewire\Pages;
+namespace GetCandy\Shipping\Http\Livewire\Components\ShippingMethods;
 
 use GetCandy\Shipping\Models\ShippingMethod;
 use GetCandy\Shipping\Models\ShippingZone;

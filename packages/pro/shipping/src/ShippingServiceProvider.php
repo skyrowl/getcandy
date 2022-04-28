@@ -3,9 +3,11 @@
 namespace GetCandy\Shipping;
 
 use GetCandy\Hub\Facades\Menu;
+use GetCandy\Shipping\Managers\ShippingManager;
 use GetCandy\Shipping\Http\Livewire\Pages\ShippingIndex;
 use GetCandy\Shipping\Http\Livewire\Pages\ShippingZoneCreate;
 use GetCandy\Shipping\Http\Livewire\Pages\ShippingZoneShow;
+use GetCandy\Shipping\Interfaces\ShippingMethodManagerInterface;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 
@@ -86,5 +88,10 @@ class ShippingServiceProvider extends ServiceProvider
         Livewire::component('get-candy.shipping.http.livewire.pages.shipping-index', ShippingIndex::class);
         Livewire::component('get-candy.shipping.http.livewire.pages.shipping-zone-show', ShippingZoneShow::class);
         Livewire::component('get-candy.shipping.http.livewire.pages.shipping-zone-create', ShippingZoneCreate::class);
+
+
+        $this->app->bind(ShippingMethodManagerInterface::class, function ($app) {
+            return $app->make(ShippingManager::class);
+        });
     }
 }
