@@ -3,9 +3,7 @@
 namespace GetCandy\Shipping\Http\Livewire\Pages;
 
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Models\CustomerGroup;
 use GetCandy\Models\Product;
-use Livewire\Component;
 
 class ShippingZoneShow extends AbstractShippingZone
 {
@@ -23,6 +21,11 @@ class ShippingZoneShow extends AbstractShippingZone
         ], $this->baseRules());
     }
 
+    /**
+     * Save the ShippingZone
+     *
+     * @return void
+     */
     public function save()
     {
         $this->shippingZone->save();
