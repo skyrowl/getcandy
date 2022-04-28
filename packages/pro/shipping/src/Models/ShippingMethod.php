@@ -6,7 +6,7 @@ use GetCandy\Base\BaseModel;
 use GetCandy\Shipping\Factories\ShippingZoneFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class ShippingZone extends BaseModel
+class ShippingMethod extends BaseModel
 {
     use HasFactory;
 
@@ -29,12 +29,12 @@ class ShippingZone extends BaseModel
     }
 
     /**
-     * Return the shipping methods relationship.
+     * Return the shipping zone relationship
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function shippingMethods()
+    public function shippingZone()
     {
-        return $this->hasMany(ShippingMethod::class);
+        return $this->belongsTo(ShippingZone::class);
     }
 }
