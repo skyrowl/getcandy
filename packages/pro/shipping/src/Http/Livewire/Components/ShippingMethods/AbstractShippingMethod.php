@@ -12,7 +12,7 @@ abstract class AbstractShippingMethod extends Component
     use Notifies;
 
     /**
-     * The related ShippingZone
+     * The related ShippingZone.
      *
      * @var ShippingZone
      */
@@ -26,7 +26,7 @@ abstract class AbstractShippingMethod extends Component
     public ShippingMethod $shippingMethod;
 
     /**
-     * Any additional rules for validation
+     * Any additional rules for validation.
      *
      * @var array
      */
@@ -55,7 +55,7 @@ abstract class AbstractShippingMethod extends Component
     }
 
     /**
-     * Return any additional rules for validation
+     * Return any additional rules for validation.
      *
      * @return array
      */

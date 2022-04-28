@@ -35,7 +35,7 @@ class ShippingMethod extends BaseModel
     }
 
     /**
-     * Return the shipping zone relationship
+     * Return the shipping zone relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

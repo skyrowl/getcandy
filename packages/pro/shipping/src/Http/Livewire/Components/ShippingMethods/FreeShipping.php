@@ -18,7 +18,7 @@ class FreeShipping extends AbstractShippingMethod
     }
 
     /**
-     * Return any additional rules for validation
+     * Return any additional rules for validation.
      *
      * @return array
      */

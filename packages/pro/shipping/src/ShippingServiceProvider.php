@@ -4,11 +4,11 @@ namespace GetCandy\Shipping;
 
 use GetCandy\Hub\Facades\Menu;
 use GetCandy\Shipping\Http\Livewire\Components\ShippingMethods\FreeShipping;
-use GetCandy\Shipping\Managers\ShippingManager;
 use GetCandy\Shipping\Http\Livewire\Pages\ShippingIndex;
 use GetCandy\Shipping\Http\Livewire\Pages\ShippingZoneCreate;
 use GetCandy\Shipping\Http\Livewire\Pages\ShippingZoneShow;
 use GetCandy\Shipping\Interfaces\ShippingMethodManagerInterface;
+use GetCandy\Shipping\Managers\ShippingManager;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 
@@ -43,7 +43,7 @@ class ShippingServiceProvider extends ServiceProvider
 
         // $this->mergeConfigFrom(__DIR__."/../config/opayo.php", "getcandy.opayo");
 
-        $this->loadRoutesFrom(__DIR__."/../routes/hub.php");
+        $this->loadRoutesFrom(__DIR__.'/../routes/hub.php');
 
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
@@ -71,7 +71,6 @@ class ShippingServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'shipping');
 
         // dd(realpath(__DIR__.'/../lang'));
-
 
         // $this->publishes([
         //     __DIR__."/../config/opayo.php" => config_path("getcandy/opayo.php"),
