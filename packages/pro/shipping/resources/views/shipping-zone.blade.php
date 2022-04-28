@@ -1,4 +1,4 @@
-<div>
+<div class="flex-col px-8 space-y-4 md:px-12">
   <div class="space-y-4">
     <div class="shadow sm:rounded-md">
       <div class="flex-col px-4 py-5 space-y-4 bg-white rounded-md sm:p-6">
@@ -42,7 +42,7 @@
             </div>
 
             <div class="ml-4">
-              <x-hub::button>Edit</x-hub::button>
+              <x-hub::button wire:click="$set('showFreeShipping', true)">Edit</x-hub::button>
             </div>
           </div>
 
@@ -57,7 +57,7 @@
             </div>
 
             <div class="ml-4">
-              <x-hub::button>Edit</x-hub::button>
+              <x-hub::button type="button" wire:click="$set('showFlatRateShipping', true)">Edit</x-hub::button>
             </div>
           </div>
 
@@ -89,38 +89,9 @@
         </div>
       </div>
     </div>
-
-    <div class="shadow sm:rounded-md">
-      <div class="flex-col px-4 py-5 space-y-4 bg-white rounded-md sm:p-6">
-        <header class="flex items-center justify-between">
-          <div>
-            <h3 class="text-lg font-medium leading-6 text-gray-900">
-              Excluded Products
-            </h3>
-            <p class="text-sm text-gray-500">Products listed here will be excluded from this shipping zone.</p>
-          </div>
-
-          <div>
-            <x-hub::button>Add product</x-hub::button>
-          </div>
-        </header>
-
-        <div class="space-y-2">
-          @foreach($products as $product)
-            <div class="flex items-center justify-between p-2 border rounded">
-              <div class="flex items-center">
-                <img src="{{ $product->thumbnail->getUrl('small') }}" class="w-6 mr-3 rounded">
-                {{ $product->translateAttribute('name') }}
-              </div>
-              <div>
-                <x-hub::icon ref="trash" class="w-4 text-gray-500 hover:text-red-500" />
-              </div>
-            </div>
-          @endforeach
-        </div>
-      </div>
-    </div>
   </div>
 
   @include('shipping::partials.ship-by-total')
+  @include('shipping::partials.free-shipping')
+  @include('shipping::partials.flat-rate')
 </div>

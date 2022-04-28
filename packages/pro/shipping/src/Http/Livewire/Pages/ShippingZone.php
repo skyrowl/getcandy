@@ -10,6 +10,10 @@ class ShippingZone extends Component
 {
     public bool $showShipByTotal = false;
 
+    public bool $showFreeShipping = false;
+
+    public bool $showFlatRateShipping = false;
+
     public function getCustomerGroupsProperty()
     {
         return CustomerGroup::get();
@@ -22,11 +26,11 @@ class ShippingZone extends Component
      */
     public function render()
     {
-        $products = Product::inRandomOrder()->take(10)->get();
+        $products = Product::inRandomOrder()->take(4)->get();
 
         return view('shipping::shipping-zone', [
             'products' => $products,
-        ])->layout('shipping::layout', [
+        ])->layout('adminhub::layouts.app', [
             'title' => 'United Kingdom',
         ]);
     }
