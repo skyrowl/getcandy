@@ -4,7 +4,8 @@ namespace GetCandy\Shipping;
 
 use GetCandy\Hub\Facades\Menu;
 use GetCandy\Shipping\Http\Livewire\Pages\ShippingIndex;
-use GetCandy\Shipping\Http\Livewire\Pages\ShippingZone;
+use GetCandy\Shipping\Http\Livewire\Pages\ShippingZoneCreate;
+use GetCandy\Shipping\Http\Livewire\Pages\ShippingZoneShow;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 
@@ -40,6 +41,8 @@ class ShippingServiceProvider extends ServiceProvider
         // $this->mergeConfigFrom(__DIR__."/../config/opayo.php", "getcandy.opayo");
 
         $this->loadRoutesFrom(__DIR__."/../routes/hub.php");
+
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
         // Blade::directive('opayoScripts', function () {
         //     $url = 'https://pi-test.sagepay.com/api/v1/js/sagepay.js';
@@ -81,6 +84,7 @@ class ShippingServiceProvider extends ServiceProvider
 
         // // Register the stripe payment component.
         Livewire::component('get-candy.shipping.http.livewire.pages.shipping-index', ShippingIndex::class);
-        Livewire::component('get-candy.shipping.http.livewire.pages.shipping-zone', ShippingZone::class);
+        Livewire::component('get-candy.shipping.http.livewire.pages.shipping-zone-show', ShippingZoneShow::class);
+        Livewire::component('get-candy.shipping.http.livewire.pages.shipping-zone-create', ShippingZoneCreate::class);
     }
 }

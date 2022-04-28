@@ -2,14 +2,21 @@
 
 namespace GetCandy\Shipping\Http\Livewire\Pages;
 
+use GetCandy\Shipping\Models\ShippingZone;
 use Livewire\Component;
 
 class ShippingIndex extends Component
 {
-    public function foo()
+    /**
+     * Return the available shipping zones.
+     *
+     * @return void
+     */
+    public function getShippingZonesProperty()
     {
-        dd(1);
+        return ShippingZone::paginate();
     }
+
     /**
      * Render the livewire component.
      *

@@ -3,9 +3,9 @@
     <strong class="block text-lg font-bold md:text-2xl">
       Shipping Zones
     </strong>
-    <x-hub::button tag="a" href="{{ route('hub.currencies.create') }}">
-          Add shipping zone
-        </x-hub::button>
+    <x-hub::button tag="a" href="{{ route('hub.shipping-zone.create') }}">
+      Add shipping zone
+    </x-hub::button>
   </div>
    <div class="flex-col space-y-4">
       <x-hub::table>
@@ -16,17 +16,23 @@
           <x-hub::table.heading></x-hub::table.heading>
         </x-slot>
         <x-slot name="body">
+          @forelse($this->shippingZones as $zone)
           <x-hub::table.row>
               <x-hub::table.cell>
-                United Kingdom
+                {{ $zone->name }}
               </x-hub::table.cell>
 
               <x-hub::table.cell>
-                <a href="{{ route('hub.shipping.zone', 1) }}" class="text-indigo-500 hover:underline">
+                <a href="{{ route('hub.shipping.shipping-zone.show', $zone->id) }}" class="text-indigo-500 hover:underline">
                     Edit
                 </a>
               </x-hub::table.cell>
           </x-hub::table.row>
+          @empty
+            <x-hub::table.no-results>
+              {{ __('shipping::index.no_results') }}
+            </x-hub::table.no-results>
+          @endforelse
           {{-- @forelse($currencies as $currency)
             <x-hub::table.row>
               <x-hub::table.cell>

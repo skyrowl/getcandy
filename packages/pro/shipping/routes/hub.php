@@ -2,7 +2,8 @@
 
 use GetCandy\Hub\Http\Middleware\Authenticate;
 use GetCandy\Shipping\Http\Livewire\Pages\ShippingIndex;
-use GetCandy\Shipping\Http\Livewire\Pages\ShippingZone;
+use GetCandy\Shipping\Http\Livewire\Pages\ShippingZoneCreate;
+use GetCandy\Shipping\Http\Livewire\Pages\ShippingZoneShow;
 use Illuminate\Support\Facades\Route;
 
 Route::group([
@@ -18,6 +19,7 @@ Route::group([
     ], function () {
 
         Route::get('/', ShippingIndex::class)->name('hub.shipping.index');
-        Route::get('shipping-zones/{id}', ShippingZone::class)->name('hub.shipping.zone');
+        Route::get('shipping-zones/create', ShippingZoneCreate::class)->name('hub.shipping-zone.create');
+        Route::get('shipping-zones/{shippingZone}', ShippingZoneShow::class)->name('hub.shipping.shipping-zone.show');
     });
 });
