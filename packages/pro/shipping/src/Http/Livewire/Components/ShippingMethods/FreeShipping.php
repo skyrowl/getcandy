@@ -33,6 +33,9 @@ class FreeShipping extends AbstractShippingMethod
         ];
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function save()
     {
         $this->validate();
