@@ -13,6 +13,13 @@ class ShippingManager extends Manager implements ShippingMethodManagerInterface
         return $this->buildProvider(FreeShipping::class);
     }
 
+    public function getSupportedDrivers()
+    {
+        return collect(array_merge([
+            'free-shipping' => $this->createDriver('free-shipping'),
+        ], $this->customCreators));
+    }
+
     /**
      * Build a tax provider instance.
      *

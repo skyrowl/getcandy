@@ -4,6 +4,7 @@ namespace GetCandy\Shipping\Http\Livewire\Pages;
 
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Models\Product;
+use GetCandy\Shipping\Facades\Shipping;
 
 class ShippingZoneShow extends AbstractShippingZone
 {
@@ -30,6 +31,28 @@ class ShippingZoneShow extends AbstractShippingZone
     {
         $this->shippingZone->save();
         $this->notify('Shipping Zone updated');
+    }
+
+    public function mount()
+    {
+        $zone = $this->shippingZone;
+
+        // dd(
+        //     $zone->shippingMethods->first()->driver()
+        // );
+
+        dd($this->shippingMethods);
+    }
+
+    public function getShippingMethodsProperty()
+    {
+        return Shipping::getSupportedDrivers()->map(function ($driver) {
+            return [
+                'name' => $driver->name(),
+                'description' => $driver->description(),
+                'component' => $driver->component(),
+            ];
+        });
     }
 
     /**
