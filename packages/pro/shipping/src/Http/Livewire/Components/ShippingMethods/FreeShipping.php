@@ -65,11 +65,22 @@ class FreeShipping extends AbstractShippingMethod
         $this->emit('shippingMethodUpdated');
     }
 
+    /**
+     * Set the currency
+     *
+     * @param int $currencyId
+     * @return void
+     */
     public function setCurrency($currencyId)
     {
         $this->currency = $this->currencies->first(fn ($currency) => $currency->id == $currencyId);
     }
 
+    /**
+     * Return the available currencies
+     *
+     * @return \Illuminate\Support\Collection
+     */
     public function getCurrenciesProperty()
     {
         return Currency::get();
