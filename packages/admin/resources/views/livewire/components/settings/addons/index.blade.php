@@ -1,4 +1,9 @@
 <div class="flex-col space-y-4">
+    @if(class_exists(\GetCandy\Shipping\ShippingServiceProvider::class))
+      <x-hub::alert level="danger">
+          You appear to be using an add-on which will be part of GetCandy Pro. This will not be a free add-on on release.
+      </x-hub::alert>
+    @endif
     <x-hub::table>
     <x-slot name="head">
       <x-hub::table.heading>{{ __('adminhub::global.name') }}</x-hub::table.heading>
