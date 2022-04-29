@@ -42,6 +42,8 @@
 
     @include('shipping::partials.forms.product-exclusions')
 
-    <x-hub::button>Save Method</x-hub::button>
+    <div class="mt-4">
+      <x-hub::button>Save Method</x-hub::button>
+    </div>
   </div>
 </div>

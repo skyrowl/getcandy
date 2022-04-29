@@ -2,35 +2,20 @@
 
 namespace GetCandy\Shipping\Traits;
 
-use GetCandy\Models\Product;
-use Illuminate\Support\Facades\DB;
+use GetCandy\Shipping\Models\ShippingExclusionList;
 
 trait ExcludesProducts
 {
-    /**
-     * Return the trait listeners.
-     *
-     * @return array
-     */
-    public function excludesProductsListeners()
+    public array $lists = [];
+
+    public function mountExcludesProducts()
     {
-        return [
-            'product-search.selected' => 'selectProducts'
-        ];
+        $this->lists = $this->shippingMethod->shippingExclusions->pluck('id')->toArray();
     }
 
-    public function selectProducts($productIds)
+    public function updateExcludedLists()
     {
-        DB::transaction(function () use ($productIds) {
-            $this->shippingMethod->shippingExclusions()->createMany(
-                collect($productIds)->map(function ($productId) {
-                    return [
-                        'purchasable_id' => $productId,
-                        'purchasable_type' => Product::class,
-                    ];
-                })->toArray()
-            );
-        });
+        $this->shippingMethod->shippingExclusions()->sync($this->lists);
     }
 
     /**
@@ -38,8 +23,8 @@ trait ExcludesProducts
      *
      * @return void
      */
-    public function getExclusionsProperty()
+    public function getExclusionListsProperty()
     {
-        return $this->shippingMethod->shippingExclusions()->get();
+        return ShippingExclusionList::get();
     }
 }

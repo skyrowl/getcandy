@@ -8,10 +8,10 @@ class CreateShippingExclusionListShippingMethodTable extends Migration
 {
     public function up()
     {
-        Schema::create($this->prefix.'shipping_exclusion_shipping_method', function (Blueprint $table) {
+        Schema::create($this->prefix.'exclusion_list_shipping_method', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->foreignId('exclusion_id')->constrained(
-                $this->prefix.'shipping_exclusions'
+                $this->prefix.'shipping_exclusion_lists'
             );
             $table->foreignId('method_id')->constrained(
                 $this->prefix.'shipping_methods'
@@ -22,6 +22,6 @@ class CreateShippingExclusionListShippingMethodTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists($this->prefix.'shipping_exclusion_shipping_method');
+        Schema::dropIfExists($this->prefix.'shipping_exclusion_list_shipping_method');
     }
 }

@@ -29,14 +29,6 @@ class FreeShipping extends AbstractShippingMethod
     /**
      * {@inheritDoc}
      */
-    public function getListeners()
-    {
-        return array_merge([], $this->excludesProductsListeners());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function defaultData(): array
     {
         return [
@@ -66,6 +58,9 @@ class FreeShipping extends AbstractShippingMethod
         $this->validate();
 
         $this->shippingMethod->data = $this->data;
+
+        $this->updateExcludedLists();
+
         $this->shippingMethod->save();
 
         $this->notify('Shipping Method Updated');

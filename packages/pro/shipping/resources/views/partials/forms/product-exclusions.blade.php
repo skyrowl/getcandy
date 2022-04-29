@@ -1,23 +1,21 @@
 <div>
-  <div class="flex items-center justify-between">
+  <div>
     <span>Exclude Products</span>
-    <div>
-      {{-- <x-hub::button size="sm" theme="gray">Add product</x-hub::button> --}}
-      @livewire('hub.components.product-search', [
-        'existing' => collect($this->exclusions->pluck('purchasable')),
-      ])
-    </div>
+    <p class="text-sm text-gray-500">Choose which exlusion lists you want applied to this shipping method</p>
   </div>
 
   <div class="mt-4 space-y-2">
-    @foreach($this->exclusions as $exclusion)
-      <div class="flex items-center justify-between p-2 border rounded">
+    @foreach($this->exclusionLists as $list)
+      <label
+        for="list_{{ $list->id }}"
+        wire:key="list_{{ $list->id }}"
+        class="flex items-center p-2 space-x-2 border rounded cursor-pointer hover:bg-gray-50"
+      >
         <div class="flex items-center">
-          <img src="{{ $exclusion->purchasable->thumbnail->getUrl('small') }}" class="w-6 mr-3 rounded">
-          {{ $exclusion->purchasable->translateAttribute('name') }}
+          <input id="list_{{ $list->id }}" type="checkbox" wire:model="lists" value="{{ $list->id }}">
         </div>
         <div>
-          <x-hub::icon ref="trash" class="w-4 text-gray-500 hover:text-red-500" />
+          {{ $list->name }}
         </div>
       </div>
     @endforeach
