@@ -44,6 +44,16 @@ class ShippingZoneShow extends AbstractShippingZone
     public function save()
     {
         $this->shippingZone->save();
+
+        if ($this->shippingZone->type != 'countries') {
+            $this->shippingZone->countries()->detach();
+            $this->selectedCountries = [];
+        } else {
+            $this->shippingZone->countries()->sync(
+                $this->selectedCountries
+            );
+        }
+
         $this->notify('Shipping Zone updated');
     }
 

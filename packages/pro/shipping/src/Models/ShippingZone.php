@@ -3,8 +3,10 @@
 namespace GetCandy\Shipping\Models;
 
 use GetCandy\Base\BaseModel;
+use GetCandy\Models\Country;
 use GetCandy\Shipping\Factories\ShippingZoneFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ShippingZone extends BaseModel
 {
@@ -36,5 +38,18 @@ class ShippingZone extends BaseModel
     public function shippingMethods()
     {
         return $this->hasMany(ShippingMethod::class);
+    }
+
+    /**
+     * Return the countries relationship
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function countries()
+    {
+        return $this->belongsToMany(
+            Country::class,
+            config('getcandy.database.table_prefix') . 'country_shipping_zone'
+        )->withTimestamps();
     }
 }

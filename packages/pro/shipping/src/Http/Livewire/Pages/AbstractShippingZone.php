@@ -25,36 +25,23 @@ abstract class AbstractShippingZone extends Component
     public array $selectedCountries = [];
 
     /**
-     * The placeholder country when selecting for zone.
-     *
-     * @var string
-     */
-    public ?string $countryPlaceholder = null;
-
-    /**
      * Search term for filtering out countries
      *
      * @var string
      */
     public ?string $countrySearchTerm = null;
 
-    /**
-     * Add the selected country into the array.
-     *
-     * @param  int  $id
-     * @return void
-     */
-    public function selectCountry($id)
-    {
-        $this->countryPlaceholder = null;
-        $this->zoneCountries[] = $id;
-    }
 
     public function baseRules()
     {
         return [
             'countryPlaceholder' => 'string|nullable',
         ];
+    }
+
+    public function mount()
+    {
+        $this->selectedCountries = $this->shippingZone->countries->pluck('id')->toArray();
     }
 
     /**
@@ -80,6 +67,11 @@ abstract class AbstractShippingZone extends Component
             ->whereNotIn('id', $this->selectedCountries)->get();
     }
 
+    /**
+     * Return a list of countries related to the zone.
+     *
+     * @return Collection
+     */
     public function getZoneCountriesProperty()
     {
         return Country::whereIn('id', $this->selectedCountries)->get();
