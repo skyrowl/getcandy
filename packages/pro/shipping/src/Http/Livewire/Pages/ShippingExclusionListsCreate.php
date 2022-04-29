@@ -91,13 +91,17 @@ class ShippingExclusionListsCreate extends Component
         );
     }
 
+    /**
+     * Save the exclusion list.
+     *
+     * @return void
+     */
     public function save()
     {
         $this->validate();
 
         DB::transaction(function () {
             $this->list->save();
-
             $this->list->exclusions()->createMany(
                 $this->products->map(function ($product) {
                     return [
@@ -108,9 +112,11 @@ class ShippingExclusionListsCreate extends Component
             );
         });
 
-        //
-
         $this->notify('Shipping Exclusion List Created');
+
+        // return redirect()->route(
+
+        // );
     }
 
     /**

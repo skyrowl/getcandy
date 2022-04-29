@@ -6,7 +6,7 @@
           <x-hub::input.text wire:model.defer="list.name" name="name" id="name" :error="$errors->first('list.name')" />
         </x-hub::input.group>
 
-        <div>
+        <div class="flex items-center justify-between">
           <strong>Products</strong>
           @livewire('hub.components.product-search', [
             'existing' => collect($this->products->pluck('purchasable')),
@@ -28,13 +28,13 @@
         </div>
       </div>
       <div class="px-4 py-3 text-right rounded-b bg-gray-50 sm:px-6">
-        <button type="submit" class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        <x-hub::button type="submit">
           @if($list->id)
             Save shipping zone
           @else
             Create exclusion list
           @endif
-        </button>
+        </x-hub::button>
       </div>
     </form>
   </div>
