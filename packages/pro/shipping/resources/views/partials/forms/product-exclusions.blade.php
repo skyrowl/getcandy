@@ -2,7 +2,10 @@
   <div class="flex items-center justify-between">
     <span>Exclude Products</span>
     <div>
-      <x-hub::button size="sm" theme="gray">Add product</x-hub::button>
+      {{-- <x-hub::button size="sm" theme="gray">Add product</x-hub::button> --}}
+      @livewire('hub.components.product-search', [
+        'existing' => collect($this->exclusions->pluck('purchasable')),
+      ])
     </div>
   </div>
 
@@ -17,7 +20,6 @@
           <x-hub::icon ref="trash" class="w-4 text-gray-500 hover:text-red-500" />
         </div>
       </div>
-
     @endforeach
   </div>
 </div>

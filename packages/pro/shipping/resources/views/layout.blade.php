@@ -47,7 +47,7 @@
                 <x-hub::icon ref="archive" class="flex-shrink-0 w-6 h-6 mr-3 -ml-1" />
               </span>
               <span class="truncate">
-                Shipping Methods
+                Shipping Exclusions
               </span>
             </a>
           {{-- <x-hub::menu handle="settings" current="{{ request()->route()->getName() }}">

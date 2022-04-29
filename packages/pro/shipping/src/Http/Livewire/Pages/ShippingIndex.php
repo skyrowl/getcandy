@@ -25,7 +25,7 @@ class ShippingIndex extends Component
     public function render()
     {
         return view('shipping::index')
-            ->layout('adminhub::layouts.app', [
+            ->layout('shipping::layout', [
                 'title' => 'Shipping',
             ]);
     }
