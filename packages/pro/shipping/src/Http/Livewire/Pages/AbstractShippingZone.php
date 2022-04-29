@@ -34,11 +34,12 @@ abstract class AbstractShippingZone extends Component
 
     public function baseRules()
     {
-        return [
-            'countryPlaceholder' => 'string|nullable',
-        ];
+        return [];
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function mount()
     {
         $this->selectedCountries = $this->shippingZone->countries->pluck('id')->toArray();
@@ -50,6 +51,23 @@ abstract class AbstractShippingZone extends Component
      * @return void
      */
     abstract public function save();
+
+    /**
+     * Save common details across new and existing zones.
+     *
+     * @return void
+     */
+    public function saveDetails()
+    {
+        if ($this->shippingZone->type != 'countries') {
+            $this->shippingZone->countries()->detach();
+            $this->selectedCountries = [];
+        } else {
+            $this->shippingZone->countries()->sync(
+                $this->selectedCountries
+            );
+        }
+    }
 
     public function getCustomerGroupsProperty()
     {

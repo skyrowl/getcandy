@@ -23,7 +23,7 @@ abstract class AbstractShippingMethod extends Component
      *
      * @var ShippingMethod
      */
-    public ShippingMethod $shippingMethod;
+    public ?ShippingMethod $shippingMethod = null;
 
     /**
      * Any additional rules for validation.

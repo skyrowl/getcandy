@@ -43,6 +43,7 @@ class ShippingZoneCreate extends AbstractShippingZone
     {
         $this->validate();
         $this->shippingZone->save();
+        $this->saveDetails();
         $this->emit('Shipping Zone Created');
 
         return redirect()->route('hub.shipping.shipping-zone.show', $this->shippingZone->id);

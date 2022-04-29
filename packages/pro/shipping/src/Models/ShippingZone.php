@@ -52,4 +52,14 @@ class ShippingZone extends BaseModel
             config('getcandy.database.table_prefix') . 'country_shipping_zone'
         )->withTimestamps();
     }
+
+    /**
+     * Return the postcodes relationship
+     *
+     * @return HasMany
+     */
+    public function postcodes()
+    {
+        return $this->hasMany(ShippingZonePostcode::class);
+    }
 }

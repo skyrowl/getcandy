@@ -5,6 +5,7 @@ namespace GetCandy\Shipping\Http\Livewire\Pages;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Models\Product;
 use GetCandy\Shipping\Facades\Shipping;
+use GetCandy\Shipping\Models\ShippingMethod;
 
 class ShippingZoneShow extends AbstractShippingZone
 {
@@ -45,14 +46,7 @@ class ShippingZoneShow extends AbstractShippingZone
     {
         $this->shippingZone->save();
 
-        if ($this->shippingZone->type != 'countries') {
-            $this->shippingZone->countries()->detach();
-            $this->selectedCountries = [];
-        } else {
-            $this->shippingZone->countries()->sync(
-                $this->selectedCountries
-            );
-        }
+        $this->saveDetails();
 
         $this->notify('Shipping Zone updated');
     }
@@ -68,6 +62,16 @@ class ShippingZoneShow extends AbstractShippingZone
 
         return Shipping::getSupportedDrivers()->map(function ($driver, $key) use ($methods) {
             $method = $methods->first(fn ($method) => $method->driver == $key);
+
+            // If there is no method, create a blank one.
+            if (!$method) {
+                $method = ShippingMethod::create([
+                    'shipping_zone_id' => $this->shippingZone->id,
+                    'name' => $driver->name(),
+                    'enabled' => false,
+                    'driver' => $key,
+                ]);
+            }
 
             return [
                 'name' => $driver->name(),
