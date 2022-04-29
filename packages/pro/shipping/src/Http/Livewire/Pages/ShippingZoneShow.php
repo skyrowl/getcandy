@@ -32,7 +32,7 @@ class ShippingZoneShow extends AbstractShippingZone
     }
 
     /**
-     * Save the ShippingZone
+     * Save the ShippingZone.
      *
      * @return void
      */
@@ -58,7 +58,7 @@ class ShippingZoneShow extends AbstractShippingZone
         $methods = $this->shippingZone->shippingMethods;
 
         return Shipping::getSupportedDrivers()->map(function ($driver, $key) use ($methods) {
-            $method = $methods->first(fn($method) => $method->driver == $key);
+            $method = $methods->first(fn ($method) => $method->driver == $key);
 
             return [
                 'name' => $driver->name(),
@@ -76,9 +76,10 @@ class ShippingZoneShow extends AbstractShippingZone
 
         if ($map['method']) {
             $map['method']->update([
-                'enabled' => !$map['enabled'],
+                'enabled' => ! $map['enabled'],
             ]);
             $map['method']->refresh();
+
             return;
         }
 

@@ -3,7 +3,6 @@
 namespace GetCandy\Shipping\Http\Livewire\Pages;
 
 use GetCandy\Models\CustomerGroup;
-use GetCandy\Models\Product;
 use GetCandy\Shipping\Models\ShippingZone;
 use Livewire\Component;
 
@@ -17,7 +16,7 @@ abstract class AbstractShippingZone extends Component
     public ShippingZone $shippingZone;
 
     /**
-     * The selected countries for the zone
+     * The selected countries for the zone.
      *
      * @var array
      */
@@ -31,9 +30,9 @@ abstract class AbstractShippingZone extends Component
     public ?string $countryPlaceholder = null;
 
     /**
-     * Add the selected country into the array
+     * Add the selected country into the array.
      *
-     * @param int $id
+     * @param  int  $id
      * @return void
      */
     public function selectCountry($id)
@@ -45,12 +44,12 @@ abstract class AbstractShippingZone extends Component
     public function baseRules()
     {
         return [
-            'countryPlaceholder' => 'string|nullable'
+            'countryPlaceholder' => 'string|nullable',
         ];
     }
 
     /**
-     * Save the ShippingZone
+     * Save the ShippingZone.
      *
      * @return void
      */
