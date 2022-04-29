@@ -48,7 +48,7 @@ class ShippingZoneShow extends AbstractShippingZone
     }
 
     /**
-     * Return the available shipping methods
+     * Return the available shipping methods.
      *
      * @return \Illuminate\Support\Collection
      */
@@ -70,7 +70,7 @@ class ShippingZoneShow extends AbstractShippingZone
     }
 
     /**
-     * Toggle Shipping Method availability
+     * Toggle Shipping Method availability.
      */
     public function toggleMethod($key)
     {
