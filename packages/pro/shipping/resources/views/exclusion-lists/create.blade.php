@@ -30,7 +30,7 @@
       <div class="px-4 py-3 text-right rounded-b bg-gray-50 sm:px-6">
         <x-hub::button type="submit">
           @if($list->id)
-            Save shipping zone
+            Save exclusion list
           @else
             Create exclusion list
           @endif

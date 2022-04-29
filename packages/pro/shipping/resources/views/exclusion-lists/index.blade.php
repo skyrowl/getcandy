@@ -23,7 +23,7 @@
               </x-hub::table.cell>
 
               <x-hub::table.cell>
-                <a href="{{ route('hub.shipping.shipping-zone.show', $list->id) }}" class="text-indigo-500 hover:underline">
+                <a href="{{ route('hub.shipping-exclusion-lists.show', $list->id) }}" class="text-indigo-500 hover:underline">
                     Edit
                 </a>
               </x-hub::table.cell>

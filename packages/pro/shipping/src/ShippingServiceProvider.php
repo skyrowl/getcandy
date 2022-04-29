@@ -6,6 +6,7 @@ use GetCandy\Hub\Facades\Menu;
 use GetCandy\Shipping\Http\Livewire\Components\ShippingMethods\FreeShipping;
 use GetCandy\Shipping\Http\Livewire\Pages\ShippingExclusionListsCreate;
 use GetCandy\Shipping\Http\Livewire\Pages\ShippingExclusionListsIndex;
+use GetCandy\Shipping\Http\Livewire\Pages\ShippingExclusionListsShow;
 use GetCandy\Shipping\Http\Livewire\Pages\ShippingIndex;
 use GetCandy\Shipping\Http\Livewire\Pages\ShippingZoneCreate;
 use GetCandy\Shipping\Http\Livewire\Pages\ShippingZoneShow;
@@ -93,6 +94,7 @@ class ShippingServiceProvider extends ServiceProvider
             // Pages
             ShippingExclusionListsIndex::class,
             ShippingExclusionListsCreate::class,
+            ShippingExclusionListsShow::class,
             ShippingIndex::class,
             ShippingZoneShow::class,
             ShippingZoneCreate::class,
