@@ -15,7 +15,7 @@ trait ExcludesProducts
     public function excludesProductsListeners()
     {
         return [
-            'product-search.selected' => 'selectProducts'
+            'product-search.selected' => 'selectProducts',
         ];
     }
 

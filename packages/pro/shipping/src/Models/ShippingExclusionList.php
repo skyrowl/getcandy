@@ -4,7 +4,6 @@ namespace GetCandy\Shipping\Models;
 
 use GetCandy\Base\BaseModel;
 use GetCandy\Shipping\Factories\ShippingExclusionListFactory;
-use GetCandy\Shipping\Models\ShippingMethod;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ShippingExclusionList extends BaseModel
@@ -32,7 +31,7 @@ class ShippingExclusionList extends BaseModel
     }
 
     /**
-     * Return the shipping zone relationship
+     * Return the shipping zone relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

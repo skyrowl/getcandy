@@ -31,7 +31,7 @@ abstract class AbstractShippingExclusionList extends Component
      * {@inheritDoc}
      */
     protected $listeners = [
-        'product-search.selected' => 'selectProducts'
+        'product-search.selected' => 'selectProducts',
     ];
 
     /**
@@ -56,7 +56,7 @@ abstract class AbstractShippingExclusionList extends Component
     /**
      * Select products for the list.
      *
-     * @param array $productIds
+     * @param  array  $productIds
      * @return void
      */
     public function selectProducts($productIds)
@@ -77,9 +77,9 @@ abstract class AbstractShippingExclusionList extends Component
     }
 
     /**
-     * Remove a product from the array
+     * Remove a product from the array.
      *
-     * @param int $index
+     * @param  int  $index
      * @return void
      */
     public function removeProduct($index)

@@ -74,9 +74,9 @@ class FreeShipping extends AbstractShippingMethod
     }
 
     /**
-     * Set the currency
+     * Set the currency.
      *
-     * @param int $currencyId
+     * @param  int  $currencyId
      * @return void
      */
     public function setCurrency($currencyId)
@@ -85,7 +85,7 @@ class FreeShipping extends AbstractShippingMethod
     }
 
     /**
-     * Return the available currencies
+     * Return the available currencies.
      *
      * @return \Illuminate\Support\Collection
      */
