@@ -2,8 +2,10 @@
 
 namespace GetCandy\Shipping\Http\Livewire\Pages;
 
+use GetCandy\Models\Country;
 use GetCandy\Models\CustomerGroup;
 use GetCandy\Shipping\Models\ShippingZone;
+use Illuminate\Support\Collection;
 use Livewire\Component;
 
 abstract class AbstractShippingZone extends Component
@@ -20,7 +22,7 @@ abstract class AbstractShippingZone extends Component
      *
      * @var array
      */
-    public array $zoneCountries;
+    public array $selectedCountries = [];
 
     /**
      * The placeholder country when selecting for zone.
@@ -28,6 +30,13 @@ abstract class AbstractShippingZone extends Component
      * @var string
      */
     public ?string $countryPlaceholder = null;
+
+    /**
+     * Search term for filtering out countries
+     *
+     * @var string
+     */
+    public ?string $countrySearchTerm = null;
 
     /**
      * Add the selected country into the array.
@@ -55,14 +64,24 @@ abstract class AbstractShippingZone extends Component
      */
     abstract public function save();
 
-    public bool $showShipByTotal = false;
-
-    public bool $showFreeShipping = false;
-
-    public bool $showFlatRateShipping = false;
-
     public function getCustomerGroupsProperty()
     {
         return CustomerGroup::get();
+    }
+
+    /**
+     * Return a list of available countries
+     *
+     * @return Collection
+     */
+    public function getCountriesProperty()
+    {
+        return Country::where('name', 'LIKE', "%{$this->countrySearchTerm}%")
+            ->whereNotIn('id', $this->selectedCountries)->get();
+    }
+
+    public function getZoneCountriesProperty()
+    {
+        return Country::whereIn('id', $this->selectedCountries)->get();
     }
 }
