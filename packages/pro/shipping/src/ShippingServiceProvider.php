@@ -46,7 +46,7 @@ class ShippingServiceProvider extends ServiceProvider
 
         // $this->mergeConfigFrom(__DIR__."/../config/opayo.php", "getcandy.opayo");
 
-        $this->loadRoutesFrom(__DIR__."/../routes/hub.php");
+        $this->loadRoutesFrom(__DIR__.'/../routes/hub.php');
 
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
@@ -74,7 +74,6 @@ class ShippingServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'shipping');
 
         // dd(realpath(__DIR__.'/../lang'));
-
 
         // $this->publishes([
         //     __DIR__."/../config/opayo.php" => config_path("getcandy/opayo.php"),

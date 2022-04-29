@@ -2,7 +2,6 @@
 
 namespace GetCandy\Shipping\Factories;
 
-use GetCandy\Models\Product;
 use GetCandy\Shipping\Models\ShippingExclusionList;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

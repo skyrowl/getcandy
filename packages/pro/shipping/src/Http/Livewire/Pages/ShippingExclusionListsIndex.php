@@ -3,7 +3,6 @@
 namespace GetCandy\Shipping\Http\Livewire\Pages;
 
 use GetCandy\Shipping\Models\ShippingExclusionList;
-use GetCandy\Shipping\Models\ShippingZone;
 use Livewire\Component;
 
 class ShippingExclusionListsIndex extends Component
