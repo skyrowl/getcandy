@@ -26,7 +26,7 @@
       <aside class="hidden px-2 py-6 sm:px-6 lg:py-0 lg:px-0 lg:col-span-3 md:block">
         <nav class="space-y-1">
             <a
-              href="/"
+              href="{{ route('hub.shipping.index') }}"
               class="flex items-center px-3 py-2 text-sm font-medium rounded-md group"
               aria-current="page"
             >
@@ -39,7 +39,7 @@
             </a>
 
             <a
-              href="/"
+              href="{{ route('hub.shipping-exclusion-lists.index') }}"
               class="flex items-center px-3 py-2 text-sm font-medium rounded-md group"
               aria-current="page"
             >

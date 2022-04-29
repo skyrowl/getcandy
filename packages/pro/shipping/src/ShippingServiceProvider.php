@@ -4,11 +4,13 @@ namespace GetCandy\Shipping;
 
 use GetCandy\Hub\Facades\Menu;
 use GetCandy\Shipping\Http\Livewire\Components\ShippingMethods\FreeShipping;
-use GetCandy\Shipping\Managers\ShippingManager;
+use GetCandy\Shipping\Http\Livewire\Pages\ShippingExclusionListsCreate;
+use GetCandy\Shipping\Http\Livewire\Pages\ShippingExclusionListsIndex;
 use GetCandy\Shipping\Http\Livewire\Pages\ShippingIndex;
 use GetCandy\Shipping\Http\Livewire\Pages\ShippingZoneCreate;
 use GetCandy\Shipping\Http\Livewire\Pages\ShippingZoneShow;
 use GetCandy\Shipping\Interfaces\ShippingMethodManagerInterface;
+use GetCandy\Shipping\Managers\ShippingManager;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 
@@ -89,6 +91,8 @@ class ShippingServiceProvider extends ServiceProvider
 
         $components = [
             // Pages
+            ShippingExclusionListsIndex::class,
+            ShippingExclusionListsCreate::class,
             ShippingIndex::class,
             ShippingZoneShow::class,
             ShippingZoneCreate::class,

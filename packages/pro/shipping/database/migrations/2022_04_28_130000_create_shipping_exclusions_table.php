@@ -10,8 +10,8 @@ class CreateShippingExclusionsTable extends Migration
     {
         Schema::create($this->prefix.'shipping_exclusions', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->foreignId('shipping_method_id')->constrained(
-                $this->prefix.'shipping_methods'
+            $table->foreignId('shipping_exclusion_list_id')->constrained(
+                $this->prefix.'shipping_exclusion_lists'
             );
             $table->morphs('purchasable', 'shipping_exclusions_purchasable_type_purchasable_id_index');
             $table->timestamps();

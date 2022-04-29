@@ -37,7 +37,7 @@ class ShippingExclusion extends BaseModel
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function shippingZone()
+    public function list()
     {
         return $this->belongsTo(ShippingZone::class);
     }
