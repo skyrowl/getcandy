@@ -10,7 +10,12 @@ class ShippingZoneShow extends AbstractShippingZone
 {
     use Notifies;
 
-    public $methodToEdit = 'free-shipping';
+    /**
+     * The key of the shipping method to edit.
+     *
+     * @var string
+     */
+    public $methodToEdit = null;
 
     /**
      * {@inheritDoc}
@@ -42,17 +47,11 @@ class ShippingZoneShow extends AbstractShippingZone
         $this->notify('Shipping Zone updated');
     }
 
-    public function mount()
-    {
-        $zone = $this->shippingZone;
-
-        // dd(
-        //     $zone->shippingMethods->first()->driver()
-        // );
-
-        // dd($this->shippingMethods);
-    }
-
+    /**
+     * Return the available shipping methods
+     *
+     * @return \Illuminate\Support\Collection
+     */
     public function getShippingMethodsProperty()
     {
         $methods = $this->shippingZone->shippingMethods;
@@ -70,6 +69,9 @@ class ShippingZoneShow extends AbstractShippingZone
         });
     }
 
+    /**
+     * Toggle Shipping Method availability
+     */
     public function toggleMethod($key)
     {
         $map = $this->shippingMethods[$key];
@@ -112,9 +114,8 @@ class ShippingZoneShow extends AbstractShippingZone
     {
         $products = Product::inRandomOrder()->take(4)->get();
 
-        return view('shipping::shipping-zones.show', [
-            'products' => $products,
-        ])->layout('adminhub::layouts.app', [
+        return view('shipping::shipping-zones.show')
+        ->layout('adminhub::layouts.app', [
             'title' => 'United Kingdom',
         ]);
     }
