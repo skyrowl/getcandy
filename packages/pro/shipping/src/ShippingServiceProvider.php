@@ -3,6 +3,7 @@
 namespace GetCandy\Shipping;
 
 use GetCandy\Hub\Facades\Menu;
+use GetCandy\Shipping\Http\Livewire\Components\ShippingMethods\FlatRate;
 use GetCandy\Shipping\Http\Livewire\Components\ShippingMethods\FreeShipping;
 use GetCandy\Shipping\Http\Livewire\Pages\ShippingExclusionListsCreate;
 use GetCandy\Shipping\Http\Livewire\Pages\ShippingExclusionListsIndex;
@@ -100,10 +101,11 @@ class ShippingServiceProvider extends ServiceProvider
 
             // Shipping Methods
             FreeShipping::class,
+            FlatRate::class,
         ];
 
         foreach ($components as $component) {
-            Livewire::component((new $component)->getName(), $component);
+            Livewire::component((new $component())->getName(), $component);
         }
 
         $this->app->bind(ShippingMethodManagerInterface::class, function ($app) {

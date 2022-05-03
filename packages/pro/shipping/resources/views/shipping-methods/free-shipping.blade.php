@@ -36,7 +36,12 @@
       </div>
     </x-hub::input.group>
 
-    <x-hub::input.group label="Use discounted amount" for="use_discount_amount" :error="$errors->first('data.use_discount_amount')">
+    <x-hub::input.group
+      label="Use discounted amount"
+      for="use_discount_amount"
+      :error="$errors->first('data.use_discount_amount')"
+      instructions="When checked, take the discounted subtotal to determine whether to apply free shipping"
+    >
       <x-hub::input.toggle wire:model="data.use_discount_amount" id="use_discount_amount" />
     </x-hub::input.group>
 
@@ -46,4 +51,4 @@
       <x-hub::button>Save Method</x-hub::button>
     </div>
   </div>
-</div>
+</form>
