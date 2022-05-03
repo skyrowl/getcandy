@@ -3,6 +3,7 @@
 namespace GetCandy\Shipping\Http\Livewire\Components\ShippingMethods;
 
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
+use GetCandy\Models\CustomerGroup;
 use GetCandy\Shipping\Models\ShippingMethod;
 use GetCandy\Shipping\Models\ShippingZone;
 use Livewire\Component;
@@ -23,7 +24,14 @@ abstract class AbstractShippingMethod extends Component
      *
      * @var ShippingMethod
      */
-    public ?ShippingMethod $shippingMethod = null;
+    public ShippingMethod $shippingMethod;
+
+    /**
+     * The ID of the shipping method.
+     *
+     * @var int
+     */
+    public int $shippingMethodId;
 
     /**
      * Any additional rules for validation.
@@ -50,7 +58,7 @@ abstract class AbstractShippingMethod extends Component
             'data' => 'array',
             'shippingMethod.name' => 'string|nullable',
             'shippingMethod.description' => 'string|nullable',
-            'shippingMethod.code' => 'nullable|unique:'.ShippingMethod::class.',code,'.$this->shippingMethod->id,
+            'shippingMethod.code' => 'nullable|unique:' . ShippingMethod::class . ',code,' . $this->shippingMethod->id,
         ];
     }
 
@@ -81,6 +89,10 @@ abstract class AbstractShippingMethod extends Component
      */
     public function mount()
     {
+        $this->shippingMethod = ShippingMethod::find(
+            $this->shippingMethodId
+        );
+
         $this->data = array_merge(
             $this->defaultData(),
             (array) $this->shippingMethod->data,
@@ -93,4 +105,14 @@ abstract class AbstractShippingMethod extends Component
      * @return array
      */
     abstract public function defaultData(): array;
+
+    /**
+     * Return the available customer groups
+     *
+     * @return Collection
+     */
+    public function getAvailableCustomerGroupsProperty()
+    {
+        return CustomerGroup::get();
+    }
 }

@@ -5,10 +5,22 @@
     </form>
     <div class="shadow sm:rounded-md">
       <div class="flex-col px-4 py-5 space-y-4 bg-white rounded-md sm:p-6">
-        <header>
+        <header class="flex items-center justify-between">
           <h3 class="text-lg font-medium leading-6 text-gray-900">
             Shipping Methods
           </h3>
+
+          <div>
+            <x-hub::dropdown value="Add shipping method">
+              <x-slot name="options">
+                @foreach($this->supportedShippingMethods as $shippingMethod)
+                  <x-hub::dropdown.button type="button" wire:click="addShippingMethod('{{ $shippingMethod['key'] }}')">
+                    {{ $shippingMethod['name'] }}
+                  </x-hub::dropdown.button>
+                @endforeach
+              </x-slot>
+            </x-hub::dropdown>
+          </div>
         </header>
 
         <div class="space-y-4">
@@ -23,7 +35,7 @@
                 <x-hub::input.toggle :on="$method['enabled']" wire:click="toggleMethod('{{ $key }}')" />
               </div>
 
-              @if($method['method'] && $method['method']->enabled)
+              @if($method['method_id'] && $method['enabled'])
                 <div class="ml-4">
                   <x-hub::button wire:click="$set('methodToEdit', '{{ $key }}')">Edit</x-hub::button>
                 </div>
@@ -32,54 +44,13 @@
               <div @if($methodToEdit != $key) class="hidden" @endif>
                 <x-hub::slideover title="Free Shipping" wire:model="methodToEdit">
                   @livewire($method['component'], [
-                    'shippingMethod' => $method['method'],
+                    'shippingMethodId' => $method['method_id'],
                     'shippingZone' => $shippingZone,
                   ], key('shipping_method_'.$key))
                 </x-hub::slideover>
               </div>
             </div>
           @endforeach
-
-          {{-- <div class="flex items-center justify-between pb-4 border-b">
-            <div class="grow">
-              <strong>Flat Rate</strong>
-              <p class="text-sm text-gray-500">Charge a fixed shipping cost per order or per item.</p>
-            </div>
-
-            <div class="ml-4">
-              <x-hub::input.toggle :on="true" />
-            </div>
-
-            <div class="ml-4">
-              <x-hub::button type="button" wire:click="$set('showFlatRateShipping', true)">Edit</x-hub::button>
-            </div>
-          </div>
-
-          <div class="flex items-center justify-between pb-4 border-b">
-            <div class="grow">
-              <strong>Ship by weight/total</strong>
-              <p class="text-sm text-gray-500">Calculate shipping cost based on order value or the total weight of items.</p>
-            </div>
-
-            <div class="ml-4">
-              <x-hub::input.toggle :on="true" />
-            </div>
-
-            <div class="ml-4">
-              <x-hub::button type="button" wire:click="$set('showShipByTotal', true)">Edit</x-hub::button>
-            </div>
-          </div>
-
-          <div class="flex items-center justify-between">
-            <div class="grow">
-              <strong>Collection in store</strong>
-              <p class="text-sm text-gray-500">Allow customers to pick up their order in store.</p>
-            </div>
-
-            <div class="ml-4">
-              <x-hub::input.toggle :on="false" />
-            </div>
-          </div> --}}
         </div>
       </div>
     </div>
