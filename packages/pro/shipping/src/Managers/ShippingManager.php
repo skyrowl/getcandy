@@ -2,6 +2,7 @@
 
 namespace GetCandy\Shipping\Managers;
 
+use GetCandy\Shipping\Drivers\ShippingMethods\Collection;
 use GetCandy\Shipping\Drivers\ShippingMethods\FlatRate;
 use GetCandy\Shipping\Drivers\ShippingMethods\FreeShipping;
 use GetCandy\Shipping\Drivers\ShippingMethods\ShipBy;
@@ -25,12 +26,18 @@ class ShippingManager extends Manager implements ShippingMethodManagerInterface
         return $this->buildProvider(ShipBy::class);
     }
 
+    public function createCollectionDriver()
+    {
+        return $this->buildProvider(Collection::class);
+    }
+
     public function getSupportedDrivers()
     {
         return collect(array_merge([
             'free-shipping' => $this->createDriver('free-shipping'),
             'flat-rate' => $this->createDriver('flat-rate'),
             'ship-by' => $this->createDriver('ship-by'),
+            'collection' => $this->createDriver('collection'),
         ], $this->customCreators));
     }
 

@@ -6,6 +6,7 @@ use GetCandy\Hub\Facades\Menu;
 use GetCandy\Shipping\Http\Livewire\Components\ShippingMethods\FlatRate;
 use GetCandy\Shipping\Http\Livewire\Components\ShippingMethods\FreeShipping;
 use GetCandy\Shipping\Http\Livewire\Components\ShippingMethods\ShipBy;
+use GetCandy\Shipping\Http\Livewire\Components\ShippingMethods\Collection;
 use GetCandy\Shipping\Http\Livewire\Pages\ShippingExclusionListsCreate;
 use GetCandy\Shipping\Http\Livewire\Pages\ShippingExclusionListsIndex;
 use GetCandy\Shipping\Http\Livewire\Pages\ShippingExclusionListsShow;
@@ -104,6 +105,7 @@ class ShippingServiceProvider extends ServiceProvider
             FreeShipping::class,
             FlatRate::class,
             ShipBy::class,
+            Collection::class
         ];
 
         foreach ($components as $component) {
