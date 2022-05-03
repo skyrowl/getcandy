@@ -18,7 +18,7 @@ class ShippingZoneShow extends AbstractShippingZone
      *
      * @var string
      */
-    public $methodToEdit = '1_free-shipping';
+    public $methodToEdit = '3_flat-rate';
 
     /**
      * The shipping methods enabled for this zone.
