@@ -111,7 +111,7 @@ abstract class AbstractShippingMethod extends Component
      *
      * @return Collection
      */
-    public function getAvailableCustomerGroupsProperty()
+    public function getCustomerGroupsProperty()
     {
         return CustomerGroup::get();
     }

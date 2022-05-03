@@ -2,12 +2,13 @@
 
 namespace GetCandy\Shipping\Http\Livewire\Components\ShippingMethods;
 
+use GetCandy\Hub\Http\Livewire\Traits\HasPrices;
 use GetCandy\Models\Currency;
 use GetCandy\Shipping\Traits\ExcludesProducts;
 
 class FlatRate extends AbstractShippingMethod
 {
-    use ExcludesProducts;
+    use ExcludesProducts, HasPrices;
 
     /**
      * The current currency.
@@ -17,13 +18,22 @@ class FlatRate extends AbstractShippingMethod
     public Currency $currency;
 
     /**
+     * The prices for the shipping method
+     *
+     * @var array
+     */
+    public array $prices = [];
+
+    /**
      * {@inheritDoc}
      */
     public function mount()
     {
         parent::mount();
 
-        $this->currency = $this->currencies->first();
+        $this->currency = $this->currencies->first(fn($currency) => $currency->default);
+
+        // dd($this->shippingMethod->prices);
     }
 
     /**
@@ -31,10 +41,7 @@ class FlatRate extends AbstractShippingMethod
      */
     public function defaultData(): array
     {
-        return [
-            'minimum_spend' => [],
-            'use_discount_amount' => false,
-        ];
+        return [];
     }
 
     /**
@@ -44,10 +51,15 @@ class FlatRate extends AbstractShippingMethod
      */
     public function additionalRules(): array
     {
-        return [
-            'data.minimum_spend' => 'array|nullable',
-            'data.use_discount_amount' => 'boolean|nullable',
-        ];
+        $currencies = $this->currencies;
+
+        $rules = [];
+
+        foreach ($currencies as $currency) {
+            $rules["prices.*.{$currency->code}"] = 'numeric|required';
+        }
+
+        return $rules;
     }
 
     /**
@@ -62,6 +74,8 @@ class FlatRate extends AbstractShippingMethod
         $this->updateExcludedLists();
 
         $this->shippingMethod->save();
+
+        $this->savePricing();
 
         $this->notify('Shipping Method Updated');
 
@@ -87,6 +101,14 @@ class FlatRate extends AbstractShippingMethod
     public function getCurrenciesProperty()
     {
         return Currency::get();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getPricedModel()
+    {
+        return $this->shippingMethod;
     }
 
     /**

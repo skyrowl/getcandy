@@ -18,7 +18,7 @@ class ShippingZoneShow extends AbstractShippingZone
      *
      * @var string
      */
-    public $methodToEdit = '3_flat-rate';
+    public $methodToEdit = null;
 
     /**
      * The shipping methods enabled for this zone.
@@ -59,6 +59,8 @@ class ShippingZoneShow extends AbstractShippingZone
                 $method = ShippingMethod::create([
                     'shipping_zone_id' => $this->shippingZone->id,
                     'name' => $driver->name(),
+                    'custom_name' => null,
+                    'custom_description' => null,
                     'enabled' => false,
                     'driver' => $key,
                 ]);
@@ -66,7 +68,9 @@ class ShippingZoneShow extends AbstractShippingZone
                 return [
                     "{$method->id}_{$key}" => [
                         'name' => $driver->name(),
+                        'custom_name' => $method->name,
                         'description' => $driver->description(),
+                        'custom_description' => $method->description,
                         'component' => $driver->component(),
                         'method_id' => $method->id,
                         'enabled' => false,
@@ -88,6 +92,8 @@ class ShippingZoneShow extends AbstractShippingZone
                     "{$method->id}_{$driver['key']}" => [
                         'name' => $driver['name'],
                         'description' => $driver['description'],
+                        'custom_name' => $method->name,
+                        'custom_description' => $method->description,
                         'component' => $driver['component'],
                         'method_id' => $method->id,
                         'enabled' => $method->enabled ?? false,

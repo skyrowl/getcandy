@@ -27,8 +27,15 @@
           @foreach($this->shippingMethods as $key => $method)
             <div class="flex items-center justify-between pb-4 border-b" wire:key="{{ $key }}">
               <div class="grow">
-                <strong>{{ $method['name'] }}</strong>
-                <p class="text-sm text-gray-500">{{ $method['description'] }}</p>
+                @if($method['custom_name'])
+                  <div>
+                    <strong>{{ $method['custom_name'] }}</strong>
+                    <small class="text-gray-500">({{ $method['name'] }})</small>
+                  </div>
+                @else
+                  <strong>{{ $method['name'] }}</strong>
+                @endif
+                <p class="text-sm text-gray-500">{{ $method['custom_description'] ?: $method['description'] }}</p>
               </div>
 
               <div class="ml-4">
