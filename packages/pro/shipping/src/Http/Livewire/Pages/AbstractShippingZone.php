@@ -31,10 +31,18 @@ abstract class AbstractShippingZone extends Component
      */
     public ?string $countrySearchTerm = null;
 
+    /**
+     * The postcodes to associate to the zone
+     *
+     * @var string
+     */
+    public string $postcodes = '';
 
     public function baseRules()
     {
-        return [];
+        return [
+            'postcodes' => 'nullable|string',
+        ];
     }
 
     /**
@@ -43,6 +51,8 @@ abstract class AbstractShippingZone extends Component
     public function mount()
     {
         $this->selectedCountries = $this->shippingZone->countries->pluck('id')->toArray();
+
+        $this->postcodes = $this->shippingZone->postcodes->pluck('postcode')->join("\n");
     }
 
     /**
@@ -66,6 +76,28 @@ abstract class AbstractShippingZone extends Component
             $this->shippingZone->countries()->sync(
                 $this->selectedCountries
             );
+        }
+
+        if ($this->shippingZone->type == 'postcodes') {
+            $postcodes = explode("\n", $this->postcodes);
+
+            $existing = $this->shippingZone->postcodes()->whereIn('postcode', $postcodes)->pluck('postcode');
+
+            $postcodesToAdd = collect($postcodes)->reject(function ($postcode) use ($existing) {
+                return $existing->contains($postcode);
+            });
+
+            $this->shippingZone->postcodes()->createMany(
+                $postcodesToAdd->map(function ($postcode) {
+                    return [
+                        'postcode' => str_replace(' ', '', $postcode),
+                    ];
+                })
+            );
+
+            $this->postcodes = $this->shippingZone->postcodes()->pluck('postcode')->join("\n");
+        } else {
+            $this->shippingZone->postcodes()->delete();
         }
     }
 

@@ -12,7 +12,7 @@
   </x-hub::input.group>
 
   @if($shippingZone->type == 'countries')
-  <x-hub::input.group label="Countries" for="type"  :error="$errors->first('currency.name')">
+    <x-hub::input.group label="Countries" for="type"  :error="$errors->first('currency.name')">
     <div class="grid grid-cols-2 gap-4">
       <div class="border rounded">
         <div class="p-2 border-b shadow-sm">
@@ -42,6 +42,17 @@
       </div>
     </div>
   </x-hub::input.group>
+  @endif
+
+  @if($shippingZone->type == 'postcodes')
+    <x-hub::input.group
+      label="Postcodes"
+      for="type"
+      instructions="List each postcode on a new line. Supports wildcards such as NW*"
+      :error="$errors->first('postcodes')"
+    >
+      <x-hub::input.textarea wire:model="postcodes" rows="10" />
+    </x-hub::input.group>
   @endif
 </div>
 <div class="px-4 py-3 text-right bg-gray-50 sm:px-6">
