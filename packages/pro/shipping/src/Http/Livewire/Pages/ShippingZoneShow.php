@@ -64,7 +64,7 @@ class ShippingZoneShow extends AbstractShippingZone
             $method = $methods->first(fn ($method) => $method->driver == $key);
 
             // If there is no method, create a blank one.
-            if (!$method) {
+            if (! $method) {
                 $method = ShippingMethod::create([
                     'shipping_zone_id' => $this->shippingZone->id,
                     'name' => $driver->name(),

@@ -2,7 +2,6 @@
 
 namespace GetCandy\Shipping\Factories;
 
-use GetCandy\Models\ShippingZone;
 use GetCandy\Shipping\Models\ShippingZonePostcode;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
