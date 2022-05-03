@@ -88,14 +88,14 @@ trait HasPrices
      *
      * @return void
      */
-    public function savePricing()
+    public function savePricing($basePrices = null)
     {
         $model = $this->getPricedModel();
 
-        DB::transaction(function () use ($model) {
+        DB::transaction(function () use ($model, $basePrices) {
             app(UpdatePrices::class)->execute(
                 $model,
-                $this->basePrices
+                $basePrices ?: $this->basePrices
             );
         });
 
