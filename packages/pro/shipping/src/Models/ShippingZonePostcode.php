@@ -42,10 +42,9 @@ class ShippingZonePostcode extends BaseModel
     }
 
     /**
-     * Setter for postcode attribute
+     * Setter for postcode attribute.
      *
-     * @param string $value
-     *
+     * @param  string  $value
      * @return void
      */
     public function setPostcodeAttribute($value)

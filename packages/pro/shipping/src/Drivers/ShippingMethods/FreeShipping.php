@@ -13,14 +13,14 @@ use GetCandy\Shipping\Models\ShippingMethod;
 class FreeShipping implements ShippingMethodInterface
 {
     /**
-     * The shipping method for context
+     * The shipping method for context.
      *
      * @var ShippingMethod
      */
     public ShippingMethod $shippingMethod;
 
     /**
-     * {@inheritDocs}
+     * {@inheritDoc}
      */
     public function name(): string
     {
@@ -28,7 +28,7 @@ class FreeShipping implements ShippingMethodInterface
     }
 
     /**
-     * {@inheritDocs}
+     * {@inheritDoc}
      */
     public function description(): string
     {
@@ -53,9 +53,7 @@ class FreeShipping implements ShippingMethodInterface
             } else {
                 $minSpend = (int) $data->minimum_spend->{$cart->currency->code} ?? null;
             }
-
         }
-
 
         if (is_null($minSpend) || ($minSpend * 100) > $subTotal) {
             return null;

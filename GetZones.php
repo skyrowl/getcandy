@@ -29,10 +29,9 @@ class GetZones
     }
 
     /**
-     * Return shipping zones based on country
+     * Return shipping zones based on country.
      *
-     * @param string $countryId
-     *
+     * @param  string  $countryId
      * @return Collection
      */
     public function getCountryZones($countryId)
@@ -43,11 +42,10 @@ class GetZones
     }
 
     /**
-     * Returns shipping zones that match via a postcode
+     * Returns shipping zones that match via a postcode.
      *
-     * @param string $postcode
-     *
-     * @return Collection  description
+     * @param  string  $postcode
+     * @return Collection description
      */
     public function getPostcodeZones($postcode)
     {

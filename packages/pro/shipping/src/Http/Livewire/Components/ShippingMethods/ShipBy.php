@@ -18,7 +18,7 @@ class ShipBy extends AbstractShippingMethod
     public Currency $currency;
 
     /**
-     * The prices for the shipping method
+     * The prices for the shipping method.
      *
      * @var array
      */
@@ -31,7 +31,7 @@ class ShipBy extends AbstractShippingMethod
     {
         parent::mount();
 
-        $this->currency = $this->currencies->first(fn($currency) => $currency->default);
+        $this->currency = $this->currencies->first(fn ($currency) => $currency->default);
 
         // dd($this->shippingMethod->prices);
     }
@@ -77,7 +77,7 @@ class ShipBy extends AbstractShippingMethod
 
         $this->savePricing(
             basePrices: collect($this->basePrices)->reject(function ($price) {
-                return !$price['price'];
+                return ! $price['price'];
             })
         );
 

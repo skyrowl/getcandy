@@ -2,7 +2,6 @@
 
 namespace GetCandy\Shipping\Managers;
 
-use GetCandy\Base\Addressable;
 use GetCandy\Models\Cart;
 use GetCandy\Shipping\Actions\GetShippingMethods;
 use GetCandy\Shipping\Actions\GetShippingZones;
@@ -46,10 +45,9 @@ class ShippingManager extends Manager implements ShippingMethodManagerInterface
     }
 
     /**
-     * Find the zone for a given address
+     * Find the zone for a given address.
      *
-     * @param Cart $cart
-     *
+     * @param  Cart  $cart
      * @return Collection
      */
     public function getShippingZones(Cart $cart)

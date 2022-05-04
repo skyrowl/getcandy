@@ -11,7 +11,7 @@ use GetCandy\Shipping\Models\ShippingMethod;
 class ShipBy implements ShippingMethodInterface
 {
     /**
-     * The shipping method for context
+     * The shipping method for context.
      *
      * @var ShippingMethod
      */
@@ -47,7 +47,6 @@ class ShipBy implements ShippingMethodInterface
     {
         return null;
     }
-
 
     /**
      * {@inheritDoc}
