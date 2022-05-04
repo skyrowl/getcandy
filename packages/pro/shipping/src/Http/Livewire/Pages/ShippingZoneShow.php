@@ -227,11 +227,9 @@ class ShippingZoneShow extends AbstractShippingZone
      */
     public function render()
     {
-        $products = Product::inRandomOrder()->take(4)->get();
-
         return view('shipping::shipping-zones.show')
-        ->layout('adminhub::layouts.app', [
-            'title' => 'United Kingdom',
-        ]);
+            ->layout('adminhub::layouts.app', [
+                'title' => 'United Kingdom',
+            ]);
     }
 }
