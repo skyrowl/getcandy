@@ -34,7 +34,7 @@
   @endif
 </div>
 <div class="px-4 py-3 justify-between bg-gray-50 sm:px-6 flex">
-  <x-hub::button theme="danger" type="button">
+  <x-hub::button theme="danger" type="button"  wire:click="$set('showDeleteConfirm', true)">
     Delete Shipping Zone
   </x-hub::button>
   <x-hub::button type="submit">

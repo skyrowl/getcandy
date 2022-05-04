@@ -125,6 +125,9 @@ class ShippingZoneShow extends AbstractShippingZone
                 $method->delete();
             }
 
+            $this->shippingZone->postcodes()->delete();
+            $this->shippingZone->countries()->detach();
+
             $this->shippingZone->delete();
         });
 
