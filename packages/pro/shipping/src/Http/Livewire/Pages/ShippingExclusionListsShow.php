@@ -21,13 +21,16 @@ class ShippingExclusionListsShow extends AbstractShippingExclusionList
      */
     public function mount()
     {
-        $this->products = $this->list->exclusions->pluck('purchasable')->map(function ($product) {
+        $this->products = $this->list
+            ->load(['exclusions.purchasable.thumbnail', 'exclusions.purchasable.variants'])
+        ->exclusions->pluck('purchasable')->map(function ($product) {
             return [
                 'id' => $product->id,
                 'name' => $product->translateAttribute('name'),
                 'thumbnail' => $product->thumbnail?->getUrl('small'),
+                'sku' => $product->variants->pluck('sku')->join(', '),
             ];
-        });
+        })->sortBy('id');
     }
 
     /**
