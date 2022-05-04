@@ -8,6 +8,7 @@ use GetCandy\Shipping\Facades\Shipping;
 use GetCandy\Shipping\Models\ShippingMethod;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 
 class ShippingZoneShow extends AbstractShippingZone
 {
@@ -28,6 +29,20 @@ class ShippingZoneShow extends AbstractShippingZone
     public array $shippingMethods;
 
     /**
+     * Whether to show the delete confirmation modal.
+     *
+     * @var bool
+     */
+    public bool $showDeleteConfirm = false;
+
+    /**
+     * The ID of the shipping method we want to remove.
+     *
+     * @var int
+     */
+    public ?int $shippingMethodToRemove = null;
+
+    /**
      * {@inheritDoc}
      */
     protected $listeners = [
@@ -40,7 +55,7 @@ class ShippingZoneShow extends AbstractShippingZone
     public function rules()
     {
         return array_merge([
-            'shippingZone.name' => 'required|unique:'.ShippingZone::class.',name,'.$this->shippingZone->id,
+            'shippingZone.name' => 'required|unique:' . ShippingZone::class . ',name,' . $this->shippingZone->id,
             'shippingZone.type' => 'required',
             // 'countries' => 'nullable|array',
         ], $this->baseRules());
@@ -51,83 +66,33 @@ class ShippingZoneShow extends AbstractShippingZone
      */
     public function mount()
     {
+        parent::mount();
+
         $existingMethods = $this->shippingZone->shippingMethods;
 
         // If we don't have any shipping methods on the zone already, we should set the base ones up.
-        if (!$existingMethods->count()) {
-            $this->shippingMethods = $this->supportedShippingMethods->mapWithKeys(function ($driver, $key) {
-                $method = ShippingMethod::create([
-                    'shipping_zone_id' => $this->shippingZone->id,
-                    'name' => $driver['name'],
-                    'enabled' => false,
-                    'driver' => $key,
-                ]);
-
-                return [
-                    "{$method->id}_{$key}" => [
-                        'name' => $driver['name'],
-                        'custom_name' => $method->name,
-                        'description' => $driver['description'],
-                        'custom_description' => $method->description,
-                        'component' => $driver['component'],
-                        'method_id' => $method->id,
-                        'enabled' => false,
-                    ]
-                ];
-            })->toArray();
-        } else {
-            $shippingMethods = $existingMethods->mapWithKeys(function ($method, $key) {
-
-                $driver = $this->supportedShippingMethods->first(function ($driver) use ($method) {
-                    return $driver['key'] == $method->driver;
-                });
-
-                if (!$driver) {
-                    return null;
-                }
-
-                return [
-                    "{$method->id}_{$driver['key']}" => [
-                        'driver' => $driver['key'],
-                        'name' => $driver['name'],
-                        'description' => $driver['description'],
-                        'custom_name' => $method->name,
-                        'custom_description' => $method->description,
-                        'component' => $driver['component'],
-                        'method_id' => $method->id,
-                        'enabled' => $method->enabled ?? false,
-                    ]
-                ];
-            })->filter();
-
-            // There might be some new methods we don't know about, so we should
-            // make sure we have a method for each one available and add any
-            // that do not exist for the zone.
-            $missing = $this->supportedShippingMethods->filter(function ($method) use ($shippingMethods) {
-                return !$shippingMethods->pluck('driver')->contains($method['key']);
-            })->mapWithKeys(function ($driver, $key) {
-                $method = ShippingMethod::create([
-                    'shipping_zone_id' => $this->shippingZone->id,
-                    'name' => $driver['name'],
-                    'enabled' => false,
-                    'driver' => $key,
-                ]);
-
-                return [
-                    "{$method->id}_{$key}" => [
-                        'name' => $driver['name'],
-                        'custom_name' => $method->name,
-                        'description' => $driver['description'],
-                        'custom_description' => $method->description,
-                        'component' => $driver['component'],
-                        'method_id' => $method->id,
-                        'enabled' => false,
-                    ]
-                ];
+        $this->shippingMethods = $existingMethods->mapWithKeys(function ($method, $key) {
+            $driver = $this->supportedShippingMethods->first(function ($driver) use ($method) {
+                return $driver['key'] == $method->driver;
             });
 
-            $this->shippingMethods = $shippingMethods->merge($missing)->toArray();
-        }
+            if (!$driver) {
+                return null;
+            }
+
+            return [
+                "{$method->id}_{$driver['key']}" => [
+                    'driver' => $driver['key'],
+                    'name' => $driver['name'],
+                    'description' => $driver['description'],
+                    'custom_name' => $method->name,
+                    'custom_description' => $method->description,
+                    'component' => $driver['component'],
+                    'method_id' => $method->id,
+                    'enabled' => $method->enabled ?? false,
+                ]
+            ];
+        })->filter()->toArray();
     }
 
     /**
@@ -142,6 +107,28 @@ class ShippingZoneShow extends AbstractShippingZone
         $this->saveDetails();
 
         $this->notify('Shipping Zone updated');
+    }
+
+    /**
+     * Deletes a shipping zone.
+     *
+     * @return Redirect
+     */
+    public function deleteZone()
+    {
+        DB::transaction(function () {
+            $methods = $this->shippingZone->refresh()->shippingMethods;
+
+            foreach ($methods as $method) {
+                $method->prices()->delete();
+                $method->shippingExclusions()->detach();
+                $method->delete();
+            }
+
+            $this->shippingZone->delete();
+        });
+
+        redirect()->route('hub.shipping.index');
     }
 
     /**
@@ -208,6 +195,12 @@ class ShippingZoneShow extends AbstractShippingZone
         }
 
         $this->shippingMethods[$key]['enabled'] = !$map['enabled'];
+
+        $this->notify(
+            $map['enabled'] ?
+            'Shipping method disabled' :
+            'Shipping method enabled'
+        );
     }
 
     /**

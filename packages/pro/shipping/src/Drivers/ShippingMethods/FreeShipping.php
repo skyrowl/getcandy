@@ -45,9 +45,19 @@ class FreeShipping implements ShippingMethodInterface
             $subTotal -= $cart->discountTotal->value;
         }
 
-        $minSpend = (int) $data->minimum_spend->{$cart->currency->code} ?? null;
+        if (empty($data)) {
+            $minSpend = 0;
+        } else {
+            if (is_array($data->minimum_spend)) {
+                $minSpend = (int) ($data->minimum_spend[$cart->currency->code] ?? null);
+            } else {
+                $minSpend = (int) $data->minimum_spend->{$cart->currency->code} ?? null;
+            }
 
-        if (!$minSpend || ($minSpend * 100) > $subTotal) {
+        }
+
+
+        if (is_null($minSpend) || ($minSpend * 100) > $subTotal) {
             return null;
         }
 

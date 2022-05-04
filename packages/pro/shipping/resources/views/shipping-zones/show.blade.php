@@ -3,6 +3,24 @@
     <form action="#" wire:submit.prevent="save" class="shadow sm:rounded-md">
       @include('shipping::partials.forms.shipping-zone')
     </form>
+
+    <x-hub::modal.dialog form="deleteZone" wire:model="showDeleteConfirm">
+      <x-slot name="title">
+        Delete Shipping Zone
+      </x-slot>
+      <x-slot name="content">
+        <x-hub::alert level="danger">
+          This action cannot be undone.
+        </x-hub::alert>
+      </x-slot>
+      <x-slot name="footer">
+        <x-hub::button type="button" wire:click.prevent="$set('showDeleteConfirm', false)" theme="gray">
+          {{ __('adminhub::global.cancel') }}
+        </x-hub::button>
+        <x-hub::button type="submit" theme="danger">Remove</x-hub::button>
+      </x-slot>
+    </x-hub::modal.dialog>
+
     <div class="shadow sm:rounded-md">
       <div class="flex-col px-4 py-5 space-y-4 bg-white rounded-md sm:p-6">
         <header class="flex items-center justify-between">
@@ -47,6 +65,12 @@
                   <x-hub::button wire:click="$set('methodToEdit', '{{ $key }}')">Edit</x-hub::button>
                 </div>
               @endif
+
+              <div class="ml-4">
+                <button class="text-gray-500 hover:text-gray-900">
+                  <x-hub::icon ref="trash" class="w-4" />
+                </button>
+              </div>
 
               <div @if($methodToEdit != $key) class="hidden" @endif>
                 <x-hub::slideover title="Free Shipping" wire:model="methodToEdit">
