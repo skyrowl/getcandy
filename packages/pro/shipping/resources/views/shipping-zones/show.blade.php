@@ -90,7 +90,7 @@
               </div>
 
               <div @if($methodToEdit != $key) class="hidden" @endif>
-                <x-hub::slideover title="Free Shipping" wire:model="methodToEdit">
+                <x-hub::slideover :title="$method['custom_name'] ?: $method['name']" wire:model="methodToEdit">
                   @livewire($method['component'], [
                     'shippingMethodId' => $method['method_id'],
                     'shippingZone' => $shippingZone,
