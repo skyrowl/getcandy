@@ -2,6 +2,10 @@
 
 namespace GetCandy\Shipping\Managers;
 
+use GetCandy\Base\Addressable;
+use GetCandy\Models\Cart;
+use GetCandy\Shipping\Actions\GetShippingMethods;
+use GetCandy\Shipping\Actions\GetShippingZones;
 use GetCandy\Shipping\Drivers\ShippingMethods\Collection;
 use GetCandy\Shipping\Drivers\ShippingMethods\FlatRate;
 use GetCandy\Shipping\Drivers\ShippingMethods\FreeShipping;
@@ -39,6 +43,23 @@ class ShippingManager extends Manager implements ShippingMethodManagerInterface
             'ship-by' => $this->createDriver('ship-by'),
             'collection' => $this->createDriver('collection'),
         ], $this->customCreators));
+    }
+
+    /**
+     * Find the zone for a given address
+     *
+     * @param Cart $cart
+     *
+     * @return Collection
+     */
+    public function getShippingZones(Cart $cart)
+    {
+        return app(GetShippingZones::class)->execute($cart);
+    }
+
+    public function getShippingMethods(Cart $cart)
+    {
+        return app(GetShippingMethods::class)->execute($cart);
     }
 
     /**

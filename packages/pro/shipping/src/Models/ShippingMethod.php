@@ -52,7 +52,7 @@ class ShippingMethod extends BaseModel
      */
     public function driver(): ShippingMethodInterface
     {
-        return Shipping::driver($this->driver);
+        return Shipping::driver($this->driver)->on($this);
     }
 
     /**

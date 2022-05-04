@@ -2,6 +2,7 @@
 
 namespace GetCandy\Shipping;
 
+use GetCandy\Base\ShippingModifiers;
 use GetCandy\Hub\Facades\Menu;
 use GetCandy\Shipping\Http\Livewire\Components\ShippingMethods\FlatRate;
 use GetCandy\Shipping\Http\Livewire\Components\ShippingMethods\FreeShipping;
@@ -25,7 +26,7 @@ class ShippingServiceProvider extends ServiceProvider
         //
     }
 
-    public function boot()
+    public function boot(ShippingModifiers $shippingModifiers)
     {
         $this->loadTranslationsFrom(__DIR__.'/../lang', 'shipping');
 
@@ -38,6 +39,11 @@ class ShippingServiceProvider extends ServiceProvider
             ->route('hub.shipping.index')
             ->icon('truck');
         });
+
+        $shippingModifiers->add(
+            ShippingModifier::class
+        );
+
         // // Register our payment type.
         // Payments::extend('opayo', function ($app) {
         //     return $app->make(OpayoPaymentType::class);

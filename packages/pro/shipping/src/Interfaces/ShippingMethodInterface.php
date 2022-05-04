@@ -2,6 +2,10 @@
 
 namespace GetCandy\Shipping\Interfaces;
 
+use GetCandy\DataTypes\ShippingOption;
+use GetCandy\Models\Cart;
+use GetCandy\Shipping\Models\ShippingMethod;
+
 interface ShippingMethodInterface
 {
     /**
@@ -24,4 +28,20 @@ interface ShippingMethodInterface
      * @return string
      */
     public function component(): string;
+
+    /**
+     * Set the context for the driver
+     *
+     * @param ShippingMethod $shippingMethod
+     *
+     * @return self
+     */
+    public function on(ShippingMethod $shippingMethod): self;
+
+    /**
+     * Return the shipping option price
+     *
+     * @return ShippingOption
+     */
+    public function getShippingOption(Cart $cart): ShippingOption|null;
 }

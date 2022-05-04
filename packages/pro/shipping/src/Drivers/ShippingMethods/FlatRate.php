@@ -2,11 +2,21 @@
 
 namespace GetCandy\Shipping\Drivers\ShippingMethods;
 
+use GetCandy\DataTypes\ShippingOption;
+use GetCandy\Models\Cart;
 use GetCandy\Shipping\Http\Livewire\Components\ShippingMethods\FlatRate as ShippingMethodsFlatRate;
 use GetCandy\Shipping\Interfaces\ShippingMethodInterface;
+use GetCandy\Shipping\Models\ShippingMethod;
 
 class FlatRate implements ShippingMethodInterface
 {
+    /**
+     * The shipping method for context
+     *
+     * @var ShippingMethod
+     */
+    public ShippingMethod $shippingMethod;
+
     /**
      * {@inheritdoc}
      */
@@ -31,5 +41,20 @@ class FlatRate implements ShippingMethodInterface
     public function component(): string
     {
         return (new ShippingMethodsFlatRate())->getName();
+    }
+
+    public function getShippingOption(Cart $cart): ShippingOption|null
+    {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function on(ShippingMethod $shippingMethod): self
+    {
+        $this->shippingMethod = $shippingMethod;
+
+        return $this;
     }
 }

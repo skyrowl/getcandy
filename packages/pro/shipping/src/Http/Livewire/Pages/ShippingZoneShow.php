@@ -58,18 +58,18 @@ class ShippingZoneShow extends AbstractShippingZone
             $this->shippingMethods = $this->supportedShippingMethods->mapWithKeys(function ($driver, $key) {
                 $method = ShippingMethod::create([
                     'shipping_zone_id' => $this->shippingZone->id,
-                    'name' => $driver->name(),
+                    'name' => $driver['name'],
                     'enabled' => false,
                     'driver' => $key,
                 ]);
 
                 return [
                     "{$method->id}_{$key}" => [
-                        'name' => $driver->name(),
+                        'name' => $driver['name'],
                         'custom_name' => $method->name,
-                        'description' => $driver->description(),
+                        'description' => $driver['description'],
                         'custom_description' => $method->description,
-                        'component' => $driver->component(),
+                        'component' => $driver['component'],
                         'method_id' => $method->id,
                         'enabled' => false,
                     ]
