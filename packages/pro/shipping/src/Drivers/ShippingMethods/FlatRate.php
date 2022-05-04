@@ -11,7 +11,7 @@ use GetCandy\Shipping\Models\ShippingMethod;
 class FlatRate implements ShippingMethodInterface
 {
     /**
-     * The shipping method for context
+     * The shipping method for context.
      *
      * @var ShippingMethod
      */

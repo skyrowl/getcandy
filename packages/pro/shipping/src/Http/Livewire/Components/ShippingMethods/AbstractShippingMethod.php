@@ -58,7 +58,7 @@ abstract class AbstractShippingMethod extends Component
             'data' => 'array',
             'shippingMethod.name' => 'string|nullable',
             'shippingMethod.description' => 'string|nullable',
-            'shippingMethod.code' => 'nullable|unique:' . ShippingMethod::class . ',code,' . $this->shippingMethod->id,
+            'shippingMethod.code' => 'nullable|unique:'.ShippingMethod::class.',code,'.$this->shippingMethod->id,
         ];
     }
 
@@ -107,7 +107,7 @@ abstract class AbstractShippingMethod extends Component
     abstract public function defaultData(): array;
 
     /**
-     * Return the available customer groups
+     * Return the available customer groups.
      *
      * @return Collection
      */

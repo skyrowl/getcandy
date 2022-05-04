@@ -2,7 +2,6 @@
 
 namespace GetCandy\Shipping\Actions;
 
-use GetCandy\Base\Addressable;
 use GetCandy\Models\Cart;
 use GetCandy\Shipping\Models\ShippingZone;
 use GetCandy\Shipping\Models\ShippingZonePostcode;
@@ -30,10 +29,9 @@ class GetShippingMethods
     }
 
     /**
-     * Return shipping zones based on country
+     * Return shipping zones based on country.
      *
-     * @param string $countryId
-     *
+     * @param  string  $countryId
      * @return Collection
      */
     public function getCountryZones($countryId)
@@ -44,11 +42,10 @@ class GetShippingMethods
     }
 
     /**
-     * Returns shipping zones that match via a postcode
+     * Returns shipping zones that match via a postcode.
      *
-     * @param string $postcode
-     *
-     * @return Collection  description
+     * @param  string  $postcode
+     * @return Collection description
      */
     public function getPostcodeZones($postcode)
     {

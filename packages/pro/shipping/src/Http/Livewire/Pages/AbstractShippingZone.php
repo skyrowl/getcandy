@@ -25,21 +25,21 @@ abstract class AbstractShippingZone extends Component
     public array $selectedCountries = [];
 
     /**
-     * The single country related to the zone
+     * The single country related to the zone.
      *
      * @var string
      */
     public ?string $country = null;
 
     /**
-     * Search term for filtering out countries
+     * Search term for filtering out countries.
      *
      * @var string
      */
     public ?string $countrySearchTerm = null;
 
     /**
-     * The postcodes to associate to the zone
+     * The postcodes to associate to the zone.
      *
      * @var string
      */
@@ -119,7 +119,7 @@ abstract class AbstractShippingZone extends Component
     }
 
     /**
-     * Return a list of available countries
+     * Return a list of available countries.
      *
      * @return Collection
      */

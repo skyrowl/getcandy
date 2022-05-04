@@ -36,5 +36,5 @@ class ShippingModifier
 //                 taxClass: $taxClass
 //             )
 //         );
-	}
+    }
 }

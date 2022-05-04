@@ -2,7 +2,6 @@
 
 namespace GetCandy\Shipping\Http\Livewire\Components\ShippingMethods;
 
-use GetCandy\Models\Currency;
 use GetCandy\Shipping\Traits\ExcludesProducts;
 
 class Collection extends AbstractShippingMethod

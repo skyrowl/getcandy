@@ -30,16 +30,15 @@ interface ShippingMethodInterface
     public function component(): string;
 
     /**
-     * Set the context for the driver
+     * Set the context for the driver.
      *
-     * @param ShippingMethod $shippingMethod
-     *
+     * @param  ShippingMethod  $shippingMethod
      * @return self
      */
     public function on(ShippingMethod $shippingMethod): self;
 
     /**
-     * Return the shipping option price
+     * Return the shipping option price.
      *
      * @return ShippingOption
      */

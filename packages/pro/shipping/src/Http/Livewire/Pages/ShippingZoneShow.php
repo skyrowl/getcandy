@@ -3,7 +3,6 @@
 namespace GetCandy\Shipping\Http\Livewire\Pages;
 
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Models\Product;
 use GetCandy\Shipping\Facades\Shipping;
 use GetCandy\Shipping\Models\ShippingMethod;
 use GetCandy\Shipping\Models\ShippingZone;
@@ -56,7 +55,7 @@ class ShippingZoneShow extends AbstractShippingZone
     public function rules()
     {
         return array_merge([
-            'shippingZone.name' => 'required|unique:' . ShippingZone::class . ',name,' . $this->shippingZone->id,
+            'shippingZone.name' => 'required|unique:'.ShippingZone::class.',name,'.$this->shippingZone->id,
             'shippingZone.type' => 'required',
             // 'countries' => 'nullable|array',
         ], $this->baseRules());
@@ -76,10 +75,9 @@ class ShippingZoneShow extends AbstractShippingZone
     }
 
     /**
-     * Maps the shipping methods from the given zone
+     * Maps the shipping methods from the given zone.
      *
-     * @param Collection $shippingMethods
-     *
+     * @param  Collection  $shippingMethods
      * @return Collection
      */
     public function mapShippingMethods(Collection $shippingMethods)
@@ -89,7 +87,7 @@ class ShippingZoneShow extends AbstractShippingZone
                 return $driver['key'] == $method->driver;
             });
 
-            if (!$driver) {
+            if (! $driver) {
                 return null;
             }
 
@@ -104,7 +102,7 @@ class ShippingZoneShow extends AbstractShippingZone
                     'component' => $driver['component'],
                     'method_id' => $method->id,
                     'enabled' => $method->enabled ?? false,
-                ]
+                ],
             ];
         })->filter()->toArray();
     }
@@ -149,10 +147,9 @@ class ShippingZoneShow extends AbstractShippingZone
     }
 
     /**
-     * Delete the shipping method
+     * Delete the shipping method.
      *
-     * @param int $shippingMethodId
-     *
+     * @param  int  $shippingMethodId
      * @return void
      */
     public function deleteMethod()
@@ -175,7 +172,7 @@ class ShippingZoneShow extends AbstractShippingZone
     }
 
     /**
-     * Return the shipping methods supported by the system
+     * Return the shipping methods supported by the system.
      *
      * @return Collection
      */
@@ -238,7 +235,7 @@ class ShippingZoneShow extends AbstractShippingZone
             ]);
         }
 
-        $this->shippingMethods[$key]['enabled'] = !$map['enabled'];
+        $this->shippingMethods[$key]['enabled'] = ! $map['enabled'];
 
         $this->notify(
             $map['enabled'] ?

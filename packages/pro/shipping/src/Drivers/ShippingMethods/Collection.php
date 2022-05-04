@@ -5,14 +5,13 @@ namespace GetCandy\Shipping\Drivers\ShippingMethods;
 use GetCandy\DataTypes\ShippingOption;
 use GetCandy\Models\Cart;
 use GetCandy\Shipping\Http\Livewire\Components\ShippingMethods\Collection as ShippingMethodsCollection;
-use GetCandy\Shipping\Http\Livewire\Components\ShippingMethods\ShipBy as ShippingMethodsShipBy;
 use GetCandy\Shipping\Interfaces\ShippingMethodInterface;
 use GetCandy\Shipping\Models\ShippingMethod;
 
 class Collection implements ShippingMethodInterface
 {
     /**
-     * The shipping method for context
+     * The shipping method for context.
      *
      * @var ShippingMethod
      */
@@ -48,7 +47,6 @@ class Collection implements ShippingMethodInterface
     {
         return null;
     }
-
 
     /**
      * {@inheritDoc}
