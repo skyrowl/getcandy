@@ -115,6 +115,8 @@ abstract class AbstractShippingExclusionList extends Component
 
         $this->notify('Shipping Exclusion List Created');
 
+        redirect()->route('hub.shipping-exclusion-lists.show', $this->list->id);
+
         // return redirect()->route(
 
         // );

@@ -3,16 +3,24 @@
 namespace GetCandy\Shipping\Http\Livewire\Pages;
 
 use GetCandy\Shipping\Models\ShippingExclusionList;
+use Illuminate\Support\Facades\DB;
 
 class ShippingExclusionListsShow extends AbstractShippingExclusionList
 {
+    /**
+     * Whether to show the removal modal
+     *
+     * @var bool
+     */
+    public bool $showRemoveModal = false;
+
     /**
      * {@inheritDoc}
      */
     public function rules()
     {
         return [
-            'list.name' => 'required|unique:'.ShippingExclusionList::class.',name,'.$this->list->id,
+            'list.name' => 'required|unique:' . ShippingExclusionList::class . ',name,' . $this->list->id,
         ];
     }
 
@@ -31,6 +39,21 @@ class ShippingExclusionListsShow extends AbstractShippingExclusionList
                 'sku' => $product->variants->pluck('sku')->join(', '),
             ];
         })->sortBy('id');
+    }
+
+    /**
+     * Remove the list
+     *
+     * @return void
+     */
+    public function removeList()
+    {
+        DB::transaction(function () {
+           $this->list->exclusions()->delete();
+           $this->list->shippingMethods()->detach();
+           $this->list->delete();
+        });
+        redirect()->route('hub.shipping-exclusion-lists.index');
     }
 
     /**

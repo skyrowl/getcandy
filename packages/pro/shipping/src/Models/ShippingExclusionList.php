@@ -47,6 +47,11 @@ class ShippingExclusionList extends BaseModel
      */
     public function shippingMethods()
     {
-        return $this->hasMany(ShippingMethod::class);
+        return $this->belongsToMany(
+            ShippingMethod::class,
+            config('getcandy.database.table_prefix') . 'exclusion_list_shipping_method',
+            'exclusion_id',
+            'method_id',
+        );
     }
 }

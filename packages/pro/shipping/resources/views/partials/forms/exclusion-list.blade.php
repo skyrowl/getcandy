@@ -29,7 +29,10 @@
     @endforeach
   </div>
 </div>
-<div class="px-4 py-3 text-right rounded-b bg-gray-50 sm:px-6">
+<div class="px-4 py-3 flex justify-between rounded-b bg-gray-100 sm:px-6">
+  <x-hub::button type="button" wire:click="$set('showRemoveModal', true)" theme="danger">
+    Remove list
+  </x-hub::button>
   <x-hub::button type="submit">
     @if($list->id)
       Save exclusion list
