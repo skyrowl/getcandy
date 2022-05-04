@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 class ShippingExclusionListsShow extends AbstractShippingExclusionList
 {
     /**
-     * Whether to show the removal modal
+     * Whether to show the removal modal.
      *
      * @var bool
      */
@@ -20,7 +20,7 @@ class ShippingExclusionListsShow extends AbstractShippingExclusionList
     public function rules()
     {
         return [
-            'list.name' => 'required|unique:' . ShippingExclusionList::class . ',name,' . $this->list->id,
+            'list.name' => 'required|unique:'.ShippingExclusionList::class.',name,'.$this->list->id,
         ];
     }
 
@@ -42,16 +42,16 @@ class ShippingExclusionListsShow extends AbstractShippingExclusionList
     }
 
     /**
-     * Remove the list
+     * Remove the list.
      *
      * @return void
      */
     public function removeList()
     {
         DB::transaction(function () {
-           $this->list->exclusions()->delete();
-           $this->list->shippingMethods()->detach();
-           $this->list->delete();
+            $this->list->exclusions()->delete();
+            $this->list->shippingMethods()->detach();
+            $this->list->delete();
         });
         redirect()->route('hub.shipping-exclusion-lists.index');
     }
