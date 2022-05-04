@@ -41,7 +41,7 @@ class ShippingZone extends BaseModel
     }
 
     /**
-     * Return the countries relationship
+     * Return the countries relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -49,12 +49,12 @@ class ShippingZone extends BaseModel
     {
         return $this->belongsToMany(
             Country::class,
-            config('getcandy.database.table_prefix') . 'country_shipping_zone'
+            config('getcandy.database.table_prefix').'country_shipping_zone'
         )->withTimestamps();
     }
 
     /**
-     * Return the postcodes relationship
+     * Return the postcodes relationship.
      *
      * @return HasMany
      */
