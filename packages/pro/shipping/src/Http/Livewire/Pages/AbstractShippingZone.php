@@ -25,6 +25,13 @@ abstract class AbstractShippingZone extends Component
     public array $selectedCountries = [];
 
     /**
+     * The single country related to the zone
+     *
+     * @var string
+     */
+    public ?string $country = null;
+
+    /**
      * Search term for filtering out countries
      *
      * @var string
@@ -42,6 +49,7 @@ abstract class AbstractShippingZone extends Component
     {
         return [
             'postcodes' => 'nullable|string',
+            'country' => 'nullable|string',
         ];
     }
 
@@ -50,7 +58,11 @@ abstract class AbstractShippingZone extends Component
      */
     public function mount()
     {
-        $this->selectedCountries = $this->shippingZone->countries->pluck('id')->toArray();
+        if ($this->shippingZone->type == 'postcodes') {
+            $this->country = $this->shippingZone->countries->pluck('id')->first();
+        } else {
+            $this->selectedCountries = $this->shippingZone->countries->pluck('id')->toArray();
+        }
 
         $this->postcodes = $this->shippingZone->postcodes->pluck('postcode')->join("\n");
     }
@@ -79,18 +91,18 @@ abstract class AbstractShippingZone extends Component
         }
 
         if ($this->shippingZone->type == 'postcodes') {
-            $postcodes = explode("\n", $this->postcodes);
+            $this->shippingZone->countries()->sync(
+                [$this->country]
+            );
 
-            $existing = $this->shippingZone->postcodes()->whereIn('postcode', $postcodes)->pluck('postcode');
+            $postcodes = collect(explode("\n", $this->postcodes))->unique();
 
-            $postcodesToAdd = collect($postcodes)->reject(function ($postcode) use ($existing) {
-                return $existing->contains($postcode);
-            });
+            $existing = $this->shippingZone->postcodes()->delete();
 
             $this->shippingZone->postcodes()->createMany(
-                $postcodesToAdd->map(function ($postcode) {
+                $postcodes->map(function ($postcode) {
                     return [
-                        'postcode' => str_replace(' ', '', $postcode),
+                        'postcode' => $postcode,
                     ];
                 })
             );

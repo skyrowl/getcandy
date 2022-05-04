@@ -40,4 +40,16 @@ class ShippingZonePostcode extends BaseModel
     {
         return $this->belongsTo(ShippingZone::class);
     }
+
+    /**
+     * Setter for postcode attribute
+     *
+     * @param string $value
+     *
+     * @return void
+     */
+    public function setPostcodeAttribute($value)
+    {
+        $this->attributes['postcode'] = str_replace(' ', '', $value);
+    }
 }

@@ -6,6 +6,7 @@ use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Models\Product;
 use GetCandy\Shipping\Facades\Shipping;
 use GetCandy\Shipping\Models\ShippingMethod;
+use GetCandy\Shipping\Models\ShippingZone;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
@@ -68,10 +69,22 @@ class ShippingZoneShow extends AbstractShippingZone
     {
         parent::mount();
 
-        $existingMethods = $this->shippingZone->shippingMethods;
-
         // If we don't have any shipping methods on the zone already, we should set the base ones up.
-        $this->shippingMethods = $existingMethods->mapWithKeys(function ($method, $key) {
+        $this->shippingMethods = $this->mapShippingMethods(
+            $this->shippingZone->shippingMethods
+        );
+    }
+
+    /**
+     * Maps the shipping methods from the given zone
+     *
+     * @param Collection $shippingMethods
+     *
+     * @return Collection
+     */
+    public function mapShippingMethods(Collection $shippingMethods)
+    {
+        return $shippingMethods->mapWithKeys(function ($method, $key) {
             $driver = $this->supportedShippingMethods->first(function ($driver) use ($method) {
                 return $driver['key'] == $method->driver;
             });
@@ -82,6 +95,7 @@ class ShippingZoneShow extends AbstractShippingZone
 
             return [
                 "{$method->id}_{$driver['key']}" => [
+                    'id' => $method->id,
                     'driver' => $driver['key'],
                     'name' => $driver['name'],
                     'description' => $driver['description'],
@@ -135,6 +149,32 @@ class ShippingZoneShow extends AbstractShippingZone
     }
 
     /**
+     * Delete the shipping method
+     *
+     * @param int $shippingMethodId
+     *
+     * @return void
+     */
+    public function deleteMethod()
+    {
+        $shippingMethod = ShippingMethod::find(
+            $this->shippingMethodToRemove
+        );
+
+        $shippingMethod->prices()->delete();
+        $shippingMethod->shippingExclusions()->detach();
+        $shippingMethod->delete();
+
+        $this->shippingMethodToRemove = null;
+
+        $this->shippingMethods = $this->mapShippingMethods(
+            $this->shippingZone->refresh()->shippingMethods
+        );
+
+        $this->notify('Shipping method deleted');
+    }
+
+    /**
      * Return the shipping methods supported by the system
      *
      * @return Collection
@@ -164,6 +204,7 @@ class ShippingZoneShow extends AbstractShippingZone
             ]);
 
             $this->shippingMethods["{$method->id}_{$key}"] = [
+                'id' => $method->id,
                 'name' => $driver['name'],
                 'custom_name' => null,
                 'custom_description' => null,
@@ -225,7 +266,7 @@ class ShippingZoneShow extends AbstractShippingZone
     {
         return view('shipping::shipping-zones.show')
             ->layout('adminhub::layouts.app', [
-                'title' => 'United Kingdom',
+                'title' => $this->shippingZone->name,
             ]);
     }
 }

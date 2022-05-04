@@ -61,7 +61,7 @@
         <div class="space-y-2">
           <div class="grid grid-cols-3 gap-4">
             <label class="block text-sm font-medium text-gray-700">{{ __('adminhub::global.customer_group') }}</label>
-            <label class="block text-sm font-medium text-gray-700">{{ __('adminhub::global.lower_limit') }}</label>
+            <label class="block text-sm font-medium text-gray-700">Minimum</label>
             <label class="block text-sm font-medium text-gray-700">
               {{ __('adminhub::global.unit_price_excl_tax') }}
             </label>

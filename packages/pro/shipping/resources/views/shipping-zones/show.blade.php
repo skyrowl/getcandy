@@ -4,6 +4,23 @@
       @include('shipping::partials.forms.shipping-zone')
     </form>
 
+    <x-hub::modal.dialog form="deleteMethod" wire:model="shippingMethodToRemove">
+      <x-slot name="title">
+        Delete Shipping Method
+      </x-slot>
+      <x-slot name="content">
+        <x-hub::alert level="danger">
+          Are you sure? This action cannot be undone, consider disabling the Shipping Method instead to preserve the data.
+        </x-hub::alert>
+      </x-slot>
+      <x-slot name="footer">
+        <x-hub::button type="button" wire:click.prevent="$set('shippingMethodToRemove', null)" theme="gray">
+          {{ __('adminhub::global.cancel') }}
+        </x-hub::button>
+        <x-hub::button type="submit" theme="danger">Remove</x-hub::button>
+      </x-slot>
+    </x-hub::modal.dialog>
+
     <x-hub::modal.dialog form="deleteZone" wire:model="showDeleteConfirm">
       <x-slot name="title">
         Delete Shipping Zone
@@ -47,13 +64,13 @@
               <div class="grow">
                 @if($method['custom_name'])
                   <div>
-                    <strong>{{ $method['custom_name'] }}</strong>
+                    <strong>{!! $method['custom_name'] !!}</strong>
                     <small class="text-gray-500">({{ $method['name'] }})</small>
                   </div>
                 @else
                   <strong>{{ $method['name'] }}</strong>
                 @endif
-                <p class="text-sm text-gray-500">{{ $method['custom_description'] ?: $method['description'] }}</p>
+                <p class="text-sm text-gray-500">{!! $method['custom_description'] ?: $method['description'] !!}</p>
               </div>
 
               <div class="ml-4">
@@ -67,7 +84,7 @@
               @endif
 
               <div class="ml-4">
-                <button class="text-gray-500 hover:text-gray-900" type="button">
+                <button class="text-gray-500 hover:text-gray-900" type="button" wire:click="$set('shippingMethodToRemove', {{ $method['id'] }})">
                   <x-hub::icon ref="trash" class="w-4" />
                 </button>
               </div>
@@ -86,6 +103,8 @@
       </div>
     </div>
   </div>
+
+
 
   {{-- @include('shipping::partials.ship-by-total')
   @include('shipping::partials.free-shipping')
