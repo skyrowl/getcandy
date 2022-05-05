@@ -2,8 +2,8 @@
 
 namespace GetCandy\Shipping\Tests\Unit\Actions\Carts;
 
-use GetCandy\Shipping\Tests\TestCase;
 use GetCandy\Shipping\Resolvers\PostcodeResolver;
+use GetCandy\Shipping\Tests\TestCase;
 
 /**
  * @group getcandy.postcodes

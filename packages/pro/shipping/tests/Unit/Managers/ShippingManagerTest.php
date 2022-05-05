@@ -2,9 +2,7 @@
 
 namespace GetCandy\Shipping\Tests\Unit\Actions\Carts;
 
-use GetCandy\Models\Country;
 use GetCandy\Shipping\Facades\Shipping;
-use GetCandy\Shipping\Models\ShippingZone;
 use GetCandy\Shipping\Resolvers\ShippingZoneResolver;
 use GetCandy\Shipping\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;

@@ -2,11 +2,9 @@
 
 namespace GetCandy\Shipping\Resolvers;
 
-use InvalidArgumentException;
 use GetCandy\Models\Country;
 use GetCandy\Shipping\DataTransferObjects\PostcodeLookup;
 use GetCandy\Shipping\Models\ShippingZone;
-use GetCandy\Shipping\Resolvers\PostcodeResolver;
 use Illuminate\Support\Collection;
 
 class ShippingZoneResolver
@@ -41,10 +39,9 @@ class ShippingZoneResolver
     }
 
     /**
-     * Set the country
+     * Set the country.
      *
-     * @param Country $country
-     *
+     * @param  Country  $country
      * @return self
      */
     public function country(Country $country = null): self
@@ -58,8 +55,7 @@ class ShippingZoneResolver
     /**
      * Set the postcode to use when resolving.
      *
-     * @param string $postcode
-     *
+     * @param  string  $postcode
      * @return self
      */
     public function postcode(PostcodeLookup $postcodeLookup): self

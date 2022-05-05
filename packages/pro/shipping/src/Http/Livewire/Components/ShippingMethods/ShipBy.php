@@ -83,8 +83,6 @@ class ShipBy extends AbstractShippingMethod
         return $data->sortBy('tier')->values();
     }
 
-
-
     /**
      * {@inheritDoc}
      */

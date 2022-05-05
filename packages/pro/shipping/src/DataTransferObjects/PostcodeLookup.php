@@ -7,7 +7,7 @@ use GetCandy\Models\Country;
 class PostcodeLookup
 {
     /**
-     * Initialise the postcode lookup class
+     * Initialise the postcode lookup class.
      *
      * @param Country Country description
      * @param public string description

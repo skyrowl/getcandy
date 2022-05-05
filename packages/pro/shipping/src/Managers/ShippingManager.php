@@ -3,12 +3,12 @@
 namespace GetCandy\Shipping\Managers;
 
 use GetCandy\Models\Cart;
-use GetCandy\Shipping\Resolvers\ShippingZoneResolver;
 use GetCandy\Shipping\Drivers\ShippingMethods\Collection;
 use GetCandy\Shipping\Drivers\ShippingMethods\FlatRate;
 use GetCandy\Shipping\Drivers\ShippingMethods\FreeShipping;
 use GetCandy\Shipping\Drivers\ShippingMethods\ShipBy;
 use GetCandy\Shipping\Interfaces\ShippingMethodManagerInterface;
+use GetCandy\Shipping\Resolvers\ShippingZoneResolver;
 use Illuminate\Support\Manager;
 
 class ShippingManager extends Manager implements ShippingMethodManagerInterface
