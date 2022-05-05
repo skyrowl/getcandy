@@ -63,10 +63,7 @@ class ShippingZoneResolverTest extends TestCase
         $this->assertEmpty($zones);
     }
 
-    /**
-     * @test
-     * @group moomoo
-     */
+    /** @test */
     public function can_fetch_zone_by_postcode_lookup()
     {
         $country = Country::factory()->create();
