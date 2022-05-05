@@ -12,7 +12,7 @@ class PostcodeResolver
             $postcode,
             rtrim(substr($postcode, 0, -3), 'a..zA..Z'),
             rtrim($postcode, '0..9'),
-            substr($postcode, 0, 2)
+            substr($postcode, 0, 2),
         ])->filter()->unique()->values();
     }
 }

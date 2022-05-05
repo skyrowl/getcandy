@@ -9,8 +9,6 @@ use GetCandy\Shipping\Models\ShippingZone;
 use GetCandy\Shipping\Resolvers\ShippingZoneResolver;
 use GetCandy\Shipping\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use InvalidArgumentException;
-use TypeError;
 
 /**
  * @group getcandy.shipping
@@ -90,7 +88,6 @@ class ShippingZoneResolverTest extends TestCase
         );
 
         $zones = (new ShippingZoneResolver())->postcode($postcode)->get();
-
 
         $this->assertCount(1, $zones);
 
