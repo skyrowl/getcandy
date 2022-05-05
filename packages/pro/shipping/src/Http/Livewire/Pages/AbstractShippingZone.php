@@ -4,6 +4,7 @@ namespace GetCandy\Shipping\Http\Livewire\Pages;
 
 use GetCandy\Models\Country;
 use GetCandy\Models\CustomerGroup;
+use GetCandy\Models\State;
 use GetCandy\Shipping\Models\ShippingZone;
 use Illuminate\Support\Collection;
 use Livewire\Component;
@@ -25,6 +26,13 @@ abstract class AbstractShippingZone extends Component
     public array $selectedCountries = [];
 
     /**
+     * The selected states for the zone.
+     *
+     * @var array
+     */
+    public array $selectedStates = [];
+
+    /**
      * The single country related to the zone.
      *
      * @var string
@@ -32,11 +40,11 @@ abstract class AbstractShippingZone extends Component
     public ?string $country = null;
 
     /**
-     * Search term for filtering out countries.
+     * Search term for filtering out countries/states.
      *
      * @var string
      */
-    public ?string $countrySearchTerm = null;
+    public ?string $searchTerm = null;
 
     /**
      * The postcodes to associate to the zone.
@@ -58,11 +66,15 @@ abstract class AbstractShippingZone extends Component
      */
     public function mount()
     {
-        if ($this->shippingZone->type == 'postcodes') {
+        if (
+            in_array($this->shippingZone->type, ['postcodes', 'states'])
+        ) {
             $this->country = $this->shippingZone->countries->pluck('id')->first();
         } else {
             $this->selectedCountries = $this->shippingZone->countries->pluck('id')->toArray();
         }
+
+        $this->selectedStates = $this->shippingZone->states->pluck('id')->toArray();
 
         $this->postcodes = $this->shippingZone->postcodes->pluck('postcode')->join("\n");
     }
@@ -87,6 +99,18 @@ abstract class AbstractShippingZone extends Component
         } else {
             $this->shippingZone->countries()->sync(
                 $this->selectedCountries
+            );
+        }
+
+        if ($this->shippingZone->type != 'states') {
+            $this->shippingZone->states()->detach();
+            $this->selectedStates = [];
+        } else {
+            $this->shippingZone->countries()->sync(
+                [$this->country]
+            );
+            $this->shippingZone->states()->sync(
+                $this->selectedStates
             );
         }
 
@@ -125,8 +149,20 @@ abstract class AbstractShippingZone extends Component
      */
     public function getCountriesProperty()
     {
-        return Country::where('name', 'LIKE', "%{$this->countrySearchTerm}%")
+        return Country::where('name', 'LIKE', "%{$this->searchTerm}%")
             ->whereNotIn('id', $this->selectedCountries)->get();
+    }
+
+    public function getAllCountriesProperty()
+    {
+        return Country::get();
+    }
+
+    public function getStatesProperty()
+    {
+        return State::where('name', 'LIKE', "%{$this->searchTerm}%")
+            ->whereNotIn('id', $this->selectedStates)
+            ->whereCountryId($this->country)->get();
     }
 
     /**
@@ -137,5 +173,15 @@ abstract class AbstractShippingZone extends Component
     public function getZoneCountriesProperty()
     {
         return Country::whereIn('id', $this->selectedCountries)->get();
+    }
+
+    /**
+     * Return a list of states related to the zone.
+     *
+     * @return Collection
+     */
+    public function getZoneStatesProperty()
+    {
+        return State::whereIn('id', $this->selectedStates)->get();
     }
 }

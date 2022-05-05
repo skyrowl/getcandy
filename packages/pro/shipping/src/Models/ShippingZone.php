@@ -4,6 +4,7 @@ namespace GetCandy\Shipping\Models;
 
 use GetCandy\Base\BaseModel;
 use GetCandy\Models\Country;
+use GetCandy\Models\State;
 use GetCandy\Shipping\Database\Factories\ShippingZoneFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -50,6 +51,19 @@ class ShippingZone extends BaseModel
         return $this->belongsToMany(
             Country::class,
             config('getcandy.database.table_prefix').'country_shipping_zone'
+        )->withTimestamps();
+    }
+
+    /**
+     * Return the states relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function states()
+    {
+        return $this->belongsToMany(
+            State::class,
+            config('getcandy.database.table_prefix').'state_shipping_zone'
         )->withTimestamps();
     }
 

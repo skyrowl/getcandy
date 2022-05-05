@@ -22,6 +22,10 @@
     @include('shipping::partials.forms.shipping-zone.countries')
   @endif
 
+  @if($shippingZone->type == 'states')
+    @include('shipping::partials.forms.shipping-zone.states')
+  @endif
+
   @if($shippingZone->type == 'postcodes')
     <x-hub::input.group
       label="Country"
