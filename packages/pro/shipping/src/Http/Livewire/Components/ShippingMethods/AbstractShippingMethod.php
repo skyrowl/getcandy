@@ -58,7 +58,7 @@ abstract class AbstractShippingMethod extends Component
             'data' => 'array',
             'shippingMethod.name' => 'string|nullable',
             'shippingMethod.description' => 'string|nullable',
-            'shippingMethod.code' => 'nullable|unique:'.ShippingMethod::class.',code,'.$this->shippingMethod->id,
+            'shippingMethod.code' => 'required',
         ];
     }
 

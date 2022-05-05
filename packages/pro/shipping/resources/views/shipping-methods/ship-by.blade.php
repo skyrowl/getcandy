@@ -79,14 +79,13 @@
                         @endforeach
                       </x-hub::input.select>
 
-                      <x-hub::input.text
+                      <x-hub::input.price
                         id="tier_field_{{ $index }}"
                         wire:model='tieredPrices.{{ $index }}.tier'
+                        :symbol="$this->currency->format"
+                        :currencyCode="$this->currency->code"
                         type="number"
-                        min="2"
-                        steps="1"
                         required
-                        onkeydown="return event.keyCode !== 190"
                         :disabled="!$this->currency->default"
                         :error="$errors->first('tieredPrices.'.$index.'.tier')"
                       />
@@ -111,6 +110,10 @@
     </div>
 
 
-    <x-hub::button>Save Method</x-hub::button>
+    @include('shipping::partials.forms.product-exclusions')
+
+    <div class="mt-4">
+      <x-hub::button>Save Method</x-hub::button>
+    </div>
   </div>
 </form>

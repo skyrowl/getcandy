@@ -5,6 +5,7 @@ namespace GetCandy\Shipping\Http\Livewire\Components\ShippingMethods;
 use GetCandy\Hub\Http\Livewire\Traits\HasPrices;
 use GetCandy\Models\Currency;
 use GetCandy\Shipping\Traits\ExcludesProducts;
+use Illuminate\Support\Collection;
 
 class ShipBy extends AbstractShippingMethod
 {
@@ -32,9 +33,57 @@ class ShipBy extends AbstractShippingMethod
         parent::mount();
 
         $this->currency = $this->currencies->first(fn ($currency) => $currency->default);
-
-        // dd($this->shippingMethod->prices);
     }
+
+    /**
+     * Return mapped tiered pricing.
+     *
+     * @param  \Illuminate\Support\Collection  $prices
+     * @return \Illuminate\Support\Collection
+     */
+    private function mapTieredPrices(Collection $prices)
+    {
+        $data = collect();
+
+        foreach ($prices->groupBy(['tier', 'customer_group_id']) as $customerGroups) {
+            $data = $data->concat(
+                $customerGroups->map(function ($prices, $tier) {
+                    $default = $prices->first(fn ($price) => $price->currency->default);
+
+                    $prices = $prices->mapWithKeys(function ($price) {
+                        return [
+                            $price->currency->code => [
+                                'id'                => $price->id,
+                                'currency_id'       => $price->currency_id,
+                                'customer_group_id' => $price->customer_group_id,
+                                'price'             => $price->price->decimal,
+                                'compare_price'     => $price->compare_price->decimal,
+                            ],
+                        ];
+                    });
+
+                    foreach ($this->currencies as $currency) {
+                        if (empty($prices[$currency->code])) {
+                            $prices[$currency->code] = [
+                                'price'       => null,
+                                'currency_id' => $currency->id,
+                            ];
+                        }
+                    }
+
+                    return [
+                        'customer_group_id' => $default->customer_group_id ?: '*',
+                        'tier'              => $default->tier / 100,
+                        'prices'            => $prices,
+                    ];
+                })->values()
+            );
+        }
+
+        return $data->sortBy('tier')->values();
+    }
+
+
 
     /**
      * {@inheritDoc}
@@ -80,6 +129,8 @@ class ShipBy extends AbstractShippingMethod
                 return ! $price['price'];
             })
         );
+
+        $this->updateExcludedLists();
 
         $this->notify('Shipping Method Updated');
 
