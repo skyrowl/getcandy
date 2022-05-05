@@ -3,12 +3,14 @@
 namespace GetCandy\Shipping\Tests\Unit\Actions\Carts;
 
 use GetCandy\Models\Country;
+use GetCandy\Shipping\DataTransferObjects\PostcodeLookup;
 use GetCandy\Shipping\Facades\Shipping;
 use GetCandy\Shipping\Models\ShippingZone;
 use GetCandy\Shipping\Resolvers\ShippingZoneResolver;
 use GetCandy\Shipping\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use InvalidArgumentException;
+use TypeError;
 
 /**
  * @group getcandy.shipping
@@ -61,21 +63,37 @@ class ShippingZoneResolverTest extends TestCase
         $this->assertEmpty($zones);
     }
 
-    /** @test */
-    public function cant_fetch_zone_by_postcode_without_country()
+    /**
+     * @test
+     * @group moomoo
+     */
+    public function can_fetch_zone_by_postcode_lookup()
     {
         $country = Country::factory()->create();
 
-        $shippingZoneA = ShippingZone::factory()->create([
+        $shippingZone = ShippingZone::factory()->create([
             'type' => 'postcodes',
         ]);
 
-        $shippingZoneA->countries()->attach($country);
+        $shippingZone->countries()->attach($country);
 
-        $this->assertCount(1, $shippingZoneA->refresh()->countries);
+        $shippingZone->postcodes()->create([
+            'postcode' => 'ABC',
+        ]);
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->assertCount(1, $shippingZone->refresh()->countries);
+        $this->assertCount(1, $shippingZone->refresh()->postcodes);
 
-        $zones = (new ShippingZoneResolver())->postcode('ABC 123')->get();
+        $postcode = new PostcodeLookup(
+            $country,
+            'ABC 123'
+        );
+
+        $zones = (new ShippingZoneResolver())->postcode($postcode)->get();
+
+
+        $this->assertCount(1, $zones);
+
+        $this->assertEquals($shippingZone->id, $zones->first()->id);
     }
 }
