@@ -4,7 +4,7 @@ namespace GetCandy\Shipping\Models;
 
 use GetCandy\Base\BaseModel;
 use GetCandy\Models\Country;
-use GetCandy\Shipping\Factories\ShippingZoneFactory;
+use GetCandy\Shipping\Database\Factories\ShippingZoneFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 

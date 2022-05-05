@@ -3,8 +3,7 @@
 namespace GetCandy\Shipping\Managers;
 
 use GetCandy\Models\Cart;
-use GetCandy\Shipping\Actions\GetShippingMethods;
-use GetCandy\Shipping\Actions\GetShippingZones;
+use GetCandy\Shipping\Resolvers\ShippingZoneResolver;
 use GetCandy\Shipping\Drivers\ShippingMethods\Collection;
 use GetCandy\Shipping\Drivers\ShippingMethods\FlatRate;
 use GetCandy\Shipping\Drivers\ShippingMethods\FreeShipping;
@@ -50,9 +49,9 @@ class ShippingManager extends Manager implements ShippingMethodManagerInterface
      * @param  Cart  $cart
      * @return Collection
      */
-    public function getShippingZones(Cart $cart)
+    public function zones()
     {
-        return app(GetShippingZones::class)->execute($cart);
+        return new ShippingZoneResolver();
     }
 
     public function getShippingMethods(Cart $cart)

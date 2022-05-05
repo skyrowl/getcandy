@@ -13,14 +13,12 @@
   "autoload": {
       "psr-4": {
           "GetCandy\\Shipping\\": "src",
-          "GetCandy\\Shipping\\Database\\Factories\\": "database/factories",
-          "GetCandy\\Shipping\\Database\\Seeders\\": "database/seeders",
-          "GetCandy\\Shipping\\Database\\State\\": "database/state"
+          "GetCandy\\Shipping\\Database\\Factories\\": "database/factories"
       }
   },
   "autoload-dev": {
       "psr-4": {
-          "GetCandy\\Tests\\": "tests"
+          "GetCandy\\Shipping\\Tests\\": "tests"
       }
   },
   "extra": {

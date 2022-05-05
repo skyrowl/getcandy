@@ -1,8 +1,8 @@
 <?php
 
-namespace GetCandy\Shipping\Factories;
+namespace GetCandy\Shipping\Database\Factories;
 
-use GetCandy\Models\ShippingZone;
+use GetCandy\Shipping\Models\ShippingZone;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ShippingZoneFactory extends Factory
@@ -12,7 +12,8 @@ class ShippingZoneFactory extends Factory
     public function definition(): array
     {
         return [
-            'name'           => $this->faker->name(),
+            'name' => $this->faker->name(),
+            'type' => 'postcodes',
         ];
     }
 }
