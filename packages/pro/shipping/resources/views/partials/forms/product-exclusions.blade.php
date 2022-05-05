@@ -17,7 +17,7 @@
         <div>
           {{ $list->name }}
         </div>
-      </div>
+      </label>
     @endforeach
   </div>
 </div>
