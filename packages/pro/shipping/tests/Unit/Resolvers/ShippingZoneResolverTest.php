@@ -3,6 +3,7 @@
 namespace GetCandy\Shipping\Tests\Unit\Actions\Carts;
 
 use GetCandy\Models\Country;
+use GetCandy\Models\State;
 use GetCandy\Shipping\DataTransferObjects\PostcodeLookup;
 use GetCandy\Shipping\Facades\Shipping;
 use GetCandy\Shipping\Models\ShippingZone;
@@ -37,6 +38,40 @@ class ShippingZoneResolverTest extends TestCase
         $this->assertCount(1, $shippingZoneA->refresh()->countries);
 
         $zones = (new ShippingZoneResolver())->country($countryA)->get();
+
+        $this->assertCount(1, $zones);
+
+        $this->assertEquals($shippingZoneA->id, $zones->first()->id);
+    }
+
+    /** @test */
+    public function can_fetch_shipping_zones_by_state()
+    {
+        $countryA = Country::factory()->create();
+        $countryB = Country::factory()->create();
+
+        $stateA = State::factory()->create([
+            'country_id' => $countryA->id,
+        ]);
+
+        $stateB = State::factory()->create([
+            'country_id' => $countryB->id,
+        ]);
+
+        $shippingZoneA = ShippingZone::factory()->create([
+            'type' => 'states',
+        ]);
+
+        $shippingZoneB = ShippingZone::factory()->create([
+            'type' => 'countries',
+        ]);
+
+        $shippingZoneA->states()->attach($stateA);
+        $shippingZoneB->states()->attach($stateB);
+
+        $this->assertCount(1, $shippingZoneA->refresh()->states);
+
+        $zones = (new ShippingZoneResolver())->state($stateA)->get();
 
         $this->assertCount(1, $zones);
 

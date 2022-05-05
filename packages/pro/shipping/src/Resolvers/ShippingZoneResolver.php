@@ -3,6 +3,7 @@
 namespace GetCandy\Shipping\Resolvers;
 
 use GetCandy\Models\Country;
+use GetCandy\Models\State;
 use GetCandy\Shipping\DataTransferObjects\PostcodeLookup;
 use GetCandy\Shipping\Models\ShippingZone;
 use Illuminate\Support\Collection;
@@ -15,6 +16,13 @@ class ShippingZoneResolver
      * @var Country
      */
     protected ?Country $country = null;
+
+    /**
+     * The state to use when resolving zones.
+     *
+     * @var State
+     */
+    protected ?State $state = null;
 
     /**
      * The postcode lookup to use when resolving zones.
@@ -53,6 +61,21 @@ class ShippingZoneResolver
     }
 
     /**
+     * Set the state
+     *
+     * @param State $state
+     *
+     * @return self
+     */
+    public function state(State $state = null): self
+    {
+        $this->state = $state;
+        $this->types->push('states');
+
+        return $this;
+    }
+
+    /**
      * Set the postcode to use when resolving.
      *
      * @param  string  $postcode
@@ -81,6 +104,14 @@ class ShippingZoneResolver
                     $qb->whereHas('countries', function ($query) {
                         $query->where('country_id', $this->country->id);
                     })->whereType('countries');
+                });
+            }
+
+            if ($this->state) {
+                $builder->where(function ($qb) {
+                    $qb->whereHas('states', function ($query) {
+                        $query->where('state_id', $this->state->id);
+                    })->whereType('states');
                 });
             }
 
