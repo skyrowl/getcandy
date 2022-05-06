@@ -51,25 +51,20 @@ class FlatRate implements ShippingMethodInterface
         $cart = $shippingOptionRequest->cart;
         $shippingMethod = $shippingOptionRequest->shippingMethod;
 
-        $subTotal = $cart->subTotal->value;
+        // Do we have any products in our exclusions list?
+        // If so, we do not want to return this option regardless.
+        $productIds = $cart->lines->load('purchasable')->pluck('purchasable.product_id');
 
-        if ($data->use_discount_amount ?? false) {
-            $subTotal -= $cart->discountTotal->value;
-        }
+        $hasExclusions = $shippingMethod->shippingExclusions()
+            ->whereHas('exclusions', function ($query) use ($productIds) {
+                $query->wherePurchasableType(Product::class)->whereIn('purchasable_id', $productIds);
+            })->exists();
 
-        if (empty($data)) {
-            $minSpend = 0;
-        } else {
-            if (is_array($data->minimum_spend)) {
-                $minSpend = ($data->minimum_spend[$cart->currency->code] ?? null);
-            } else {
-                $minSpend = ($data->minimum_spend->{$cart->currency->code} ?? null);
-            }
-        }
-
-        if (is_null($minSpend) || ($minSpend) > $subTotal) {
+        if ($hasExclusions) {
             return null;
         }
+
+        $subTotal = $cart->subTotal->value;
 
         $pricing = Pricing::for($shippingMethod)->qty($subTotal)->get();
 
@@ -78,8 +73,8 @@ class FlatRate implements ShippingMethodInterface
         }
 
         return new ShippingOption(
-            name: $shippingMethod->name,
-            description: $shippingMethod->description,
+            name: $shippingMethod->name ?: $this->name(),
+            description: $shippingMethod->description ?: $this->description(),
             identifier: $shippingMethod->getIdentifier(),
             price: $pricing->matched->price,
             taxClass: $shippingMethod->getTaxClass(),

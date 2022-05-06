@@ -5,6 +5,7 @@ namespace GetCandy\Shipping\Drivers\ShippingMethods;
 use GetCandy\DataTypes\ShippingOption;
 use GetCandy\Facades\Pricing;
 use GetCandy\Models\Cart;
+use GetCandy\Models\Product;
 use GetCandy\Shipping\DataTransferObjects\ShippingOptionRequest;
 use GetCandy\Shipping\Http\Livewire\Components\ShippingMethods\ShipBy as ShippingMethodsShipBy;
 use GetCandy\Shipping\Interfaces\ShippingMethodInterface;
@@ -50,6 +51,19 @@ class ShipBy implements ShippingMethodInterface
         $data = $shippingOptionRequest->shippingMethod->data;
         $cart = $shippingOptionRequest->cart;
         $shippingMethod = $shippingOptionRequest->shippingMethod;
+
+        // Do we have any products in our exclusions list?
+        // If so, we do not want to return this option regardless.
+        $productIds = $cart->lines->load('purchasable')->pluck('purchasable.product_id');
+
+        $hasExclusions = $shippingMethod->shippingExclusions()
+            ->whereHas('exclusions', function ($query) use ($productIds) {
+                $query->wherePurchasableType(Product::class)->whereIn('purchasable_id', $productIds);
+            })->exists();
+
+        if ($hasExclusions) {
+            return null;
+        }
 
         $chargeBy = $data->charge_by ?? null;
 

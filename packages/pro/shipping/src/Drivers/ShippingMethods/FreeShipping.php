@@ -41,6 +41,19 @@ class FreeShipping implements ShippingMethodInterface
         $data = $shippingMethod->data;
         $cart = $shippingOptionRequest->cart;
 
+        // Do we have any products in our exclusions list?
+        // If so, we do not want to return this option regardless.
+        $productIds = $cart->lines->load('purchasable')->pluck('purchasable.product_id');
+
+        $hasExclusions = $shippingMethod->shippingExclusions()
+            ->whereHas('exclusions', function ($query) use ($productIds) {
+                $query->wherePurchasableType(Product::class)->whereIn('purchasable_id', $productIds);
+            })->exists();
+
+        if ($hasExclusions) {
+            return null;
+        }
+
         $subTotal = $cart->subTotal->value;
 
         if ($data->use_discount_amount ?? false) {
