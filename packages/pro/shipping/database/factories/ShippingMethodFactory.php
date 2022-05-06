@@ -1,6 +1,6 @@
 <?php
 
-namespace GetCandy\Shipping\Factories;
+namespace GetCandy\Shipping\Database\Factories;
 
 use GetCandy\Shipping\Models\ShippingMethod;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -12,7 +12,12 @@ class ShippingMethodFactory extends Factory
     public function definition(): array
     {
         return [
-            'name'           => $this->faker->name(),
+            'name' => $this->faker->name(),
+            'description' => $this->faker->sentence,
+            'driver' => 'ship-by',
+            'code' => $this->faker->word,
+            'enabled' => true,
+            'data' => [],
         ];
     }
 }

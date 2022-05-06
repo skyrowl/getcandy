@@ -3,13 +3,16 @@
 namespace GetCandy\Shipping\Models;
 
 use GetCandy\Base\BaseModel;
+use GetCandy\Base\Purchasable;
 use GetCandy\Base\Traits\HasPrices;
+use GetCandy\Models\TaxClass;
+use GetCandy\Shipping\Database\Factories\ShippingMethodFactory;
 use GetCandy\Shipping\Facades\Shipping;
-use GetCandy\Shipping\Factories\ShippingZoneFactory;
 use GetCandy\Shipping\Interfaces\ShippingMethodInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Collection;
 
-class ShippingMethod extends BaseModel
+class ShippingMethod extends BaseModel implements Purchasable
 {
     use HasFactory, HasPrices;
 
@@ -28,11 +31,11 @@ class ShippingMethod extends BaseModel
     /**
      * Return a new factory instance for the model.
      *
-     * @return \GetCandy\Shipping\Factories\ShippingZoneFactory
+     * @return \GetCandy\Shipping\Factories\ShippingMethodFactory
      */
-    protected static function newFactory(): ShippingZoneFactory
+    protected static function newFactory(): ShippingMethodFactory
     {
-        return ShippingZoneFactory::new();
+        return ShippingMethodFactory::new();
     }
 
     /**
@@ -69,5 +72,88 @@ class ShippingMethod extends BaseModel
             'exclusion_id',
             // 'method_id',
         )->withTimestamps();
+    }
+
+    public function getPrices(): Collection
+    {
+        return $this->prices;
+    }
+
+    /**
+     * Return the unit quantity for the variant.
+     *
+     * @return int
+     */
+    public function getUnitQuantity(): int
+    {
+        return 1;
+    }
+
+    /**
+     * Return the tax class.
+     *
+     * @return \GetCandy\Models\TaxClass
+     */
+    public function getTaxClass(): TaxClass
+    {
+        return TaxClass::getDefault();
+    }
+
+    public function getTaxReference()
+    {
+        return $this->code;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getType()
+    {
+        return 'shipping';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isShippable()
+    {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getOption()
+    {
+        return $this->code;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getOptions()
+    {
+        return collect();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getIdentifier()
+    {
+        return $this->code;
+    }
+
+    public function getThumbnail()
+    {
+        return null;
     }
 }

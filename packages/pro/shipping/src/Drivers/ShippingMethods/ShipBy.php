@@ -3,7 +3,9 @@
 namespace GetCandy\Shipping\Drivers\ShippingMethods;
 
 use GetCandy\DataTypes\ShippingOption;
+use GetCandy\Facades\Pricing;
 use GetCandy\Models\Cart;
+use GetCandy\Shipping\DataTransferObjects\ShippingOptionRequest;
 use GetCandy\Shipping\Http\Livewire\Components\ShippingMethods\ShipBy as ShippingMethodsShipBy;
 use GetCandy\Shipping\Interfaces\ShippingMethodInterface;
 use GetCandy\Shipping\Models\ShippingMethod;
@@ -43,9 +45,41 @@ class ShipBy implements ShippingMethodInterface
         return (new ShippingMethodsShipBy())->getName();
     }
 
-    public function getShippingOption(Cart $cart): ShippingOption|null
+    public function resolve(ShippingOptionRequest $shippingOptionRequest): ShippingOption|null
     {
-        return null;
+        $data = $shippingOptionRequest->shippingMethod->data;
+        $cart = $shippingOptionRequest->cart;
+        $shippingMethod = $shippingOptionRequest->shippingMethod;
+
+        $chargeBy = $data->charge_by ?? null;
+
+        if (!$chargeBy) {
+            $chargeBy = 'cart_total';
+        }
+
+        $tier = $cart->subTotal->value;
+
+        if ($chargeBy == 'weight') {
+            // Do we even have weight on a cart???
+            $tier = 100;
+        }
+
+        // Do we have a suitable tier price?
+        $pricing = Pricing::for($shippingMethod)->qty($tier)->get();
+
+        if (!$pricing->matched) {
+            return null;
+        }
+
+        return new ShippingOption(
+            name: $shippingMethod->name,
+            description: $shippingMethod->description,
+            identifier: $shippingMethod->getIdentifier(),
+            price: $pricing->matched->price,
+            taxClass: $shippingMethod->getTaxClass(),
+            taxReference: $shippingMethod->getTaxReference(),
+            option: $shippingMethod->getOption(),
+        );
     }
 
     /**
