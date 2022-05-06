@@ -7,14 +7,12 @@ use GetCandy\Models\Currency;
 use GetCandy\Models\TaxClass;
 use GetCandy\Shipping\DataTransferObjects\ShippingOptionRequest;
 use GetCandy\Shipping\Drivers\ShippingMethods\FreeShipping;
-use GetCandy\Shipping\Drivers\ShippingMethods\ShipBy;
 use GetCandy\Shipping\Facades\Shipping;
 use GetCandy\Shipping\Models\ShippingMethod;
 use GetCandy\Shipping\Models\ShippingZone;
-use GetCandy\Shipping\Resolvers\ShippingZoneResolver;
 use GetCandy\Shipping\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use GetCandy\Shipping\Tests\TestUtils;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group getcandy.shipping.drivers
@@ -121,7 +119,7 @@ class FreeShippingTest extends TestCase
             'driver' => 'free-shipping',
             'data' => [
                 'minimum_spend' => [
-                    "FOO" => 500,
+                    'FOO' => 500,
                 ],
             ],
         ]);

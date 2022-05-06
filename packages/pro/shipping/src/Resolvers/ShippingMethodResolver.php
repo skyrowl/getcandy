@@ -14,9 +14,9 @@ class ShippingMethodResolver
     protected Cart $cart;
 
     /**
-     * Set the cart
+     * Set the cart.
      *
-     * @param Cart $cart
+     * @param  Cart  $cart
      * @return self
      */
     public function cart(Cart $cart): self

@@ -61,10 +61,9 @@ class ShippingZoneResolver
     }
 
     /**
-     * Set the state
+     * Set the state.
      *
-     * @param State $state
-     *
+     * @param  State  $state
      * @return self
      */
     public function state(State $state = null): self

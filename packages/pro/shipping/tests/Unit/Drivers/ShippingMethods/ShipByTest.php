@@ -10,10 +10,9 @@ use GetCandy\Shipping\Drivers\ShippingMethods\ShipBy;
 use GetCandy\Shipping\Facades\Shipping;
 use GetCandy\Shipping\Models\ShippingMethod;
 use GetCandy\Shipping\Models\ShippingZone;
-use GetCandy\Shipping\Resolvers\ShippingZoneResolver;
 use GetCandy\Shipping\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use GetCandy\Shipping\Tests\TestUtils;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group getcandy.shipping.drivers
@@ -55,7 +54,7 @@ class ShipByTest extends TestCase
                 'price' => 500,
                 'tier' => 700,
                 'currency_id' => $currency->id,
-            ]
+            ],
         ]);
 
         $this->assertCount(2, $shippingMethod->prices);
@@ -120,7 +119,7 @@ class ShipByTest extends TestCase
                 'price' => 500,
                 'tier' => 700,
                 'currency_id' => $currency->id,
-            ]
+            ],
         ]);
 
         $this->assertCount(1, $shippingMethod->prices);

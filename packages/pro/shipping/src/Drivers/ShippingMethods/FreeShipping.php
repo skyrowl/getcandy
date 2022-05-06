@@ -4,7 +4,6 @@ namespace GetCandy\Shipping\Drivers\ShippingMethods;
 
 use GetCandy\DataTypes\Price;
 use GetCandy\DataTypes\ShippingOption;
-use GetCandy\Models\Cart;
 use GetCandy\Models\TaxClass;
 use GetCandy\Shipping\DataTransferObjects\ShippingOptionRequest;
 use GetCandy\Shipping\Http\Livewire\Components\ShippingMethods\FreeShipping as FreeShippingComponent;
