@@ -3,7 +3,9 @@
 namespace GetCandy\Shipping\Drivers\ShippingMethods;
 
 use GetCandy\DataTypes\ShippingOption;
+use GetCandy\Facades\Pricing;
 use GetCandy\Models\Cart;
+use GetCandy\Shipping\DataTransferObjects\ShippingOptionRequest;
 use GetCandy\Shipping\Http\Livewire\Components\ShippingMethods\FlatRate as ShippingMethodsFlatRate;
 use GetCandy\Shipping\Interfaces\ShippingMethodInterface;
 use GetCandy\Shipping\Models\ShippingMethod;
@@ -43,9 +45,47 @@ class FlatRate implements ShippingMethodInterface
         return (new ShippingMethodsFlatRate())->getName();
     }
 
-    public function getShippingOption(Cart $cart): ShippingOption|null
+    public function resolve(ShippingOptionRequest $shippingOptionRequest): ShippingOption|null
     {
-        return null;
+        $data = $shippingOptionRequest->shippingMethod->data;
+        $cart = $shippingOptionRequest->cart;
+        $shippingMethod = $shippingOptionRequest->shippingMethod;
+
+        $subTotal = $cart->subTotal->value;
+
+        if ($data->use_discount_amount ?? false) {
+            $subTotal -= $cart->discountTotal->value;
+        }
+
+        if (empty($data)) {
+            $minSpend = 0;
+        } else {
+            if (is_array($data->minimum_spend)) {
+                $minSpend = ($data->minimum_spend[$cart->currency->code] ?? null);
+            } else {
+                $minSpend = ($data->minimum_spend->{$cart->currency->code} ?? null);
+            }
+        }
+
+        if (is_null($minSpend) || ($minSpend) > $subTotal) {
+            return null;
+        }
+
+        $pricing = Pricing::for($shippingMethod)->qty($subTotal)->get();
+
+        if (!$pricing->matched) {
+            return null;
+        }
+
+        return new ShippingOption(
+            name: $shippingMethod->name,
+            description: $shippingMethod->description,
+            identifier: $shippingMethod->getIdentifier(),
+            price: $pricing->matched->price,
+            taxClass: $shippingMethod->getTaxClass(),
+            taxReference: $shippingMethod->getTaxReference(),
+            option: $shippingMethod->getOption(),
+        );
     }
 
     /**
