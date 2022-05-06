@@ -6,13 +6,12 @@ use GetCandy\DataTypes\ShippingOption;
 use GetCandy\Models\Currency;
 use GetCandy\Models\TaxClass;
 use GetCandy\Shipping\DataTransferObjects\ShippingOptionRequest;
-use GetCandy\Shipping\Drivers\ShippingMethods\Collection;
 use GetCandy\Shipping\Drivers\ShippingMethods\FlatRate;
 use GetCandy\Shipping\Models\ShippingMethod;
 use GetCandy\Shipping\Models\ShippingZone;
 use GetCandy\Shipping\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use GetCandy\Shipping\Tests\TestUtils;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group getcandy.shipping.drivers
@@ -41,8 +40,8 @@ class FlatRateTest extends TestCase
             'driver' => 'flat-rate',
             'data' => [
                 'minimum_spend' => [
-                    "{$currency->code}" => 200
-                ]
+                    "{$currency->code}" => 200,
+                ],
             ],
         ]);
 
@@ -51,7 +50,7 @@ class FlatRateTest extends TestCase
                 'price' => 600,
                 'tier' => 1,
                 'currency_id' => $currency->id,
-            ]
+            ],
         ]);
 
         $cart = $this->createCart($currency, 500);
