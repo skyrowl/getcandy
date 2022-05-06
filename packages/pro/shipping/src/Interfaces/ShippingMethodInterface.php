@@ -3,7 +3,6 @@
 namespace GetCandy\Shipping\Interfaces;
 
 use GetCandy\DataTypes\ShippingOption;
-use GetCandy\Models\Cart;
 use GetCandy\Shipping\DataTransferObjects\ShippingOptionRequest;
 use GetCandy\Shipping\Models\ShippingMethod;
 

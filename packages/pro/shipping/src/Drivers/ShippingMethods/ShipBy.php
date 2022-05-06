@@ -53,7 +53,7 @@ class ShipBy implements ShippingMethodInterface
 
         $chargeBy = $data->charge_by ?? null;
 
-        if (!$chargeBy) {
+        if (! $chargeBy) {
             $chargeBy = 'cart_total';
         }
 
@@ -67,7 +67,7 @@ class ShipBy implements ShippingMethodInterface
         // Do we have a suitable tier price?
         $pricing = Pricing::for($shippingMethod)->qty($tier)->get();
 
-        if (!$pricing->matched) {
+        if (! $pricing->matched) {
             return null;
         }
 

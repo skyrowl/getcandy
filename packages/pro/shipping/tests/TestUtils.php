@@ -1,4 +1,5 @@
 <?php
+
 namespace GetCandy\Shipping\Tests;
 
 use GetCandy\Managers\CartManager;
@@ -11,7 +12,7 @@ trait TestUtils
 {
     public function createCart($currency = null, $price = 100, $quantity = 1)
     {
-        if (!$currency) {
+        if (! $currency) {
             $currency = Currency::factory()->create([
                 'default' => true,
             ]);
