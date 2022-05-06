@@ -99,7 +99,7 @@ class ShippingZoneResolver
 
         $query->where(function ($builder) {
             if ($this->country) {
-                $builder->where(function ($qb) {
+                $builder->orWhere(function ($qb) {
                     $qb->whereHas('countries', function ($query) {
                         $query->where('country_id', $this->country->id);
                     })->whereType('countries');
@@ -107,7 +107,7 @@ class ShippingZoneResolver
             }
 
             if ($this->state) {
-                $builder->where(function ($qb) {
+                $builder->orWhere(function ($qb) {
                     $qb->whereHas('states', function ($query) {
                         $query->where('state_id', $this->state->id);
                     })->whereType('states');
@@ -115,7 +115,7 @@ class ShippingZoneResolver
             }
 
             if ($this->postcodeLookup) {
-                $builder->where(function ($qb) {
+                $builder->orWhere(function ($qb) {
                     $qb->whereHas('postcodes', function ($query) {
                         $postcodeParts = (new PostcodeResolver)->getParts(
                             $this->postcodeLookup->postcode

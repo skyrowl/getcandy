@@ -5,8 +5,11 @@ namespace GetCandy\Shipping\Models;
 use GetCandy\Base\BaseModel;
 use GetCandy\Base\Purchasable;
 use GetCandy\Base\Traits\HasPrices;
+use GetCandy\DataTypes\ShippingOption;
+use GetCandy\Models\Cart;
 use GetCandy\Models\TaxClass;
 use GetCandy\Shipping\Database\Factories\ShippingMethodFactory;
+use GetCandy\Shipping\DataTransferObjects\ShippingOptionRequest;
 use GetCandy\Shipping\Facades\Shipping;
 use GetCandy\Shipping\Interfaces\ShippingMethodInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -51,11 +54,21 @@ class ShippingMethod extends BaseModel implements Purchasable
     /**
      * Return the shipping method driver.
      *
-     * @return \GetCandy\Shipping\Interfaces\ShippingMethodInterface
+     * @return ShippingOption|null
      */
-    public function driver(): ShippingMethodInterface
+    public function getShippingOption(Cart $cart): ShippingOption|null
     {
-        return Shipping::driver($this->driver)->on($this);
+        return $this->driver()->resolve(
+            new ShippingOptionRequest(
+                cart: $cart,
+                shippingMethod: $this
+            )
+        );
+    }
+
+    public function driver()
+    {
+        return Shipping::driver($this->driver);
     }
 
     /**
@@ -125,7 +138,7 @@ class ShippingMethod extends BaseModel implements Purchasable
      */
     public function getDescription()
     {
-        return $this->description;
+        return $this->description ?: $this->driver()->getDescription();
     }
 
     /**
