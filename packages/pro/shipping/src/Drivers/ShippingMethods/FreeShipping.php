@@ -6,6 +6,7 @@ use GetCandy\DataTypes\Price;
 use GetCandy\DataTypes\ShippingOption;
 use GetCandy\Models\Cart;
 use GetCandy\Models\TaxClass;
+use GetCandy\Shipping\DataTransferObjects\ShippingOptionRequest;
 use GetCandy\Shipping\Http\Livewire\Components\ShippingMethods\FreeShipping as FreeShippingComponent;
 use GetCandy\Shipping\Interfaces\ShippingMethodInterface;
 use GetCandy\Shipping\Models\ShippingMethod;
@@ -35,13 +36,15 @@ class FreeShipping implements ShippingMethodInterface
         return 'Offer free shipping for your customers';
     }
 
-    public function getShippingOption(Cart $cart): ShippingOption|null
+    public function resolve(ShippingOptionRequest $shippingOptionRequest): ShippingOption|null
     {
-        $data = $this->shippingMethod->data;
+        $shippingMethod = $shippingOptionRequest->shippingMethod;
+        $data = $shippingMethod->data;
+        $cart = $shippingOptionRequest->cart;
 
         $subTotal = $cart->subTotal->value;
 
-        if ($data->use_discount_amount) {
+        if ($data->use_discount_amount ?? false) {
             $subTotal -= $cart->discountTotal->value;
         }
 
@@ -49,20 +52,20 @@ class FreeShipping implements ShippingMethodInterface
             $minSpend = 0;
         } else {
             if (is_array($data->minimum_spend)) {
-                $minSpend = (int) ($data->minimum_spend[$cart->currency->code] ?? null);
+                $minSpend = ($data->minimum_spend[$cart->currency->code] ?? null);
             } else {
-                $minSpend = (int) $data->minimum_spend->{$cart->currency->code} ?? null;
+                $minSpend = ($data->minimum_spend->{$cart->currency->code} ?? null);
             }
         }
 
-        if (is_null($minSpend) || ($minSpend * 100) > $subTotal) {
+        if (is_null($minSpend) || ($minSpend) > $subTotal) {
             return null;
         }
 
         return new ShippingOption(
-            name: $this->shippingMethod->name,
-            description: $this->shippingMethod->description,
-            identifier: $this->shippingMethod->code,
+            name: $shippingMethod->name,
+            description: $shippingMethod->description,
+            identifier: $shippingMethod->code,
             price: new Price(0, $cart->currency, 1),
             taxClass: TaxClass::getDefault()
         );
