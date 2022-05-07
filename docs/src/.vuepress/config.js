@@ -107,6 +107,7 @@ module.exports = {
           '/getcandy/orders',
           '/getcandy/payments',
           '/getcandy/products',
+          '/getcandy/shipping',
           '/getcandy/search',
           '/getcandy/tags',
           '/getcandy/taxation',
