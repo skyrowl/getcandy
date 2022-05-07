@@ -36,12 +36,19 @@ class ShippingManager extends Manager implements ShippingMethodManagerInterface
 
     public function getSupportedDrivers()
     {
-        return collect(array_merge([
+
+        return collect([
             'free-shipping' => $this->createDriver('free-shipping'),
             'flat-rate' => $this->createDriver('flat-rate'),
             'ship-by' => $this->createDriver('ship-by'),
             'collection' => $this->createDriver('collection'),
-        ], $this->customCreators));
+        ])->merge(
+            collect($this->customCreators)->mapWithKeys(function ($creator, $key) {
+                return [
+                    $key => $this->callCustomCreator($key)
+                ];
+            })
+        );
     }
 
     /**
