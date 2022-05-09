@@ -39,7 +39,6 @@ class ShippingServiceProvider extends ServiceProvider
             ShippingModifier::class
         );
 
-
         $this->loadRoutesFrom(__DIR__.'/../routes/hub.php');
 
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
