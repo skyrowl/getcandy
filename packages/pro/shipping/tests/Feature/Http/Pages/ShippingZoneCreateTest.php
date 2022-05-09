@@ -3,7 +3,6 @@
 namespace GetCandy\Shipping\Tests\Feature\Http\Livewire\Pages;
 
 use GetCandy\Hub\Models\Staff;
-use GetCandy\Models\Channel;
 use GetCandy\Shipping\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

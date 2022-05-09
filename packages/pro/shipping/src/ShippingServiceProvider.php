@@ -77,7 +77,7 @@ class ShippingServiceProvider extends ServiceProvider
             $permission->name = 'Manage Shipping';
             $permission->handle = 'shipping:manage';
             $permission->description = 'Allow staff ';
-           // return new Permission(
+            // return new Permission(
            //     __('adminhub::auth.permissions.settings.attributes.name'),
            //     'settings:manage-attributes',
            //     __('adminhub::auth.permissions.settings.attributes.description')
