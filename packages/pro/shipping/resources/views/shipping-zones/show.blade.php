@@ -79,12 +79,12 @@
 
               @if($method['method_id'] && $method['enabled'])
                 <div class="ml-4">
-                  <x-hub::button wire:click="$set('methodToEdit', '{{ $key }}')">Edit</x-hub::button>
+                  <x-hub::button type="button" wire:click="$set('methodToEdit', '{{ $key }}')">Edit</x-hub::button>
                 </div>
               @endif
 
               <div class="ml-4">
-                <button class="text-gray-500 hover:text-gray-900" type="button" wire:click="$set('shippingMethodToRemove', {{ $method['id'] }})">
+                <button type="button" class="text-gray-500 hover:text-gray-900" type="button" wire:click="$set('shippingMethodToRemove', {{ $method['id'] }})">
                   <x-hub::icon ref="trash" class="w-4" />
                 </button>
               </div>
