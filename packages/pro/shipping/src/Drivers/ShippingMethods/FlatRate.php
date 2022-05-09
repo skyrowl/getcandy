@@ -4,7 +4,6 @@ namespace GetCandy\Shipping\Drivers\ShippingMethods;
 
 use GetCandy\DataTypes\ShippingOption;
 use GetCandy\Facades\Pricing;
-use GetCandy\Models\Cart;
 use GetCandy\Shipping\DataTransferObjects\ShippingOptionRequest;
 use GetCandy\Shipping\Http\Livewire\Components\ShippingMethods\FlatRate as ShippingMethodsFlatRate;
 use GetCandy\Shipping\Interfaces\ShippingMethodInterface;
@@ -68,7 +67,7 @@ class FlatRate implements ShippingMethodInterface
 
         $pricing = Pricing::for($shippingMethod)->qty($subTotal)->get();
 
-        if (!$pricing->matched) {
+        if (! $pricing->matched) {
             return null;
         }
 

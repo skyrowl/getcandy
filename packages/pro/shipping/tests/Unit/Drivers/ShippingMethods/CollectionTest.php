@@ -10,8 +10,8 @@ use GetCandy\Shipping\Drivers\ShippingMethods\Collection;
 use GetCandy\Shipping\Models\ShippingMethod;
 use GetCandy\Shipping\Models\ShippingZone;
 use GetCandy\Shipping\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use GetCandy\Shipping\Tests\TestUtils;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group getcandy.shipping.drivers
