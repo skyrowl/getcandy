@@ -103,6 +103,7 @@ class CreateOrderTest extends TestCase
         ]);
 
         $shippingOption = new ShippingOption(
+            name: 'Basic Delivery',
             description: 'Basic Delivery',
             identifier: 'BASDEL',
             price: new PriceDataType(500, $this->cart->currency, 1),

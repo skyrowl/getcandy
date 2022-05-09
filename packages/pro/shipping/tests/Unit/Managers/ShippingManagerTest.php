@@ -88,6 +88,7 @@ class ShippingManagerTest extends TestCase
             $cart->refresh()->getManager()->getCart()
         )->get();
 
-        dd($shippingMethods);
+        $this->assertCount(1, $shippingMethods);
+        // $this->assertEquals()
     }
 }
