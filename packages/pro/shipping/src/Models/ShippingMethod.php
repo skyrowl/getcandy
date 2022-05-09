@@ -11,7 +11,6 @@ use GetCandy\Models\TaxClass;
 use GetCandy\Shipping\Database\Factories\ShippingMethodFactory;
 use GetCandy\Shipping\DataTransferObjects\ShippingOptionRequest;
 use GetCandy\Shipping\Facades\Shipping;
-use GetCandy\Shipping\Interfaces\ShippingMethodInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Collection;
 

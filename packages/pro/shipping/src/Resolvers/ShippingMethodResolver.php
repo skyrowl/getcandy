@@ -18,9 +18,9 @@ class ShippingMethodResolver
     protected Cart $cart;
 
     /**
-     * Initialise the resolver
+     * Initialise the resolver.
      *
-     * @param Cart $cart
+     * @param  Cart  $cart
      */
     public function __construct(Cart $cart = null)
     {
@@ -41,7 +41,7 @@ class ShippingMethodResolver
     }
 
     /**
-     * Return the shipping methods applicable to the cart
+     * Return the shipping methods applicable to the cart.
      *
      * @return Collection
      */
@@ -49,7 +49,7 @@ class ShippingMethodResolver
     {
         $shippingAddress = $this->cart->shippingAddress;
 
-        if (!$shippingAddress) {
+        if (! $shippingAddress) {
             return collect();
         }
 
