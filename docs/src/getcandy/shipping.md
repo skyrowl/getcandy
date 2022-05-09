@@ -260,6 +260,9 @@ $method = ShippingMethod::create([
     'description' => '...',
     'driver' => 'flat-rate',
     'enabled' => true,
+    'data' => [
+        'charge_by' => 'cart_total',
+    ]
 ]);
 ```
 
@@ -286,3 +289,54 @@ $method = ShippingMethod::create([
     'enabled' => true,
 ]);
 ```
+
+## Checkout usage
+
+The shipping add-on will automatically register itself with the ShippingManifest, so the shipping options will already be available via.
+
+```php
+GetCandy\Facades\ShippingManifest::getOptions($this->cart)
+```
+
+## Using the Shipping Facacde
+
+
+### Shipping Zones by country
+
+```php
+use GetCandy\Shipping\Facades\Shipping;
+use GetCandy\Models\Country;
+
+Shipping::zones()->country(Country $country)->get();
+```
+
+### Shipping Zones by state
+
+```php
+use GetCandy\Shipping\Facades\Shipping;
+use GetCandy\Models\State;
+
+Shipping::zones()->state(State $state)->get();
+```
+
+### Shipping Zones by postcode
+
+When fetching by postcode, we still need to pass a country in case the same postcode exists across multiple countries.
+
+```php
+use GetCandy\Shipping\Facades\Shipping;
+use GetCandy\Models\Country;
+
+Shipping::zones()->country(Country $country)->postcode('AB1 1CD')->get();
+```
+
+
+### Get Shipping Methods
+
+```php
+use GetCandy\Shipping\Facades\Shipping;
+use GetCandy\Models\Cart;
+
+Shipping::methods()->cart(Cart $cart)->get();
+```
+
