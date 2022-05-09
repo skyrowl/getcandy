@@ -11,11 +11,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::group([
     'prefix'     => config('getcandy-hub.system.path', 'hub'),
-    'middleware' => ['web'],
+    'middleware' => [
+        'web'
+    ],
 ], function () {
     Route::group([
         'middleware' => [
             Authenticate::class,
+            'can:shipping:manage',
         ],
         'prefix' => 'shipping',
     ], function () {

@@ -3,6 +3,8 @@
 namespace GetCandy\Shipping;
 
 use GetCandy\Base\ShippingModifiers;
+use GetCandy\Hub\Auth\Manifest;
+use GetCandy\Hub\Auth\Permission;
 use GetCandy\Hub\Facades\Menu;
 use GetCandy\Shipping\Http\Livewire\Components\ShippingMethods\Collection;
 use GetCandy\Shipping\Http\Livewire\Components\ShippingMethods\FlatRate;
@@ -21,7 +23,7 @@ use Livewire\Livewire;
 
 class ShippingServiceProvider extends ServiceProvider
 {
-    public function boot(ShippingModifiers $shippingModifiers)
+    public function boot(ShippingModifiers $shippingModifiers, Manifest $permissions)
     {
         $this->loadTranslationsFrom(__DIR__.'/../lang', 'shipping');
 
@@ -69,6 +71,17 @@ class ShippingServiceProvider extends ServiceProvider
 
         $this->app->bind(ShippingMethodManagerInterface::class, function ($app) {
             return $app->make(ShippingManager::class);
+        });
+
+        $permissions->addPermission(function ($permission) {
+            $permission->name = 'Manage Shipping';
+            $permission->handle = 'shipping:manage';
+            $permission->description = 'Allow staff ';
+           // return new Permission(
+           //     __('adminhub::auth.permissions.settings.attributes.name'),
+           //     'settings:manage-attributes',
+           //     __('adminhub::auth.permissions.settings.attributes.description')
+           // );
         });
     }
 }
