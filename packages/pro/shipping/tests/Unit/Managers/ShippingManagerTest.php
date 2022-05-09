@@ -52,8 +52,8 @@ class ShippingManagerTest extends TestCase
             'driver' => 'ship-by',
             'data' => [
                 'minimum_spend' => [
-                    "{$currency->code}" => 200
-                ]
+                    "{$currency->code}" => 200,
+                ],
             ],
         ]);
 
@@ -72,7 +72,7 @@ class ShippingManagerTest extends TestCase
                 'price' => 0,
                 'tier' => 800,
                 'currency_id' => $currency->id,
-            ]
+            ],
         ]);
 
         $cart = $this->createCart($currency, 500);
