@@ -4,7 +4,7 @@
   <div class="px-4 mx-auto max-w-7xl sm:px-6 md:px-8">
     <div class="grid items-center grid-cols-2 mb-6 md:mb-8">
       <div>
-          <strong class="text-xl font-bold md:text-2xl">United Kingdom</strong>
+          <strong class="text-xl font-bold md:text-2xl">Shipping</strong>
       </div>
       <div class="relative space-y-1 text-right md:hidden" x-data="{ menuVisible: false }">
         <button @click.prevent="menuVisible = true" :class="menuVisible ? 'bg-gray-200 ' : ''" class="inline-flex items-center flex-shrink-0 px-4 py-2 text-xs font-bold text-gray-600 uppercase border rounded ">
@@ -27,11 +27,11 @@
         <nav class="space-y-1">
             <a
               href="{{ route('hub.shipping.index') }}"
-              class="flex items-center px-3 py-2 text-sm font-medium rounded-md group"
+              class="flex items-center px-3 py-2 text-sm font-medium rounded-md group @if(request()->route()->getName() != 'hub.shipping.index') text-gray-900 hover:text-gray-900 hover:bg-gray-50 @else bg-gray-50 text-indigo-700 hover:text-indigo-700 hover:bg-white @endif"
               aria-current="page"
             >
               <span class="text-gray-400 group-hover:text-gray-500">
-                <x-hub::icon ref="globe" class="flex-shrink-0 w-6 h-6 mr-3 -ml-1" />
+                <x-hub::icon ref="globe" class="flex-shrink-0 w-6 h-6 mr-3 -ml-1 {{ request()->route()->getName() != 'hub.shipping.index' ? 'text-gray-400 group-hover:text-gray-500' : 'text-indigo-500 group-hover:text-indigo-500' }}" />
               </span>
               <span class="truncate">
                 Shipping Zones
@@ -40,11 +40,19 @@
 
             <a
               href="{{ route('hub.shipping-exclusion-lists.index') }}"
-              class="flex items-center px-3 py-2 text-sm font-medium rounded-md group"
+              @class([
+                'flex items-center px-3 py-2 text-sm font-medium rounded-md group' => true,
+                'text-gray-900 hover:text-gray-900 hover:bg-gray-50' => request()->route()->getName() != 'hub.shipping-exclusion-lists.index',
+                'bg-gray-50 text-indigo-700 hover:text-indigo-700 hover:bg-white' => request()->route()->getName() == 'hub.shipping-exclusion-lists.index'
+              ])
               aria-current="page"
             >
               <span class="text-gray-400 group-hover:text-gray-500">
-                <x-hub::icon ref="archive" class="flex-shrink-0 w-6 h-6 mr-3 -ml-1" />
+                <x-hub::icon
+                  ref="archive"
+                  class="flex-shrink-0 w-6 h-6 mr-3 -ml-1 {{ request()->route()->getName() != 'hub.shipping-exclusion-lists.index' ? 'text-gray-400 group-hover:text-gray-500' : 'text-indigo-500 group-hover:text-indigo-500' }}"
+
+                />
               </span>
               <span class="truncate">
                 Shipping Exclusions

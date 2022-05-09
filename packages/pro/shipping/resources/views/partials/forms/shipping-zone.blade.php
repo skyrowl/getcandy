@@ -1,9 +1,9 @@
 <div class="flex-col px-4 py-5 space-y-4 bg-white rounded-md rounded-b-none sm:p-6">
-  <x-hub::input.group :label="__('adminhub::inputs.name')" for="name" :error="$errors->first('currency.name')">
-    <x-hub::input.text wire:model.defer="shippingZone.name" name="name" id="name" :error="$errors->first('currency.name')" />
+  <x-hub::input.group :label="__('adminhub::inputs.name')" for="name" :error="$errors->first('shippingZone.name')">
+    <x-hub::input.text wire:model.defer="shippingZone.name" name="name" id="name" :error="$errors->first('shippingZone.name')" />
   </x-hub::input.group>
 
-  <x-hub::input.group label="Type" for="type"  :error="$errors->first('currency.name')">
+  <x-hub::input.group label="Type" for="type"  :error="$errors->first('shippingZone.type')">
     <x-hub::input.select id="type" wire:model="shippingZone.type">
       <option value="unrestricted">Unrestricted</option>
       <option value="countries">Limit to Countries</option>
@@ -49,9 +49,13 @@
   @endif
 </div>
 <div class="px-4 py-3 justify-between bg-gray-50 sm:px-6 flex">
-  <x-hub::button theme="danger" type="button"  wire:click="$set('showDeleteConfirm', true)">
-    Delete Shipping Zone
-  </x-hub::button>
+  <div>
+    @if($shippingZone->id)
+      <x-hub::button theme="danger" type="button"  wire:click="$set('showDeleteConfirm', true)">
+        Delete Shipping Zone
+      </x-hub::button>
+    @endif
+  </div>
   <x-hub::button type="submit">
     @if($shippingZone->id)
       Save shipping zone
