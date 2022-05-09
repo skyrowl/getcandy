@@ -51,3 +51,80 @@ public function boot(\GetCandy\Base\ShippingModifiers $shippingModifiers)
     );
 }
 ```
+
+
+## Adding a Shipping Driver
+
+If you want to add your own shipping driver, you need to create a class that implements `GetCandy\Shipping\Interface\ShippingMethodInterface`
+
+```php
+<?php
+
+namespace App\Shipping\Drivers;
+
+use GetCandy\DataTypes\ShippingOption;
+use GetCandy\Models\Cart;
+use GetCandy\Shipping\Interfaces\ShippingMethodInterface;
+use GetCandy\Shipping\Models\ShippingMethod;
+use GetCandy\Shipping\DataTransferObjects\ShippingOptionRequest;
+
+class OverWeightItems implements ShippingMethodInterface
+{
+    /**
+     * The shipping method for context.
+     *
+     * @var ShippingMethod
+     */
+    public ShippingMethod $shippingMethod;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function name(): string
+    {
+        return 'Overweight Items';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function description(): string
+    {
+        return 'Add Overweight items shipping option';
+    }
+
+    /**
+     * Return the reference to the Livewire component.
+     *
+     * @return string
+     */
+    public function component(): string
+    {
+        return 'path.to.admin.settings.component';
+    }
+
+    public function resolve(ShippingOptionRequest $shippingOptionRequest): ShippingOption|null
+    {
+        // Logic to determine which shipping option should be returned.
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function on(ShippingMethod $shippingMethod): self
+    {
+        $this->shippingMethod = $shippingMethod;
+
+        return $this;
+    }
+}
+```
+
+Once you've built out your driver, register it in your service provider.
+
+```php
+\GetCandy\Shipping\Facades\Shipping::extend('overweight-items', function ($app) {
+    return $app->make(OverWeightItems::class);
+});
+```
