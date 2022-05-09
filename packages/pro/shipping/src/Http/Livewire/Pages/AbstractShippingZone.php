@@ -51,13 +51,15 @@ abstract class AbstractShippingZone extends Component
      *
      * @var string
      */
-    public string $postcodes = '';
+    public ?string $postcodes = '';
 
     public function baseRules()
     {
         return [
-            'postcodes' => 'nullable|string',
-            'country' => 'nullable|string',
+            'postcodes' => 'nullable|string|required_if:shippingZone.type,postcodes',
+            'country' => 'nullable|string|required_if:shippingZone.type,postcodes,shippingZone.type,states',
+            'selectedCountries' => 'array|required_if:shippingZone.type,countries',
+            'selectedStates' => 'array|required_if:shippingZone.type,states',
         ];
     }
 
@@ -119,7 +121,12 @@ abstract class AbstractShippingZone extends Component
                 [$this->country]
             );
 
-            $postcodes = collect(explode("\n", $this->postcodes))->unique();
+            $postcodes = collect(
+                explode(
+                    "\n",
+                    str_replace(' ', '', $this->postcodes)
+                )
+            )->unique()->filter();
 
             $existing = $this->shippingZone->postcodes()->delete();
 

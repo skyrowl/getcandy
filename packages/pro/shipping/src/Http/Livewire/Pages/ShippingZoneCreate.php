@@ -35,7 +35,7 @@ class ShippingZoneCreate extends AbstractShippingZone
     public function mount()
     {
         $this->shippingZone = new ShippingZone([
-            'type' => 'countries',
+            'type' => 'unrestricted',
         ]);
     }
 
@@ -61,7 +61,7 @@ class ShippingZoneCreate extends AbstractShippingZone
         return view('shipping::shipping-zones.create', [
             'products' => $products,
         ])->layout('adminhub::layouts.app', [
-            'title' => 'United Kingdom',
+            'title' => __('shipping::create.title'),
         ]);
     }
 }
