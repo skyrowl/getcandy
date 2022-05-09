@@ -32,6 +32,31 @@ php artisan getcandy:meilisearch:setup
 
 [Unreleased]
 
+### Additional `name` property on `GetCandy\DataTypes\ShippingOption`
+
+Old
+
+```php
+new \GetCandy\DataTypes\ShippingOption(
+    description: 'Basic Delivery',
+    identifier: 'BASDEL',
+    price: new PriceDataType(500, $this->cart->currency, 1),
+    taxClass: $taxClass
+);
+```
+
+New
+
+```php
+new \GetCandy\DataTypes\ShippingOption(
+    name: 'Basic Delivery',
+    description: 'Basic Delivery',
+    identifier: 'BASDEL',
+    price: new PriceDataType(500, $this->cart->currency, 1),
+    taxClass: $taxClass
+);
+```
+
 ### Additional Scout configuration
 
 It's now possible to define which Scout driver should be used on a per model basis. To enable this, add the following to `config/getcandy/search.php`

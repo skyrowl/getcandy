@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- A new `name` property has been added to `GetCandy\DataTypes\ShippingOption`.
+
 ### Added
 
 - Added support to allow the scout driver to be defined per model.
