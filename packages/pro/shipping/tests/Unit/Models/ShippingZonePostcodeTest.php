@@ -6,7 +6,6 @@ use GetCandy\Shipping\Models\ShippingZone;
 use GetCandy\Shipping\Models\ShippingZonePostcode;
 use GetCandy\Shipping\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Livewire\Livewire;
 
 /**
  * @group hub.shipping.models
@@ -60,7 +59,7 @@ class ShippingZonePostcodeTest extends TestCase
         $postcodeTests = [
             '          A B 1 2     B A',
             'AB 12 BA',
-            'AB1       2BA '
+            'AB1       2BA ',
         ];
 
         foreach ($postcodeTests as $ptest) {

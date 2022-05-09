@@ -2,20 +2,9 @@
 
 namespace GetCandy\Shipping\Tests\Unit\Http\Livewire\Components\Pages;
 
-use GetCandy\Hub\Http\Livewire\Components\Products\ProductCreate;
 use GetCandy\Hub\Models\Staff;
-use GetCandy\Models\Collection;
 use GetCandy\Models\Country;
-use GetCandy\Models\Currency;
-use GetCandy\Models\Language;
-use GetCandy\Models\Price;
-use GetCandy\Models\Product;
-use GetCandy\Models\ProductAssociation;
-use GetCandy\Models\ProductType;
-use GetCandy\Models\ProductVariant;
 use GetCandy\Models\State;
-use GetCandy\Models\TaxClass;
-use GetCandy\Models\Url;
 use GetCandy\Shipping\Http\Livewire\Pages\ShippingZoneCreate;
 use GetCandy\Shipping\Models\ShippingZone;
 use GetCandy\Shipping\Tests\TestCase;
