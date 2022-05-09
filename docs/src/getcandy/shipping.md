@@ -129,10 +129,14 @@ ShippingMethod::create([
     'enabled' => true,
     'code' => 'STNDRD',
     'data' => [
-        'charge_by' => 'car_total',
+        'charge_by' => 'cart_total',
     ]
 ]);
 ```
+
+::: tip
+All shipping methods can have prices associated to them, although not all drivers will use them.
+:::
 
 ### Shipping Method Codes
 
@@ -142,3 +146,143 @@ Aside from being a reference for your storefront, shipping method codes are used
 ## Shipping Method Prices
 
 ## Exclusion Lists
+
+Sometimes you might not want certain products to be available for shipping in a Shipping Method, this is where Shipping Exclusion Lists come in. Once you have created an exclusion list, they can be assigned to any Shipping Method and then if a users cart contains any of those items, the Shipping Method will not be returned on the Checkout.
+
+```php
+use GetCandy\Shipping\Models\ShippingExclusionList;
+```
+
+|Field|Description|
+|:-|:-|
+|`id`||
+|`name`||
+|`created_at`||
+|`updated_at`||
+
+```php
+$list = ShippingExclusionList::create([
+    'name' => 'Oversized Products'
+]);
+```
+
+Attaching purchasable items to the list
+
+```php
+// GetCandy\Shipping\Models\ShippingExclusion
+$list->exclusions()->create([
+    'purchasable_type' => 'GetCandy\Models\Product',
+    'purchasable_id' => 1,
+]);
+```
+
+Attaching to a shipping method.
+
+```php
+$shippingMethod = ShippingMethod::create([/* .. */]);
+
+$shippingMethod->shippingExclusions()->sync([$list->id]);
+```
+
+
+## Available Shipping Methods
+
+### Free Shipping
+
+```php
+ShippingMethod::create([
+    'name' => 'Free Shipping',
+    'code' => 'FREESHIPPING',
+    'description' => '...',
+    'driver' => 'free-shipping',
+    'enabled' => true,
+    'data' => [
+        'minimum_spend' => 500,
+        'use_discount_amount' => false,
+    ]
+]);
+```
+
+- **minimum_spend** - The minimum amount in cents to qualify for free shipping.
+- **use_discount_amount** - If `true` the cart sub total minus any discounts will be used to check for eligibility.
+
+### Ship by
+
+The Ship By driver allows you to specify how you want shipping prices to be calculated. Available options are `cart_total` and `weight`.
+
+```php
+$method = ShippingMethod::create([
+    'name' => 'Ship By',
+    'code' => 'SHIPBY',
+    'description' => '...',
+    'driver' => 'ship-by',
+    'enabled' => true,
+]);
+
+// Add a default rate
+$method->prices()->create([
+    'tier' => 1,
+    'price' => 5000,
+]);
+```
+
+#### Pricing Tiers
+
+For the Ship By driver, you can add additional pricing tiers which will be based on either `cart_total` or `weight` where the `tier` column references the calculated total of that field.
+
+
+```php
+$method->prices()->createMany([
+    [
+        'tier' => 5000,
+        'price' => 4000,
+        'customer_group_id' => null,
+    ],
+    [
+        'tier' => 6000,
+        'price' => 0
+        'customer_group_id' => null,
+    ]
+])
+```
+
+Assuming we are calculating via `cart_total`, if the total is `5000` ($5) then the price is `4000` ($4). If the price is `6000` ($6) then the price is `0`.
+If none of the tiers are met, then the price will be the default `5000` ($5)
+
+### Flat Rate
+
+Flat rate shipping methods allow you to specify a set price for shipping across customer groups or for all customers.
+
+```php
+$method = ShippingMethod::create([
+    'name' => 'Flat Rate',
+    'code' => 'FLATRATE',
+    'description' => '...',
+    'driver' => 'flat-rate',
+    'enabled' => true,
+]);
+```
+
+```php
+$method->prices()->createMany([
+    [
+        'tier' => 1,
+        'price' => 4000,
+        'customer_group_id' => null,
+    ],
+])
+```
+
+### Collection
+
+If you want to allow customers to pick up their order in store, you can add `collection` shipping methods. These generally do not have any pricing associated to them.
+
+```php
+$method = ShippingMethod::create([
+    'name' => 'Collection',
+    'code' => 'COLLECTION',
+    'description' => '...',
+    'driver' => 'collection',
+    'enabled' => true,
+]);
+```
