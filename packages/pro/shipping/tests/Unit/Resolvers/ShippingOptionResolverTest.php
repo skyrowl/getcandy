@@ -5,14 +5,11 @@ namespace GetCandy\Shipping\Tests\Unit\Actions\Carts;
 use GetCandy\Models\CartAddress;
 use GetCandy\Models\Country;
 use GetCandy\Models\Currency;
-use GetCandy\Models\State;
 use GetCandy\Models\TaxClass;
 use GetCandy\Shipping\DataTransferObjects\ShippingOptionLookup;
-use GetCandy\Shipping\DataTransferObjects\ShippingOptionRequest;
 use GetCandy\Shipping\Facades\Shipping;
 use GetCandy\Shipping\Models\ShippingMethod;
 use GetCandy\Shipping\Models\ShippingZone;
-use GetCandy\Shipping\Resolvers\PostcodeResolver;
 use GetCandy\Shipping\Tests\TestCase;
 use GetCandy\Shipping\Tests\TestUtils;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -93,6 +90,5 @@ class ShippingOptionResolverTest extends TestCase
         );
 
         $this->assertcount(1, $options);
-
     }
 }

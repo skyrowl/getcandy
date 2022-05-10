@@ -10,7 +10,6 @@ use GetCandy\Models\TaxClass;
 use GetCandy\Shipping\Facades\Shipping;
 use GetCandy\Shipping\Models\ShippingMethod;
 use GetCandy\Shipping\Models\ShippingZone;
-use GetCandy\Shipping\Resolvers\PostcodeResolver;
 use GetCandy\Shipping\Tests\TestCase;
 use GetCandy\Shipping\Tests\TestUtils;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -189,7 +188,7 @@ class ShippingMethodResolverTest extends TestCase
         ]);
 
         $shippingZone->postcodes()->create([
-            'postcode' => 'AB1'
+            'postcode' => 'AB1',
         ]);
 
         $shippingZone->countries()->attach($country);

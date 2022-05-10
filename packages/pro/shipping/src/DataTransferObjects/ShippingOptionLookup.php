@@ -20,7 +20,7 @@ class ShippingOptionLookup
     ) {
         throw_if(
             $shippingMethods->filter(
-                fn($method) => get_class($method) != ShippingMethod::class
+                fn ($method) => get_class($method) != ShippingMethod::class
             )->count(),
             new InvalidArgument()
         );

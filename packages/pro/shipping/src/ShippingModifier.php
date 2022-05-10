@@ -5,8 +5,8 @@ namespace GetCandy\Shipping;
 use GetCandy\Facades\ShippingManifest;
 use GetCandy\Models\Cart;
 use GetCandy\Shipping\DataTransferObjects\ShippingOptionLookup;
-use GetCandy\Shipping\Facades\Shipping;
 use GetCandy\Shipping\Events\ShippingOptionResolvedEvent;
+use GetCandy\Shipping\Facades\Shipping;
 
 class ShippingModifier
 {
