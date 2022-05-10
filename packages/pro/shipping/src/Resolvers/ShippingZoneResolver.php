@@ -124,8 +124,8 @@ class ShippingZoneResolver
                     })->where(function ($qb) {
                         $qb->whereHas('countries', function ($query) {
                             $query->where('country_id', $this->postcodeLookup->country->id);
-                        })->whereType('postcodes');
-                    });
+                        });
+                    })->whereType('postcodes');
                 })->orWhere(function ($qb) {
                     $qb->whereHas('countries', function ($query) {
                         $query->where('country_id', $this->postcodeLookup->country->id);

@@ -9,6 +9,7 @@ use GetCandy\Shipping\Drivers\ShippingMethods\FreeShipping;
 use GetCandy\Shipping\Drivers\ShippingMethods\ShipBy;
 use GetCandy\Shipping\Interfaces\ShippingMethodManagerInterface;
 use GetCandy\Shipping\Resolvers\ShippingMethodResolver;
+use GetCandy\Shipping\Resolvers\ShippingOptionResolver;
 use GetCandy\Shipping\Resolvers\ShippingZoneResolver;
 use Illuminate\Support\Manager;
 
@@ -64,6 +65,11 @@ class ShippingManager extends Manager implements ShippingMethodManagerInterface
     public function shippingMethods(Cart $cart = null)
     {
         return new ShippingMethodResolver($cart);
+    }
+
+    public function shippingOptions(Cart $cart = null)
+    {
+        return new ShippingOptionResolver($cart);
     }
 
     /**

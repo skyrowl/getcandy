@@ -64,19 +64,19 @@ class ShippingMethodResolver
             )
         )->get();
 
-        $shippingOptions = collect();
+        $shippingMethods = collect();
 
         foreach ($zones as $zone) {
             $shippingMethods = $zone->shippingMethods;
             foreach ($shippingMethods as $shippingMethod) {
-                $shippingOptions->push(
-                    $shippingMethod->getShippingOption($this->cart)
+                $shippingMethods->push(
+                    $shippingMethod
                 );
             }
         }
 
-        return $shippingOptions->filter()->unique(function ($option) {
-            return $option->getIdentifier();
+        return $shippingMethods->filter()->unique(function ($method) {
+            return $method->code;
         });
     }
 }
