@@ -7,6 +7,7 @@ use GetCandy\Models\Cart;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use GetCandy\Shipping\Models\ShippingMethod;
 
 class ShippingOptionResolvedEvent
 {
@@ -20,15 +21,23 @@ class ShippingOptionResolvedEvent
     public ShippingOption $shippingOption;
 
     /**
-     * The instance of the cart.
+     * The instance of the shipping method.
+     *
+     * @var ShippingMethod
+     */
+    public ShippingMethod $shippingMethod;
+
+    /**
+     * The instance of the cart
      *
      * @var Cart
      */
     public Cart $cart;
 
-    public function __construct(Cart $cart, ShippingOption $shippingOption)
+    public function __construct(Cart $cart, ShippingMethod $shippingMethod, ShippingOption $shippingOption)
     {
         $this->cart = $cart;
+        $this->shippingMethod = $shippingMethod;
         $this->shippingOption = $shippingOption;
     }
 }

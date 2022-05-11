@@ -5,6 +5,7 @@ namespace GetCandy\Shipping\Resolvers;
 use GetCandy\Models\Cart;
 use GetCandy\Shipping\DataTransferObjects\ShippingOptionLookup;
 use Illuminate\Support\Collection;
+use GetCandy\Shipping\Events\ShippingOptionResolvedEvent;
 
 class ShippingOptionResolver
 {
@@ -52,13 +53,20 @@ class ShippingOptionResolver
         }
 
         foreach ($shippingOptionLookup->shippingMethods as $shippingMethod) {
-            $shippingOptions->push(
-                $shippingMethod->getShippingOption($this->cart)
-            );
+            $shippingOptions->push((object) [
+                'shippingMethod' => $shippingMethod,
+                'option' => $shippingMethod->getShippingOption($this->cart)
+            ]);
         }
 
         return $shippingOptions->filter()->unique(function ($option) {
-            return $option->getIdentifier();
+            return $option->option->getIdentifier();
+        })->each(function ($option) {
+            ShippingOptionResolvedEvent::dispatch(
+                $this->cart,
+                $option->shippingMethod,
+                $option->option
+            );
         });
     }
 }

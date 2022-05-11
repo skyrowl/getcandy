@@ -3,6 +3,7 @@
 namespace GetCandy\Shipping\Resolvers;
 
 use GetCandy\Models\Cart;
+use GetCandy\Models\Country;
 use GetCandy\Models\State;
 use GetCandy\Shipping\DataTransferObjects\PostcodeLookup;
 use GetCandy\Shipping\Facades\Shipping;
@@ -18,13 +19,34 @@ class ShippingMethodResolver
     protected Cart $cart;
 
     /**
+     * The country to use when resolving.
+     *
+     * @var Country
+     */
+    protected ?Country $country = null;
+
+    /**
+     * The state to use when resolving.
+     *
+     * @var State
+     */
+    protected ?string $state = null;
+
+    /**
+     * The postcode to use when resolving.
+     *
+     * @var string
+     */
+    protected ?string $postcode = null;
+
+    /**
      * Initialise the resolver.
      *
      * @param  Cart  $cart
      */
     public function __construct(Cart $cart = null)
     {
-        $this->cart = $cart;
+        $this->cart($cart);
     }
 
     /**
@@ -37,6 +59,53 @@ class ShippingMethodResolver
     {
         $this->cart = $cart;
 
+        if ($shippingAddress = $this->cart->shippingAddress) {
+            $this->country(
+                $shippingAddress->country
+            );
+            $this->postcode(
+                $shippingAddress->postcode
+            );
+            $this->state(
+                $shippingAddress->state
+            );
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set the value for country
+     *
+     * @param Country $country
+     *
+     * @return self
+     */
+    public function country(Country $country): self
+    {
+        $this->country = $country;
+
+        return $this;
+    }
+
+    public function state($state): self
+    {
+        $this->state = $state;
+
+        return $this;
+    }
+
+    /**
+     * Set the value for the postcode.
+     *
+     * @param string $postcode
+     *
+     * @return self
+     */
+    public function postcode(string $postcode): self
+    {
+        $this->postcode = $postcode;
+
         return $this;
     }
 
@@ -47,20 +116,18 @@ class ShippingMethodResolver
      */
     public function get(): Collection
     {
-        $shippingAddress = $this->cart->shippingAddress;
-
-        if (! $shippingAddress) {
+        if (!$this->postcode || !$this->country) {
             return collect();
         }
 
         $zones = Shipping::zones()->country(
-            $shippingAddress->country
+            $this->country
         )->state(
-            State::whereName($shippingAddress->state)->first()
+            State::whereName($this->state)->first()
         )->postcode(
             new PostcodeLookup(
-                postcode: $shippingAddress->postcode,
-                country: $shippingAddress->country
+                postcode: $this->postcode,
+                country: $this->country
             )
         )->get();
 
