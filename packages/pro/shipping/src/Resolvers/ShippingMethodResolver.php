@@ -75,10 +75,9 @@ class ShippingMethodResolver
     }
 
     /**
-     * Set the value for country
+     * Set the value for country.
      *
-     * @param Country $country
-     *
+     * @param  Country  $country
      * @return self
      */
     public function country(Country $country): self
@@ -98,8 +97,7 @@ class ShippingMethodResolver
     /**
      * Set the value for the postcode.
      *
-     * @param string $postcode
-     *
+     * @param  string  $postcode
      * @return self
      */
     public function postcode(string $postcode): self
@@ -116,7 +114,7 @@ class ShippingMethodResolver
      */
     public function get(): Collection
     {
-        if (!$this->postcode || !$this->country) {
+        if (! $this->postcode || ! $this->country) {
             return collect();
         }
 

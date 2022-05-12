@@ -4,10 +4,10 @@ namespace GetCandy\Shipping\Events;
 
 use GetCandy\DataTypes\ShippingOption;
 use GetCandy\Models\Cart;
+use GetCandy\Shipping\Models\ShippingMethod;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use GetCandy\Shipping\Models\ShippingMethod;
 
 class ShippingOptionResolvedEvent
 {
@@ -28,7 +28,7 @@ class ShippingOptionResolvedEvent
     public ShippingMethod $shippingMethod;
 
     /**
-     * The instance of the cart
+     * The instance of the cart.
      *
      * @var Cart
      */

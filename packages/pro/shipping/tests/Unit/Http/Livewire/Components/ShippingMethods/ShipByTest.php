@@ -4,9 +4,9 @@ namespace GetCandy\Shipping\Tests\Unit\Http\Livewire\Components\ShippingMethods;
 
 use GetCandy\Models\Currency;
 use GetCandy\Models\Price;
-use GetCandy\Shipping\Models\ShippingZone;
-use GetCandy\Shipping\Models\ShippingMethod;
 use GetCandy\Shipping\Http\Livewire\Components\ShippingMethods\ShipBy;
+use GetCandy\Shipping\Models\ShippingMethod;
+use GetCandy\Shipping\Models\ShippingZone;
 use GetCandy\Shipping\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
@@ -80,9 +80,9 @@ class ShipByTest extends TestCase
                         "{$currency->code}" => [
                             'price' => 50,
                             'currency_id' => $currency->id,
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ]))
             ->call('save')
             ->assertHasNoErrors();

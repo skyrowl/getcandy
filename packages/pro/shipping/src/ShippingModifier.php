@@ -13,13 +13,11 @@ class ShippingModifier
     {
         $shippingMethods = Shipping::shippingMethods($cart)->get();
 
-
         $options = Shipping::shippingOptions($cart)->get(
             new ShippingOptionLookup(
                 shippingMethods: $shippingMethods
             )
         );
-
 
         foreach ($options as $option) {
             ShippingManifest::addOption($option->option);

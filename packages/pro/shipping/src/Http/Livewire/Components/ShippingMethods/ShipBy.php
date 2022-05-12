@@ -121,14 +121,13 @@ class ShipBy extends AbstractShippingMethod
 
         $this->shippingMethod->save();
 
-
         $this->savePricing(
             basePrices: collect($this->basePrices)->reject(function ($price) {
                 return ! $price['price'];
             }),
             tierPrices: $this->tieredPrices->map(function ($tier) {
                 return array_merge($tier, [
-                   'tier' => $tier['tier'] * 100
+                    'tier' => $tier['tier'] * 100,
                 ]);
             })
         );

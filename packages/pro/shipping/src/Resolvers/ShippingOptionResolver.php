@@ -4,8 +4,8 @@ namespace GetCandy\Shipping\Resolvers;
 
 use GetCandy\Models\Cart;
 use GetCandy\Shipping\DataTransferObjects\ShippingOptionLookup;
-use Illuminate\Support\Collection;
 use GetCandy\Shipping\Events\ShippingOptionResolvedEvent;
+use Illuminate\Support\Collection;
 
 class ShippingOptionResolver
 {
@@ -55,7 +55,7 @@ class ShippingOptionResolver
         foreach ($shippingOptionLookup->shippingMethods as $shippingMethod) {
             $shippingOptions->push((object) [
                 'shippingMethod' => $shippingMethod,
-                'option' => $shippingMethod->getShippingOption($this->cart)
+                'option' => $shippingMethod->getShippingOption($this->cart),
             ]);
         }
 
