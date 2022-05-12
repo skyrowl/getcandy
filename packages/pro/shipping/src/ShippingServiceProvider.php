@@ -18,8 +18,8 @@ use GetCandy\Shipping\Http\Livewire\Pages\ShippingZoneCreate;
 use GetCandy\Shipping\Http\Livewire\Pages\ShippingZoneShow;
 use GetCandy\Shipping\Interfaces\ShippingMethodManagerInterface;
 use GetCandy\Shipping\Managers\ShippingManager;
-use Illuminate\Support\ServiceProvider;
 use GetCandy\Shipping\Menu\ShippingMenu;
+use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 
 class ShippingServiceProvider extends ServiceProvider
@@ -87,6 +87,4 @@ class ShippingServiceProvider extends ServiceProvider
 
         ShippingMenu::make();
     }
-
-
 }
