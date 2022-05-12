@@ -3,7 +3,7 @@
     <strong class="block text-lg font-bold md:text-2xl">
       Shipping Exclusion Lists
     </strong>
-    <x-hub::button tag="a" href="{{ route('hub.shipping-exclusion-lists.create') }}">
+    <x-hub::button tag="a" href="{{ route('hub.exclusion-lists.create') }}">
       Add list
     </x-hub::button>
   </div>
@@ -23,7 +23,7 @@
               </x-hub::table.cell>
 
               <x-hub::table.cell>
-                <a href="{{ route('hub.shipping-exclusion-lists.show', $list->id) }}" class="text-indigo-500 hover:underline">
+                <a href="{{ route('hub.exclusion-lists.show', $list->id) }}" class="text-indigo-500 hover:underline">
                     Edit
                 </a>
               </x-hub::table.cell>

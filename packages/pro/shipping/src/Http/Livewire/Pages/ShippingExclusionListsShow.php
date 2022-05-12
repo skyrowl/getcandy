@@ -53,7 +53,7 @@ class ShippingExclusionListsShow extends AbstractShippingExclusionList
             $this->list->shippingMethods()->detach();
             $this->list->delete();
         });
-        redirect()->route('hub.shipping-exclusion-lists.index');
+        redirect()->route('hub.exclusion-lists.index');
     }
 
     /**
