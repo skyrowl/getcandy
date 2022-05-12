@@ -40,6 +40,10 @@ class ShipBy extends AbstractShippingMethod
     {
         parent::mount();
         $this->currency = $this->currencies->first(fn ($currency) => $currency->default);
+
+        $this->tiers = $this->mapTieredPrices(
+            $this->shippingMethod->prices->filter(fn ($price) => $price->tier > 1)
+        );
     }
 
     /**
@@ -85,12 +89,10 @@ class ShipBy extends AbstractShippingMethod
         DB::transaction(function () {
             foreach ($this->tiers as $data) {
                 foreach ($data['prices'] as $currencyCode => $price) {
-                    if ($this->data['charge_by'] == 'cart_total') {
-                        $price['value'] = $price['value'] * 100;
-                    }
                     if ($price['id'] ?? null) {
                         $this->shippingMethod->prices()->where('id', '=', $price['id'])->update([
-                            'price' => $price['value'],
+                            'price' => $price['value'] * 100,
+                            'tier' => $data['tier'] * 100,
                             'customer_group_id' => $data['customer_group_id'],
                         ]);
                         continue;
@@ -99,8 +101,8 @@ class ShipBy extends AbstractShippingMethod
                     $currency = Currency::whereCode($currencyCode)->first();
 
                     $this->shippingMethod->prices()->create([
-                        'tier' => $data['tier'],
-                        'price' => $price['value'],
+                        'tier' => $data['tier'] * 100,
+                        'price' => $price['value'] * 100,
                         'currency_id' => $currency->id,
                         'customer_group_id' => $data['customer_group_id'],
                     ]);
@@ -142,12 +144,50 @@ class ShipBy extends AbstractShippingMethod
         return Currency::get();
     }
 
-    /**
-     * {@inheritDoc}
+/**
+     * Return mapped tiered pricing.
+     *
+     * @param  \Illuminate\Support\Collection  $prices
+     * @return \Illuminate\Support\Collection
      */
-    public function getPricedModel()
+    private function mapTieredPrices(Collection $prices)
     {
-        return $this->shippingMethod;
+        $data = collect();
+
+        foreach ($prices->groupBy(['tier', 'customer_group_id']) as $customerGroups) {
+            $data = $data->concat(
+                $customerGroups->map(function ($prices, $tier) {
+                    $default = $prices->first(fn ($price) => $price->currency->default);
+
+                    $prices = $prices->mapWithKeys(function ($price) {
+                        return [
+                            $price->currency->code => [
+                                'id'                => $price->id,
+                                'currency_id'       => $price->currency_id,
+                                'value'             => $price->price->decimal,
+                            ],
+                        ];
+                    })->toArray();
+
+                    foreach ($this->currencies as $currency) {
+                        if (empty($prices[$currency->code])) {
+                            $prices[$currency->code] = [
+                                'price'       => null,
+                                'currency_id' => $currency->id,
+                            ];
+                        }
+                    }
+
+                    return [
+                        'customer_group_id' => $default->customer_group_id,
+                        'tier'              => $default->tier / 100,
+                        'prices'            => $prices,
+                    ];
+                })->values()->toArray()
+            );
+        }
+
+        return $data->sortBy('tier')->values()->toArray();
     }
 
     /**
