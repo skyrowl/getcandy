@@ -27,7 +27,7 @@
       </div>
     </header>
 
-    <x-hub::input.group
+    {{-- <x-hub::input.group
       label="Default rate (optional)"
       instructions="This is the default rate when none of the tiers below are met."
       for="basePrice"
@@ -47,9 +47,9 @@
       <x-hub::button :disabled="!$currency->default" wire:click.prevent="addTier" theme="gray" size="sm" type="button">
         {{ __('adminhub::partials.pricing.tiers.add_tier_btn') }}
       </x-hub::button>
-    </div>
+    </div> --}}
 
-    <div class="space-y-4">
+    {{-- <div class="space-y-4">
       @if(count($tieredPrices))
         <div>
         @if(!$this->currency->default)
@@ -61,7 +61,13 @@
         <div class="space-y-2">
           <div class="grid grid-cols-3 gap-4">
             <label class="block text-sm font-medium text-gray-700">{{ __('adminhub::global.customer_group') }}</label>
-            <label class="block text-sm font-medium text-gray-700">Minimum</label>
+            <label class="block text-sm font-medium text-gray-700">
+              @if($data['charge_by'] == 'weight')
+                Minimum Weight
+              @else
+                Minimum Total
+              @endif
+            </label>
             <label class="block text-sm font-medium text-gray-700">
               {{ __('adminhub::global.unit_price_excl_tax') }}
             </label>
@@ -79,12 +85,13 @@
                         @endforeach
                       </x-hub::input.select>
 
-                      <x-hub::input.price
+                      <x-hub::input.text
                         id="tier_field_{{ $index }}"
                         wire:model='tieredPrices.{{ $index }}.tier'
                         :symbol="$this->currency->format"
                         :currencyCode="$this->currency->code"
                         type="number"
+                        step="any"
                         required
                         :disabled="!$this->currency->default"
                         :error="$errors->first('tieredPrices.'.$index.'.tier')"
@@ -107,7 +114,7 @@
         </div>
       @else
       @endif
-    </div>
+    </div> --}}
 
 
     @include('shipping::partials.forms.product-exclusions')
