@@ -88,7 +88,7 @@ trait HasPrices
      *
      * @return void
      */
-    public function savePricing($basePrices = null)
+    public function savePricing($basePrices = null, $tierPrices = null)
     {
         $model = $this->getPricedModel();
 
@@ -101,7 +101,7 @@ trait HasPrices
 
         $this->tieredPrices = app(UpdateTieredPricing::class)->execute(
             $model,
-            $this->tieredPrices
+            $tierPrices ?: $this->tieredPrices
         );
 
         DB::transaction(function () use ($model) {

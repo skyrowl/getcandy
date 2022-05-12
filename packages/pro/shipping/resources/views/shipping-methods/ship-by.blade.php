@@ -27,7 +27,7 @@
       </div>
     </header>
 
-    {{-- <x-hub::input.group
+    <x-hub::input.group
       label="Default rate (optional)"
       instructions="This is the default rate when none of the tiers below are met."
       for="basePrice"
@@ -47,9 +47,9 @@
       <x-hub::button :disabled="!$currency->default" wire:click.prevent="addTier" theme="gray" size="sm" type="button">
         {{ __('adminhub::partials.pricing.tiers.add_tier_btn') }}
       </x-hub::button>
-    </div> --}}
+    </div>
 
-    {{-- <div class="space-y-4">
+    <div class="space-y-4">
       @if(count($tieredPrices))
         <div>
         @if(!$this->currency->default)
@@ -114,7 +114,7 @@
         </div>
       @else
       @endif
-    </div> --}}
+    </div>
 
 
     @include('shipping::partials.forms.product-exclusions')
