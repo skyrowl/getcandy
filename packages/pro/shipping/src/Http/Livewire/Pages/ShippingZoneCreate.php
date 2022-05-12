@@ -60,7 +60,7 @@ class ShippingZoneCreate extends AbstractShippingZone
 
         return view('shipping::shipping-zones.create', [
             'products' => $products,
-        ])->layout('adminhub::layouts.app', [
+        ])->layout('shipping::layout', [
             'title' => __('shipping::create.title'),
         ]);
     }

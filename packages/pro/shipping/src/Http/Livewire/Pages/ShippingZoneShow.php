@@ -263,7 +263,7 @@ class ShippingZoneShow extends AbstractShippingZone
     public function render()
     {
         return view('shipping::shipping-zones.show')
-            ->layout('adminhub::layouts.app', [
+            ->layout('shipping::layout', [
                 'title' => $this->shippingZone->name,
             ]);
     }

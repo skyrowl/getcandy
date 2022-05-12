@@ -6,35 +6,39 @@
 
     <x-hub::modal.dialog form="deleteMethod" wire:model="shippingMethodToRemove">
       <x-slot name="title">
-        Delete Shipping Method
+        {{ __('shipping::shipping-zones.show.shipping_method.delete')}}
       </x-slot>
       <x-slot name="content">
         <x-hub::alert level="danger">
-          Are you sure? This action cannot be undone, consider disabling the Shipping Method instead to preserve the data.
+          {{ __('shipping::shipping-zones.show.shipping_method.delete_confirm')}}
         </x-hub::alert>
       </x-slot>
       <x-slot name="footer">
         <x-hub::button type="button" wire:click.prevent="$set('shippingMethodToRemove', null)" theme="gray">
           {{ __('adminhub::global.cancel') }}
         </x-hub::button>
-        <x-hub::button type="submit" theme="danger">Remove</x-hub::button>
+        <x-hub::button type="submit" theme="danger">
+          {{ __('adminhub::global.remove') }}
+        </x-hub::button>
       </x-slot>
     </x-hub::modal.dialog>
 
     <x-hub::modal.dialog form="deleteZone" wire:model="showDeleteConfirm">
       <x-slot name="title">
-        Delete Shipping Zone
+        {{ __('shipping::shipping-zones.show.shipping_zone.delete')}}
       </x-slot>
       <x-slot name="content">
         <x-hub::alert level="danger">
-          This action cannot be undone.
+          {{ __('shipping::shipping-zones.show.shipping_zone.delete_message')}}
         </x-hub::alert>
       </x-slot>
       <x-slot name="footer">
         <x-hub::button type="button" wire:click.prevent="$set('showDeleteConfirm', false)" theme="gray">
           {{ __('adminhub::global.cancel') }}
         </x-hub::button>
-        <x-hub::button type="submit" theme="danger">Remove</x-hub::button>
+        <x-hub::button type="submit" theme="danger">
+          {{ __('adminhub::global.remove') }}
+        </x-hub::button>
       </x-slot>
     </x-hub::modal.dialog>
 
@@ -42,11 +46,11 @@
       <div class="flex-col px-4 py-5 space-y-4 bg-white rounded-md sm:p-6">
         <header class="flex items-center justify-between">
           <h3 class="text-lg font-medium leading-6 text-gray-900">
-            Shipping Methods
+            {{ __('shipping::shipping-zones.show.shipping_methods.title') }}
           </h3>
 
           <div>
-            <x-hub::dropdown value="Add shipping method">
+            <x-hub::dropdown :value="__('shipping::shipping-zones.show.shipping_methods.add_btn')">
               <x-slot name="options">
                 @foreach($this->supportedShippingMethods as $shippingMethod)
                   <x-hub::dropdown.button type="button" wire:click="addShippingMethod('{{ $shippingMethod['key'] }}')">
@@ -79,7 +83,9 @@
 
               @if($method['method_id'] && $method['enabled'])
                 <div class="ml-4">
-                  <x-hub::button type="button" wire:click="$set('methodToEdit', '{{ $key }}')">Edit</x-hub::button>
+                  <x-hub::button type="button" wire:click="$set('methodToEdit', '{{ $key }}')">
+                    {{ __('adminhub::global.edit') }}
+                  </x-hub::button>
                 </div>
               @endif
 
