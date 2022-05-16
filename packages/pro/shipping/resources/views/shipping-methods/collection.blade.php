@@ -4,4 +4,4 @@
 
     <x-hub::button>Save Method</x-hub::button>
   </div>
-</div>
+</form>
