@@ -340,3 +340,15 @@ use GetCandy\Models\Cart;
 Shipping::methods()->cart(Cart $cart)->get();
 ```
 
+In order to use the `cart` method, we're assuming the cart has a shipping address associated to it, in most cases this is fine, but you might want to offer up a shipping estimate based on country/postcode, for this you can use the individual methods.
+
+```php
+Shipping::methods()->state('Essex')->get();
+
+$country = \GetCandy\Models\Country::first();
+
+Shipping::methods()->country($country)->get();
+
+Shipping::methods()->country($country)->postcode('AB1 12C')->get();
+```
+
