@@ -64,7 +64,7 @@
 
         <div class="space-y-4">
           @foreach($this->shippingMethods as $key => $method)
-            <div class="flex items-center justify-between pb-4 border-b" wire:key="{{ $key }}">
+            <div class="flex items-center justify-between pb-4 border-b" wire:key="shipping_method_row_{{ $key }}">
               <div class="grow">
                 @if($method['custom_name'])
                   <div>
