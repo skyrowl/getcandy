@@ -71,6 +71,8 @@ use GetCandy\Hub\Menu\SidebarMenu;
 use GetCandy\Hub\Menu\SlotRegistry;
 use GetCandy\Hub\Tables\Orders;
 use GetCandy\Hub\Actions\Orders\UpdateStatus;
+use GetCandy\Hub\Base\ActivityLog\Manifest as ActivityLogManifest;
+use GetCandy\Hub\Facades\ActivityLog;
 use GetCandy\Hub\Http\Livewire\Components\Orders\OrderStatus;
 use Illuminate\Routing\Events\RouteMatched;
 use Illuminate\Support\Facades\Auth;
@@ -122,7 +124,9 @@ class AdminHubServiceProvider extends ServiceProvider
             return $app->make(Orders::class);
         });
 
-
+        $this->app->singleton(ActivityLog::class, function () {
+            return new ActivityLogManifest();
+        });
 
         $slot = Action::slot('orders.view.top')->addAction(
             new UpdateStatus

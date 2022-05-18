@@ -1,0 +1,41 @@
+{
+  "name": "getcandy/pro-order-notifications",
+  "description": "GetCandy Pro Order Notifications Addon",
+  "keywords": ["getcandy", "laravel", "ecommerce", "e-commerce", "headless", "store", "shop", "cart"],
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+      {
+        "name": "GetCandy",
+        "homepage": "https://getcandy.io/"
+      }
+  ],
+  "autoload": {
+      "psr-4": {
+          "GetCandy\\OrderNotifications\\": "src"
+      }
+  },
+  "autoload-dev": {
+      "psr-4": {
+          "GetCandy\\OrderNotifications\\Tests\\": "tests"
+      }
+  },
+  "extra": {
+      "getcandy": {
+        "name": "Order Notifications"
+      },
+      "laravel": {
+          "providers": [
+              "GetCandy\\OrderNotifications\\OrderNotificationsServiceProvider"
+          ]
+      }
+  },
+  "require": {
+      "php": "^8.0",
+      "getcandy/admin": "*"
+  },
+  "require-dev": {
+      "orchestra/testbench": "^6.0|^7.0",
+      "phpunit/phpunit": "^9.5"
+  }
+}
