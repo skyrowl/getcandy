@@ -45,7 +45,9 @@
             From: "translate-x-0"
             To: "translate-x-full"
         -->
-        <div x-show="show" class="w-screen {{ $nested ? 'max-w-xl' : 'max-w-2xl' }}"
+        <div x-show="show" {{ $attributes->only(['class'])->merge([
+            'class' => 'w-screen ' . ($nested ? 'max-w-xl' : 'max-w-2xl')
+          ]) }}
           x-transition:enter="transition ease-in-out duration-300 sm:duration-300"
           x-transition:enter-start="translate-x-full"
           x-transition:enter-end="translate-x-0"
