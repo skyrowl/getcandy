@@ -34,20 +34,13 @@
   </button>
 @endif
 
-<button
-  class="inline-flex items-center px-4 py-2 font-bold transition border border-transparent border-gray-200 rounded hover:bg-white bg-gray-50 hover:border-gray-200"
-  type="button"
-  wire:click.prevent="$set('showUpdateStatus', true)"
->
-  <x-hub::icon
-    ref="flag"
-    style="solid"
-    class="w-4 mr-2"
-
-  />
-
-  {{ __('adminhub::components.orders.show.update_status_btn') }}
-</button>
+@foreach($this->topActions as $index => $action)
+  <div>
+    @livewire($action->component(), [
+      'order' => $order,
+    ], key('action.component.'.$index))
+  </div>
+@endforeach
 
 <div
   class="relative flex justify-end flex-1"

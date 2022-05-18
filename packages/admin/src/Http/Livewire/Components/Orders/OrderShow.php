@@ -2,6 +2,7 @@
 
 namespace GetCandy\Hub\Http\Livewire\Components\Orders;
 
+use GetCandy\Hub\Http\Livewire\Traits\HasActions;
 use GetCandy\Hub\Http\Livewire\Traits\Notifies;
 use GetCandy\Hub\Http\Livewire\Traits\WithCountries;
 use GetCandy\Models\Channel;
@@ -13,7 +14,7 @@ use Livewire\Component;
 
 class OrderShow extends Component
 {
-    use Notifies, WithCountries;
+    use Notifies, WithCountries, HasActions;
 
     /**
      * The current order in view.
@@ -58,13 +59,6 @@ class OrderShow extends Component
     public string $comment = '';
 
     /**
-     * Whether to show the update status modal.
-     *
-     * @var bool
-     */
-    public bool $showUpdateStatus = false;
-
-    /**
      * Whether to show the address edit screen.
      *
      * @var bool
@@ -106,6 +100,7 @@ class OrderShow extends Component
         'captureSuccess',
         'refundSuccess',
         'cancelRefund',
+        'order.show.updated' => 'refreshOrder',
     ];
 
     /**
@@ -152,6 +147,11 @@ class OrderShow extends Component
         $this->shippingAddress = $this->order->shippingAddress ?: new OrderAddress();
 
         $this->billingAddress = $this->order->billingAddress ?: new OrderAddress();
+    }
+
+    public function refreshOrder()
+    {
+        $this->order = $this->order->refresh();
     }
 
     /**
@@ -214,23 +214,6 @@ class OrderShow extends Component
         return $this->order->lines->filter(function ($line) {
             return $line->type == 'physical';
         });
-    }
-
-    /**
-     * Update the order status.
-     *
-     * @return void
-     */
-    public function updateStatus()
-    {
-        $this->order->update([
-            'status' => $this->order->status,
-        ]);
-
-        $this->notify(
-            __('adminhub::notifications.order.status_updated')
-        );
-        $this->showUpdateStatus = false;
     }
 
     /**
@@ -387,6 +370,11 @@ class OrderShow extends Component
     public function cancelRefund()
     {
         $this->showRefund = false;
+    }
+
+    public function getTopActionsProperty()
+    {
+        return $this->getActions('orders.view.top');
     }
 
     /**

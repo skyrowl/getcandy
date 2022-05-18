@@ -163,27 +163,6 @@
       </section>
     </div>
 
-    <x-hub::modal.dialog form="updateStatus" wire:model="showUpdateStatus">
-      <x-slot name="title">
-        {{ __('adminhub::orders.update_status.title') }}
-      </x-slot>
-      <x-slot name="content">
-        <x-hub::input.group :label="__('adminhub::inputs.status.label')" for="status" required :error="$errors->first('status')">
-          <x-hub::input.select wire:model.defer="order.status" required>
-            @foreach($this->statuses as $handle => $status)
-              <option value="{{ $handle }}">{{ $status['label'] }}</option>
-            @endforeach
-          </x-hub::input.select>
-        </x-hub::input.group>
-      </x-slot>
-      <x-slot name="footer">
-        <x-hub::button type="button" wire:click.prevent="$set('showUpdateStatus', false)" theme="gray">{{ __('adminhub::global.cancel') }}</x-hub::button>
-        <x-hub::button type="submit">
-          {{ __('adminhub::orders.update_status.btn') }}
-        </x-hub::button>
-      </x-slot>
-    </x-hub::modal.dialog>
-
     <x-hub::modal wire:model="showRefund">
       <div class="p-4">
         @livewire('hub.components.orders.refund', [
