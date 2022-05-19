@@ -4,6 +4,7 @@ namespace GetCandy\Hub\Http\Livewire\Components;
 
 use GetCandy\Hub\Facades\ActivityLog;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Spatie\Activitylog\Models\Activity;
@@ -18,6 +19,10 @@ class ActivityLogFeed extends Component
      * @var \Illuminate\Database\Eloquent\Model
      */
     public Model $subject;
+
+    protected $listeners = [
+        'activityUpdated' => '$refresh',
+    ];
 
     /**
      * Returns the activity log for the order.
@@ -34,6 +39,7 @@ class ActivityLogFeed extends Component
                 return $log->created_at->format('Y-m-d');
             })->map(function ($logs) {
                 return [
+                    'key' => Str::random(),
                     'date' => $logs->first()->created_at->startOfDay(),
                     'items' => $logs->map(function ($log) {
                         return [
