@@ -2,10 +2,8 @@
 
 namespace GetCandy\OrderNotifications;
 
-use GetCandy\Extending\Plugin;
-use GetCandy\Hub\Extending\Traits\AdminHubPlugin;
 use GetCandy\Hub\Facades\Action;
-use GetCandy\Hub\Views\Components\ActivityLog;
+use GetCandy\Hub\Facades\ActivityLog;
 use GetCandy\Models\Order;
 use GetCandy\OrderNotifications\Actions\OrderNotification;
 use GetCandy\OrderNotifications\ActivityLog\EmailNotification;
@@ -16,22 +14,6 @@ use Livewire\Livewire;
 
 class OrderNotificationsServiceProvider extends ServiceProvider
 {
-    use AdminHubPlugin;
-
-    public function getActivityLogRenderers()
-    {
-        return [
-            Order::class => [
-                EmailNotification::class
-            ],
-        ];
-    }
-
-    // public function register()
-    // {
-    //     $this->adminHubRegister();
-    // }
-
     public function boot()
     {
         // $this->loadTranslationsFrom(__DIR__.'/../lang', 'shipping');
@@ -51,5 +33,6 @@ class OrderNotificationsServiceProvider extends ServiceProvider
             new OrderNotification
         );
 
+        ActivityLog::addRender(Order::class, EmailNotification::class);
     }
 }
