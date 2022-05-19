@@ -30,7 +30,7 @@ If you're using Meilisearch, run the following
 php artisan getcandy:meilisearch:setup
 ```
 
-[Unreleased]
+## 2.0-beta13
 
 ### Additional `name` property on `GetCandy\DataTypes\ShippingOption`
 
