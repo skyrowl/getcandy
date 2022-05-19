@@ -56,7 +56,7 @@ class OrderNotificationPreview extends Component
     public ?string $additionalContent = null;
 
     /**
-     * The email addresses to use for the mailers
+     * The email addresses to use for the mailers.
      *
      * @var array
      */
@@ -109,7 +109,7 @@ class OrderNotificationPreview extends Component
     }
 
     /**
-     * Return the available mailers for this order status
+     * Return the available mailers for this order status.
      *
      * @return array
      */
@@ -124,13 +124,13 @@ class OrderNotificationPreview extends Component
                         Str::snake(class_basename($mailer), ' ')
                     ),
                     'class' => $mailer,
-                ]
+                ],
             ];
         });
     }
 
     /**
-     * Return the available mailers for this order status
+     * Return the available mailers for this order status.
      *
      * @return array
      */
@@ -143,9 +143,10 @@ class OrderNotificationPreview extends Component
     {
         $mailer = $this->availableMailers[$this->previewTemplate] ?? null;
 
-        if (!$mailer) {
+        if (! $mailer) {
             return 'Unable to load preview';
         }
+
         return $this->buildMailer($mailer['class']);
     }
 
@@ -176,7 +177,7 @@ class OrderNotificationPreview extends Component
             foreach ($this->emailAddresses as $email) {
                 Mail::to($email)->queue($mailable);
 
-                $storedPath = 'orders/activity/' . Str::random() . '.html';
+                $storedPath = 'orders/activity/'.Str::random().'.html';
 
                 $storedMailer = Storage::put(
                     $storedPath,
@@ -193,7 +194,6 @@ class OrderNotificationPreview extends Component
                     'mailer' => $mailer['name'],
                 ])->log('email-notification');
             }
-
         }
 
         $this->order->update([
@@ -218,7 +218,7 @@ class OrderNotificationPreview extends Component
                 [
                     'type' => 'Billing & Shipping',
                     'address' => $billing->contact_email,
-                ]
+                ],
             ];
         }
 

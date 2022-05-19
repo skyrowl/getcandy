@@ -2,10 +2,7 @@
 
 namespace GetCandy\OrderNotifications\Http\Livewire;
 
-use GetCandy\Hub\Http\Livewire\Traits\Notifies;
-use GetCandy\Models\Order;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Livewire\Component;
 use Spatie\Activitylog\Contracts\Activity;
 
