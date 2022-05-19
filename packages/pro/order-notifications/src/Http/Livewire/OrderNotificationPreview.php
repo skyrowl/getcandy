@@ -18,7 +18,7 @@ class OrderNotificationPreview extends Component
      *
      * @var bool
      */
-    public $showStatusSelect = true;
+    public $showStatusSelect = false;
 
     /**
      * The order to edit.
@@ -32,7 +32,7 @@ class OrderNotificationPreview extends Component
      *
      * @var string
      */
-    public $newStatus = 'payment-received';
+    public $newStatus = null;
 
     /**
      * The selected mailers to send.
