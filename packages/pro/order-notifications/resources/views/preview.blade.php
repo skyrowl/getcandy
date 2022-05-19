@@ -65,7 +65,7 @@
                 </x-hub::input.group>
 
                 @if(count($this->selectedMailers))
-                    <div>
+                    <div class="space-y-4">
                         <x-hub::input.group label="Email Addresses" for="email_addresses" instructions="Select which email addresses you want to use">
                             @foreach($this->availableEmailAddresses as $key => $email)
                             <label wire:key="email_{{ $key }}" class="flex items-center justify-between border rounded shadow-sm py-2 px-3">
