@@ -9,7 +9,7 @@ use GetCandy\Hub\Http\Livewire\Components\Orders\OrderStatus;
 
 class OrderNotification extends Action
 {
-    // public $override = UpdateStatus::class;
+    public $override = UpdateStatus::class;
 
     public function title(): string
     {
