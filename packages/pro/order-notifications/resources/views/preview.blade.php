@@ -64,6 +64,25 @@
                 @endforelse
                 </x-hub::input.group>
 
+                @if(count($this->selectedMailers))
+                    <div>
+                        <x-hub::input.group label="Email Addresses" for="email_addresses" instructions="Select which email addresses you want to use">
+                            @foreach($this->availableEmailAddresses as $key => $email)
+                            <label wire:key="email_{{ $key }}" class="flex items-center justify-between border rounded shadow-sm py-2 px-3">
+                                <div class="flex items-center space-x-4">
+                                    <x-hub::input.checkbox wire:model="emailAddresses" :value="$email['address']"/>
+                                    <span class="text-sm">{{ $email['address'] }} - <span class="text-gray-500">{{ $email['type'] }}</span></span>
+                                </div>
+                            </label>
+                            @endforeach
+                        </x-hub::input.group>
+
+                        <x-hub::input.group label="Additional email" for="additional_email" instructions="If you need to use a custom email address, enter it here.">
+                            <x-hub::input.text wire:model="additionalEmail" id="additional_email" type="email" />
+                        </x-hub::input.group>
+                    </div>
+                @endif
+
 
             @endif
         </div>
@@ -96,7 +115,5 @@
                 x-ref="iframe"
             ></iframe>
         </div>
-
-
     </x-hub::slideover>
 </div>
