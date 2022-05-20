@@ -3,7 +3,13 @@
 </x-hub::input.group>
 
 <x-hub::input.group label="Description" for="description" :error="$errors->first('shippingMethod.description')">
-  <x-hub::input.textarea wire:model="shippingMethod.description" name="description" id="description" :error="$errors->first('shippingMethod.description')" />
+  <x-hub::input.richtext
+    wire:model="shippingMethod.description"
+    name="description"
+    id="description"
+    :error="$errors->first('shippingMethod.description')"
+    :initial-value="$shippingMethod->description"
+  />
 </x-hub::input.group>
 
 <x-hub::input.group label="Code" for="code" :error="$errors->first('shippingMethod.code')">
