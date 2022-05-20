@@ -16,7 +16,7 @@ class SetStaffAuthMiddlewareListener
     {
         // Is this a livewire route and are we looking for a hub component.
         $isLivewire = str_contains($event->route->getName(), 'livewire');
-        $isHubComponent = str_contains($event->route->name, 'hub');
+        $isHubComponent = str_contains($event->route->name, 'hub') || str_contains($event->route->name, 'get-candy');
         $isModal = str_contains($event->route->name, 'livewire-ui-modal');
         $isLoginComponent = str_contains($event->route->name, 'login');
         $isPasswordReset = str_contains($event->route->name, 'password-reset');

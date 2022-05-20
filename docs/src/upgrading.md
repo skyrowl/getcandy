@@ -30,7 +30,32 @@ If you're using Meilisearch, run the following
 php artisan getcandy:meilisearch:setup
 ```
 
-[Unreleased]
+## 2.0-beta13
+
+### Additional `name` property on `GetCandy\DataTypes\ShippingOption`
+
+Old
+
+```php
+new \GetCandy\DataTypes\ShippingOption(
+    description: 'Basic Delivery',
+    identifier: 'BASDEL',
+    price: new PriceDataType(500, $this->cart->currency, 1),
+    taxClass: $taxClass
+);
+```
+
+New
+
+```php
+new \GetCandy\DataTypes\ShippingOption(
+    name: 'Basic Delivery',
+    description: 'Basic Delivery',
+    identifier: 'BASDEL',
+    price: new PriceDataType(500, $this->cart->currency, 1),
+    taxClass: $taxClass
+);
+```
 
 ### Additional Scout configuration
 

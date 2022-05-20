@@ -28,7 +28,8 @@
     },
     "autoload": {
         "files": [
-            "packages/admin/src/helpers.php"
+            "packages/admin/src/helpers.php",
+            "packages/core/src/helpers.php"
         ],
         "psr-4": {
             "GetCandy\\": "packages/core/src",
@@ -36,26 +37,37 @@
             "GetCandy\\Database\\Seeders\\": "packages/core/database/seeders",
             "GetCandy\\Database\\State\\": "packages/core/database/state",
             "GetCandy\\Hub\\": "packages/admin/src",
-            "GetCandy\\Hub\\Database\\Factories\\": "packages/admin/database/factories"
+            "GetCandy\\Hub\\Database\\Factories\\": "packages/admin/database/factories",
+            "GetCandy\\Shipping\\": "packages/pro/shipping/src",
+            "GetCandy\\Shipping\\Database\\Factories\\": "packages/pro/shipping/database/factories"
         }
     },
     "autoload-dev": {
         "psr-4": {
             "GetCandy\\Hub\\Tests\\": "packages/admin/tests",
-            "GetCandy\\Tests\\": "packages/core/tests"
+            "GetCandy\\Shipping\\Tests\\": "packages/pro/shipping/tests",
+            "GetCandy\\Tests\\": [
+                "packages/core/tests",
+                "packages/pro/shipping/tests"
+            ]
         }
     },
     "extra": {
         "laravel": {
             "providers": [
                 "GetCandy\\Hub\\AdminHubServiceProvider",
+                "GetCandy\\Shipping\\ShippingServiceProvider",
                 "GetCandy\\GetCandyServiceProvider"
             ]
+        },
+        "getcandy": {
+            "name": "Shipping"
         }
     },
     "replace": {
         "getcandy/admin": "self.version",
-        "getcandy/core": "self.version"
+        "getcandy/core": "self.version",
+        "getcandy/pro-shipping": "self.version"
     },
     "minimum-stability": "beta"
 }

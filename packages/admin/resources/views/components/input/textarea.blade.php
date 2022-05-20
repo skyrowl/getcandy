@@ -5,5 +5,4 @@
   ])->class([
     'border-red-400' => !!$error,
   ]) }}
-  maxlength="255"
 ></textarea>
