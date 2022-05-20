@@ -76,6 +76,7 @@ class FlatRate implements ShippingMethodInterface
             description: $shippingMethod->description ?: $this->description(),
             identifier: $shippingMethod->getIdentifier(),
             price: $pricing->matched->price,
+            shippingZone: $shippingMethod->shippingZone,
             taxClass: $shippingMethod->getTaxClass(),
             taxReference: $shippingMethod->getTaxReference(),
             option: $shippingMethod->getOption(),

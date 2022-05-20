@@ -91,6 +91,7 @@ class ShipBy implements ShippingMethodInterface
             identifier: $shippingMethod->getIdentifier(),
             price: $pricing->matched->price,
             taxClass: $shippingMethod->getTaxClass(),
+            shippingZone: $shippingMethod->shippingZone,
             taxReference: $shippingMethod->getTaxReference(),
             option: $shippingMethod->getOption(),
         );

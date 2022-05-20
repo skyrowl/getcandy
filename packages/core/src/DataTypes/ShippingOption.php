@@ -4,6 +4,7 @@ namespace GetCandy\DataTypes;
 
 use GetCandy\Base\Purchasable;
 use GetCandy\Models\TaxClass;
+use GetCandy\Shipping\Models\ShippingZone;
 use Illuminate\Support\Collection;
 
 class ShippingOption implements Purchasable
@@ -14,6 +15,7 @@ class ShippingOption implements Purchasable
         public $identifier,
         public Price $price,
         public TaxClass $taxClass,
+        public ?ShippingZone $shippingZone = null,
         public $taxReference = null,
         public $option = null
     ) {
@@ -92,7 +94,7 @@ class ShippingOption implements Purchasable
      */
     public function getDescription()
     {
-        return $this->description;
+        return $this->getName();
     }
 
     /**
@@ -102,7 +104,7 @@ class ShippingOption implements Purchasable
      */
     public function getOption()
     {
-        return $this->option;
+        return $this->shippingZone?->name;
     }
 
     /**

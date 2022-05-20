@@ -72,6 +72,7 @@ class Collection implements ShippingMethodInterface
                 unitQty: 1
             ),
             taxClass: $shippingMethod->getTaxClass(),
+            shippingZone: $shippingMethod->shippingZone,
             taxReference: $shippingMethod->getTaxReference(),
             option: $shippingMethod->getOption(),
         );

@@ -79,7 +79,8 @@ class FreeShipping implements ShippingMethodInterface
             description: $shippingMethod->description,
             identifier: $shippingMethod->code,
             price: new Price(0, $cart->currency, 1),
-            taxClass: TaxClass::getDefault()
+            taxClass: TaxClass::getDefault(),
+            shippingZone: $shippingMethod->shippingZone,
         );
     }
 
